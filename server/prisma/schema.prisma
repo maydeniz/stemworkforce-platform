@@ -1,0 +1,621 @@
+// ===========================================
+// STEMWorkforce Platform - Prisma Database Schema
+// ===========================================
+// Database: PostgreSQL
+// ORM: Prisma
+// ===========================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===========================================
+// User & Authentication
+// ===========================================
+
+model User {
+  id              String    @id @default(uuid())
+  auth0Id         String    @unique @map("auth0_id")
+  email           String    @unique
+  emailVerified   Boolean   @default(false) @map("email_verified")
+  firstName       String    @map("first_name")
+  lastName        String    @map("last_name")
+  avatar          String?
+  phone           String?
+  role            UserRole  @default(jobseeker)
+  organization    String?
+  organizationId  String?   @map("organization_id")
+  clearanceLevel  ClearanceLevel @default(none) @map("clearance_level")
+  
+  // Profile
+  bio             String?
+  linkedIn        String?   @map("linkedin_url")
+  portfolio       String?   @map("portfolio_url")
+  resume          String?   @map("resume_url")
+  skills          String[]
+  
+  // Preferences (JSON)
+  preferences     Json      @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  lastLoginAt     DateTime? @map("last_login_at")
+  
+  // Relations
+  applications    JobApplication[]
+  savedJobs       SavedJob[]
+  eventRegistrations EventRegistration[]
+  trainingEnrollments TrainingEnrollment[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+  jobPostings     Job[]     @relation("PostedBy")
+  organization_rel Organization? @relation(fields: [organizationId], references: [id])
+  challengeSubmissions ChallengeSubmission[]
+
+  @@map("users")
+  @@index([email])
+  @@index([role])
+  @@index([organizationId])
+}
+
+enum UserRole {
+  intern
+  jobseeker
+  educator
+  partner
+  admin
+}
+
+enum ClearanceLevel {
+  none
+  public_trust
+  secret
+  top_secret
+  top_secret_sci
+}
+
+// ===========================================
+// Organizations (Employers/Partners)
+// ===========================================
+
+model Organization {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  type            OrganizationType
+  logo            String?
+  website         String?
+  description     String?
+  
+  // Location
+  headquarters    String?
+  locations       String[]
+  
+  // Details
+  industries      IndustryType[]
+  size            String?   // e.g., "1000-5000"
+  founded         Int?
+  
+  // Verification
+  verified        Boolean   @default(false)
+  verifiedAt      DateTime? @map("verified_at")
+  
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  users           User[]
+  jobs            Job[]
+  events          Event[]
+
+  @@map("organizations")
+  @@index([type])
+  @@index([verified])
+}
+
+enum OrganizationType {
+  industry
+  government
+  national_lab
+  academia
+  nonprofit
+}
+
+// ===========================================
+// Jobs
+// ===========================================
+
+model Job {
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  description     String
+  requirements    String[]
+  benefits        String[]
+  
+  // Organization
+  organizationId  String    @map("organization_id")
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  
+  // Posted by
+  postedById      String    @map("posted_by_id")
+  postedBy        User      @relation("PostedBy", fields: [postedById], references: [id])
+  
+  // Details
+  industry        IndustryType
+  type            JobType
+  location        String
+  remote          Boolean   @default(false)
+  clearance       ClearanceLevel @default(none)
+  skills          String[]
+  
+  // Salary
+  salaryMin       Int?      @map("salary_min")
+  salaryMax       Int?      @map("salary_max")
+  salaryCurrency  String    @default("USD") @map("salary_currency")
+  salaryPeriod    SalaryPeriod @default(yearly) @map("salary_period")
+  
+  // Status
+  status          JobStatus @default(active)
+  featured        Boolean   @default(false)
+  viewCount       Int       @default(0) @map("view_count")
+  
+  // Dates
+  postedAt        DateTime  @default(now()) @map("posted_at")
+  expiresAt       DateTime  @map("expires_at")
+  closedAt        DateTime? @map("closed_at")
+  
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  applications    JobApplication[]
+  savedBy         SavedJob[]
+
+  @@map("jobs")
+  @@index([industry])
+  @@index([type])
+  @@index([status])
+  @@index([postedAt])
+  @@index([organizationId])
+  @@index([location])
+  @@index([remote])
+}
+
+enum IndustryType {
+  semiconductor
+  nuclear
+  ai
+  quantum
+  cybersecurity
+  aerospace
+  biotech
+  robotics
+  clean_energy
+  manufacturing
+}
+
+enum JobType {
+  internship
+  full_time
+  part_time
+  contract
+  fellowship
+}
+
+enum JobStatus {
+  draft
+  active
+  closed
+  expired
+}
+
+enum SalaryPeriod {
+  hourly
+  monthly
+  yearly
+}
+
+// ===========================================
+// Job Applications
+// ===========================================
+
+model JobApplication {
+  id              String    @id @default(uuid())
+  
+  // Relations
+  jobId           String    @map("job_id")
+  job             Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId          String    @map("user_id")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Application details
+  resume          String    @map("resume_url")
+  coverLetter     String?   @map("cover_letter")
+  linkedIn        String?   @map("linkedin_url")
+  portfolio       String?   @map("portfolio_url")
+  availability    String?
+  expectedSalary  Int?      @map("expected_salary")
+  referral        String?
+  answers         Json?     // Custom application questions
+  
+  // Status
+  status          ApplicationStatus @default(pending)
+  notes           String?   // Internal notes by employer
+  rating          Int?      // 1-5 rating by employer
+  
+  // Timestamps
+  appliedAt       DateTime  @default(now()) @map("applied_at")
+  reviewedAt      DateTime? @map("reviewed_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([jobId, userId])
+  @@map("job_applications")
+  @@index([status])
+  @@index([appliedAt])
+}
+
+enum ApplicationStatus {
+  pending
+  reviewing
+  interview
+  offered
+  accepted
+  rejected
+  withdrawn
+}
+
+// ===========================================
+// Saved Jobs
+// ===========================================
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId     String   @map("job_id")
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  savedAt   DateTime @default(now()) @map("saved_at")
+
+  @@unique([userId, jobId])
+  @@map("saved_jobs")
+}
+
+// ===========================================
+// Events
+// ===========================================
+
+model Event {
+  id                  String    @id @default(uuid())
+  title               String
+  slug                String    @unique
+  description         String
+  
+  // Organization (optional)
+  organizationId      String?   @map("organization_id")
+  organization        Organization? @relation(fields: [organizationId], references: [id])
+  organizer           String    // Display name
+  
+  // Details
+  type                EventType
+  industries          IndustryType[]
+  
+  // Location
+  location            String
+  virtual             Boolean   @default(false)
+  virtualUrl          String?   @map("virtual_url")
+  
+  // Capacity
+  capacity            Int?
+  
+  // Image
+  image               String?
+  
+  // Dates
+  startDate           DateTime  @map("start_date")
+  endDate             DateTime? @map("end_date")
+  registrationDeadline DateTime @map("registration_deadline")
+  
+  // Status
+  status              EventStatus @default(upcoming)
+  featured            Boolean   @default(false)
+  
+  // Timestamps
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  registrations       EventRegistration[]
+
+  @@map("events")
+  @@index([type])
+  @@index([status])
+  @@index([startDate])
+}
+
+enum EventType {
+  conference
+  job_fair
+  networking
+  workshop
+  webinar
+  hackathon
+}
+
+enum EventStatus {
+  upcoming
+  ongoing
+  completed
+  cancelled
+}
+
+model EventRegistration {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId      String   @map("event_id")
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status       RegistrationStatus @default(registered)
+  registeredAt DateTime @default(now()) @map("registered_at")
+  attendedAt   DateTime? @map("attended_at")
+
+  @@unique([userId, eventId])
+  @@map("event_registrations")
+}
+
+enum RegistrationStatus {
+  registered
+  attended
+  cancelled
+  no_show
+}
+
+// ===========================================
+// Training Programs
+// ===========================================
+
+model TrainingProgram {
+  id                  String    @id @default(uuid())
+  title               String
+  slug                String    @unique
+  provider            String
+  description         String
+  
+  // Details
+  duration            String
+  format              TrainingFormat
+  level               SkillLevel
+  industries          IndustryType[]
+  skills              String[]
+  
+  // Pricing
+  cost                Float     @default(0)
+  
+  // Metrics
+  placementRate       Float?    @map("placement_rate")
+  rating              Float     @default(0)
+  reviewsCount        Int       @default(0) @map("reviews_count")
+  
+  // Certification
+  certificationType   String?   @map("certification_type")
+  
+  // Dates
+  startDates          DateTime[] @map("start_dates")
+  
+  // Status
+  active              Boolean   @default(true)
+  featured            Boolean   @default(false)
+  
+  // Timestamps
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  enrollments         TrainingEnrollment[]
+
+  @@map("training_programs")
+  @@index([format])
+  @@index([level])
+  @@index([active])
+}
+
+enum TrainingFormat {
+  online
+  in_person
+  hybrid
+  self_paced
+}
+
+enum SkillLevel {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+model TrainingEnrollment {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  programId   String   @map("program_id")
+  program     TrainingProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  status      EnrollmentStatus @default(enrolled)
+  progress    Int      @default(0) // percentage
+  enrolledAt  DateTime @default(now()) @map("enrolled_at")
+  completedAt DateTime? @map("completed_at")
+
+  @@unique([userId, programId])
+  @@map("training_enrollments")
+}
+
+enum EnrollmentStatus {
+  enrolled
+  in_progress
+  completed
+  dropped
+}
+
+// ===========================================
+// Challenges (Innovation Hub)
+// ===========================================
+
+model Challenge {
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  description     String
+  sponsor         String
+  
+  // Prize
+  prize           Float
+  
+  // Details
+  categories      IndustryType[]
+  requirements    String[]
+  
+  // Dates
+  deadline        DateTime
+  
+  // Status
+  status          ChallengeStatus @default(open)
+  
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  submissions     ChallengeSubmission[]
+
+  @@map("challenges")
+  @@index([status])
+  @@index([deadline])
+}
+
+enum ChallengeStatus {
+  draft
+  open
+  judging
+  completed
+}
+
+model ChallengeSubmission {
+  id            String   @id @default(uuid())
+  challengeId   String   @map("challenge_id")
+  challenge     Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId        String   @map("user_id")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Submission
+  title         String
+  description   String
+  files         String[] // URLs
+  
+  // Scoring
+  score         Int?
+  feedback      String?
+  rank          Int?
+  
+  // Timestamps
+  submittedAt   DateTime @default(now()) @map("submitted_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([challengeId, userId])
+  @@map("challenge_submissions")
+}
+
+// ===========================================
+// Workforce Map Data
+// ===========================================
+
+model StateWorkforceData {
+  id              String    @id @default(uuid())
+  stateCode       String    @unique @map("state_code")
+  stateName       String    @map("state_name")
+  
+  // Stats
+  totalJobs       Int       @default(0) @map("total_jobs")
+  topIndustry     IndustryType @map("top_industry")
+  growthRate      Float     @default(0) @map("growth_rate")
+  averageSalary   Int       @default(0) @map("average_salary")
+  trainingPrograms Int      @default(0) @map("training_programs")
+  universities    Int       @default(0)
+  nationalLabs    String[]  @map("national_labs")
+  
+  // Timestamps
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("state_workforce_data")
+}
+
+// ===========================================
+// Notifications
+// ===========================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  readAt    DateTime? @map("read_at")
+
+  @@map("notifications")
+  @@index([userId, read])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  info
+  success
+  warning
+  error
+  application
+  event
+  system
+}
+
+// ===========================================
+// Audit Logs
+// ===========================================
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?  @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  action      String
+  details     Json
+  severity    AuditSeverity @default(info)
+  sessionId   String   @map("session_id")
+  userAgent   String?  @map("user_agent")
+  ipAddress   String?  @map("ip_address")
+  url         String?
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+  @@index([userId])
+  @@index([action])
+  @@index([severity])
+  @@index([createdAt])
+}
+
+enum AuditSeverity {
+  info
+  warning
+  error
+}

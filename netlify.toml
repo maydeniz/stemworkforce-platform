@@ -1,0 +1,152 @@
+# ===========================================
+# Netlify Configuration for STEMWorkforce
+# ===========================================
+
+[build]
+  # Build command
+  command = "npm run build"
+  
+  # Directory to publish
+  publish = "dist"
+  
+  # Functions directory
+  functions = "netlify/functions"
+
+[build.environment]
+  # Node version
+  NODE_VERSION = "18"
+  
+  # NPM version  
+  NPM_VERSION = "9"
+
+# ===========================================
+# Context-specific settings
+# ===========================================
+
+# Production context
+[context.production]
+  environment = { VITE_ENABLE_ANALYTICS = "true", VITE_ENABLE_DEBUG_MODE = "false" }
+
+# Deploy Preview context (for PRs)
+[context.deploy-preview]
+  environment = { VITE_ENABLE_ANALYTICS = "false", VITE_ENABLE_DEBUG_MODE = "true" }
+
+# Branch deploy context
+[context.branch-deploy]
+  environment = { VITE_ENABLE_ANALYTICS = "false", VITE_ENABLE_DEBUG_MODE = "true" }
+
+# Local dev context (netlify dev)
+[context.dev]
+  environment = { VITE_ENABLE_ANALYTICS = "false", VITE_ENABLE_DEBUG_MODE = "true" }
+
+# ===========================================
+# Redirects
+# ===========================================
+
+# SPA fallback - handle client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ===========================================
+# Security Headers
+# ===========================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent clickjacking
+    X-Frame-Options = "DENY"
+    
+    # Prevent MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # Enable XSS filter
+    X-XSS-Protection = "1; mode=block"
+    
+    # Control referrer information
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Restrict browser features
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    
+    # Content Security Policy (adjust as needed)
+    # Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co"
+
+# ===========================================
+# Caching
+# ===========================================
+
+# Cache static assets (JS, CSS, images)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache fonts
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache images
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# ===========================================
+# Functions configuration
+# ===========================================
+
+[functions]
+  # Set Node.js version for functions
+  node_bundler = "esbuild"
+  
+  # Include external node modules
+  # external_node_modules = ["@supabase/supabase-js"]
+
+# ===========================================
+# Dev server configuration
+# ===========================================
+
+[dev]
+  # Port for local development
+  port = 8888
+  
+  # Target port (Vite dev server)
+  targetPort = 3000
+  
+  # Auto-launch browser
+  autoLaunch = false
+  
+  # Framework detection
+  framework = "#auto"
+
+# ===========================================
+# Plugins (optional)
+# ===========================================
+
+# Lighthouse CI plugin
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
+
+# Sitemap plugin
+# [[plugins]]
+#   package = "@netlify/plugin-sitemap"
