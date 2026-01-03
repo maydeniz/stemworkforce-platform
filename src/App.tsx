@@ -61,7 +61,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
 
-  // Fetch role from public.users table
+  // SECURITY FIX: Fetch role from database ONLY - never trust user_metadata
+  // user_metadata can be spoofed during signup, so we MUST use server-side data
   useEffect(() => {
     const fetchRole = async () => {
       if (!user) {
@@ -69,34 +70,27 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
         return;
       }
 
-      console.log('[ProtectedRoute] User ID:', user.id);
-      console.log('[ProtectedRoute] User metadata:', (user as any).user_metadata);
-
       try {
-        // First check user_metadata (from signup)
-        const metaRole = (user as any).user_metadata?.role;
-        if (metaRole) {
-          console.log('[ProtectedRoute] Found role in metadata:', metaRole);
-          setUserRole(metaRole);
+        // SECURITY: Always fetch from database - this is the source of truth
+        // NEVER trust user_metadata.role as it can be set by the user during signup
+
+        // First try app_metadata (server-controlled, cannot be spoofed)
+        const appMetaRole = (user as any).app_metadata?.role;
+        if (appMetaRole) {
+          setUserRole(appMetaRole);
           setRoleLoading(false);
           return;
         }
 
         // Fetch from public.users table - try by ID first, then by email
-        console.log('[ProtectedRoute] Fetching role from database for user:', user.id, user.email);
-
-        // Try by ID first
-        let { data, error } = await supabase
+        let { data } = await supabase
           .from('users')
           .select('role')
           .eq('id', user.id)
           .single();
 
-        console.log('[ProtectedRoute] Database response (by ID):', { data, error });
-
         // If not found by ID, try by email
         if (!data && user.email) {
-          console.log('[ProtectedRoute] Not found by ID, trying by email:', user.email);
           const emailResult = await supabase
             .from('users')
             .select('role')
@@ -104,18 +98,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
             .single();
 
           data = emailResult.data;
-          error = emailResult.error;
-          console.log('[ProtectedRoute] Database response (by email):', { data, error });
         }
 
         if (data?.role) {
-          console.log('[ProtectedRoute] Found role in database:', data.role);
           setUserRole(data.role);
         } else {
-          console.log('[ProtectedRoute] No role found in database');
+          // Default to most restrictive role if not found
+          setUserRole('jobseeker');
         }
       } catch (err) {
         console.error('Error fetching user role:', err);
+        // Default to most restrictive role on error
+        setUserRole('jobseeker');
       } finally {
         setRoleLoading(false);
       }
@@ -135,12 +129,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
 
   // If roles are required but user has no role or wrong role, redirect to dashboard
   if (roles && roles.length > 0) {
-    console.log('[ProtectedRoute] Checking role access:', { userRole, requiredRoles: roles, hasAccess: userRole && roles.includes(userRole) });
     if (!userRole || !roles.includes(userRole)) {
-      console.log('[ProtectedRoute] Access denied - redirecting to dashboard');
       return <Navigate to="/dashboard" replace />;
     }
-    console.log('[ProtectedRoute] Access granted for role:', userRole);
   }
 
   return <>{children}</>;

@@ -230,19 +230,58 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Permission helpers (simplified for now)
+  // Permission helpers - SECURITY: Proper role-based access control
   const hasPermission = useCallback((action: 'apply' | 'post' | 'manage_users'): boolean => {
     if (!user) return false;
-    // All authenticated users can apply
-    if (action === 'apply') return true;
-    // Add role-based logic as needed
-    return true;
+
+    // Get user role from database (NOT from user_metadata - that's spoofable)
+    // For now, we check the app_metadata which is server-controlled
+    const userRole = (user as any).app_metadata?.role || 'jobseeker';
+
+    switch (action) {
+      case 'apply':
+        // All authenticated users can apply for jobs
+        return true;
+      case 'post':
+        // Only employers, partners, and admins can post jobs
+        return ['employer', 'partner', 'admin', 'super_admin'].includes(userRole);
+      case 'manage_users':
+        // Only admins can manage users
+        return ['admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN'].includes(userRole);
+      default:
+        return false;
+    }
   }, [user]);
 
-  const canViewPage = useCallback((_page: string): boolean => {
-    // All pages accessible for now
+  const canViewPage = useCallback((page: string): boolean => {
+    if (!user) return false;
+
+    // Get user role from app_metadata (server-controlled, not spoofable)
+    const userRole = (user as any).app_metadata?.role || 'jobseeker';
+
+    // Define page access by role
+    const adminPages = ['/admin', '/admin/billing', '/admin/users', '/admin/settings'];
+    const providerPages = ['/provider'];
+    const employerPages = ['/employer', '/post-job'];
+
+    // Check admin pages
+    if (adminPages.some(p => page.startsWith(p))) {
+      return ['admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN', 'BILLING_ADMIN', 'CONTENT_ADMIN'].includes(userRole);
+    }
+
+    // Check provider pages
+    if (providerPages.some(p => page.startsWith(p))) {
+      return ['service_provider', 'admin', 'super_admin'].includes(userRole);
+    }
+
+    // Check employer pages
+    if (employerPages.some(p => page.startsWith(p))) {
+      return ['employer', 'partner', 'admin', 'super_admin'].includes(userRole);
+    }
+
+    // Public pages accessible to all authenticated users
     return true;
-  }, []);
+  }, [user]);
 
   const value: AuthContextType = {
     user,
