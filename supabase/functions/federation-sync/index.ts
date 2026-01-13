@@ -35,6 +35,24 @@ interface FederatedSource {
   attribution_text: string | null;
 }
 
+interface STEMFilterConfig {
+  occupationSeriesCodes?: string[];
+  titleKeywords?: {
+    required?: string[];
+    mustContainAll?: string[];
+    exclude?: string[];
+  };
+  descriptionKeywords?: {
+    required?: string[];
+    mustContainAll?: string[];
+    exclude?: string[];
+  };
+  allowedIndustries?: string[];
+  minSalary?: number;
+  requireClearance?: boolean;
+  educationLevels?: string[];
+}
+
 interface APIConfig {
   baseUrl: string;
   authType: string;
@@ -52,6 +70,7 @@ interface APIConfig {
     maxItemsPerPage: number;
     maxPages?: number;
   };
+  stemFilters?: STEMFilterConfig;
 }
 
 interface RSSConfig {
@@ -59,6 +78,7 @@ interface RSSConfig {
   feedType: string;
   fieldMapping: Record<string, string>;
   maxItems?: number;
+  stemFilters?: STEMFilterConfig;
 }
 
 interface SyncResult {
@@ -105,6 +125,192 @@ interface FetchedItem {
   eventEndDate?: string;
   postedAt: string;
   expiresAt?: string;
+  occupationCode?: string; // For USAJobs - used for STEM filtering
+}
+
+// ===========================================
+// STEM OCCUPATION CODES (OPM/USAJobs)
+// Only jobs in these series will be fetched
+// ===========================================
+
+const STEM_OCCUPATION_CODES = [
+  // ENGINEERING (0800 Series)
+  '0801', '0802', '0803', '0804', '0806', '0808', '0810', '0819',
+  '0830', '0840', '0850', '0854', '0855', '0856', '0858', '0861',
+  '0871', '0880', '0881', '0890', '0893', '0894', '0895', '0896',
+
+  // PHYSICAL SCIENCES (1300 Series)
+  '1301', '1306', '1310', '1311', '1313', '1315', '1316', '1320',
+  '1321', '1330', '1340', '1341', '1350', '1360', '1370', '1372',
+  '1373', '1380', '1382', '1384',
+
+  // MATHEMATICS & STATISTICS (1500 Series)
+  '1501', '1510', '1515', '1520', '1521', '1529', '1530', '1531',
+  '1540', '1541', '1550', '1560',
+
+  // INFORMATION TECHNOLOGY (2200 Series)
+  '2210',
+
+  // BIOLOGICAL SCIENCES (0400 Series)
+  '0401', '0403', '0404', '0405', '0408', '0410', '0413', '0414',
+  '0415', '0420', '0430', '0434', '0435', '0436', '0437', '0440',
+  '0454', '0455', '0457', '0458', '0459', '0460', '0462', '0470',
+  '0471', '0480', '0482', '0485', '0486', '0487',
+
+  // MEDICAL STEM (0600 Series - select)
+  '0601', '0602', '0630', '0633', '0640', '0642', '0644', '0645',
+  '0646', '0647', '0648', '0649', '0650', '0651', '0660', '0665',
+  '0685', '0688', '0690', '0696',
+
+  // CYBERSECURITY / INTEL
+  '0132', '0080', '1811',
+
+  // AEROSPACE
+  '2181', '2183', '2185',
+];
+
+// STEM Keywords for title matching
+const STEM_TITLE_KEYWORDS = [
+  'engineer', 'scientist', 'developer', 'analyst', 'researcher',
+  'technician', 'architect', 'physicist', 'chemist', 'biologist',
+  'mathematician', 'statistician', 'data', 'software', 'hardware',
+  'cyber', 'security', 'nuclear', 'quantum', 'machine learning',
+  'robotics', 'aerospace', 'semiconductor', 'biotech', 'computational',
+  'laboratory', 'research', 'science', 'technology', 'programming',
+  'cloud', 'devops', 'network', 'systems', 'database', 'electrical',
+  'mechanical', 'chemical', 'materials', 'manufacturing', 'automation',
+  'cryptograph', 'intelligence', 'physics', 'biology', 'chemistry',
+];
+
+// Keywords to EXCLUDE (non-STEM roles)
+const EXCLUDE_TITLE_KEYWORDS = [
+  'administrative assistant', 'secretary', 'receptionist', 'clerk',
+  'custodian', 'janitor', 'food service', 'cook', 'cashier',
+  'retail', 'sales representative', 'customer service representative',
+  'human resources specialist', 'recruiter', 'paralegal',
+  'legal assistant', 'accounting clerk', 'budget analyst',
+  'contract specialist', 'procurement clerk', 'supply technician',
+  'mail clerk', 'file clerk', 'office automation clerk',
+  'transportation assistant', 'motor vehicle operator',
+];
+
+// ===========================================
+// STEM FILTERING FUNCTIONS
+// ===========================================
+
+function isSTEMOccupationCode(code: string | undefined): boolean {
+  if (!code) return false;
+  // Extract first 4 digits of occupation code
+  const seriesCode = code.substring(0, 4);
+  return STEM_OCCUPATION_CODES.includes(seriesCode);
+}
+
+function passesSTEMTitleFilter(title: string): boolean {
+  const lowerTitle = title.toLowerCase();
+
+  // Check for excluded keywords first
+  for (const exclude of EXCLUDE_TITLE_KEYWORDS) {
+    if (lowerTitle.includes(exclude.toLowerCase())) {
+      console.log(`STEM Filter: Rejected "${title}" - contains excluded keyword "${exclude}"`);
+      return false;
+    }
+  }
+
+  // Check for required STEM keywords
+  for (const keyword of STEM_TITLE_KEYWORDS) {
+    if (lowerTitle.includes(keyword.toLowerCase())) {
+      return true;
+    }
+  }
+
+  // If no STEM keyword found, reject
+  console.log(`STEM Filter: Rejected "${title}" - no STEM keywords found`);
+  return false;
+}
+
+function passesSTEMFilter(item: FetchedItem, stemFilters?: STEMFilterConfig): boolean {
+  // If no filters configured, use default STEM filtering
+  if (!stemFilters) {
+    // Default: must pass title keyword filter
+    return passesSTEMTitleFilter(item.title);
+  }
+
+  // Check occupation code filter (for USAJobs)
+  if (stemFilters.occupationSeriesCodes && stemFilters.occupationSeriesCodes.length > 0) {
+    if (!item.occupationCode) {
+      // No occupation code available, fall back to title filter
+      if (!passesSTEMTitleFilter(item.title)) return false;
+    } else {
+      const seriesCode = item.occupationCode.substring(0, 4);
+      if (!stemFilters.occupationSeriesCodes.includes(seriesCode)) {
+        console.log(`STEM Filter: Rejected "${item.title}" - occupation code ${seriesCode} not in allowed list`);
+        return false;
+      }
+    }
+  }
+
+  // Check title keywords
+  if (stemFilters.titleKeywords) {
+    const lowerTitle = item.title.toLowerCase();
+
+    // Check excluded keywords
+    if (stemFilters.titleKeywords.exclude) {
+      for (const exclude of stemFilters.titleKeywords.exclude) {
+        if (lowerTitle.includes(exclude.toLowerCase())) {
+          console.log(`STEM Filter: Rejected "${item.title}" - contains excluded keyword "${exclude}"`);
+          return false;
+        }
+      }
+    }
+
+    // Check required keywords (OR logic - must have at least one)
+    if (stemFilters.titleKeywords.required && stemFilters.titleKeywords.required.length > 0) {
+      const hasRequired = stemFilters.titleKeywords.required.some(
+        keyword => lowerTitle.includes(keyword.toLowerCase())
+      );
+      if (!hasRequired) {
+        console.log(`STEM Filter: Rejected "${item.title}" - missing required keywords`);
+        return false;
+      }
+    }
+
+    // Check mustContainAll keywords (AND logic)
+    if (stemFilters.titleKeywords.mustContainAll) {
+      for (const keyword of stemFilters.titleKeywords.mustContainAll) {
+        if (!lowerTitle.includes(keyword.toLowerCase())) {
+          console.log(`STEM Filter: Rejected "${item.title}" - missing required keyword "${keyword}"`);
+          return false;
+        }
+      }
+    }
+  }
+
+  // Check description keywords if configured
+  if (stemFilters.descriptionKeywords && item.description) {
+    const lowerDesc = item.description.toLowerCase();
+
+    if (stemFilters.descriptionKeywords.exclude) {
+      for (const exclude of stemFilters.descriptionKeywords.exclude) {
+        if (lowerDesc.includes(exclude.toLowerCase())) {
+          return false;
+        }
+      }
+    }
+  }
+
+  // Check minimum salary if configured
+  if (stemFilters.minSalary && item.salaryMin) {
+    if (item.salaryMin < stemFilters.minSalary) {
+      return false;
+    }
+  }
+
+  // Check clearance requirement if configured
+  if (stemFilters.requireClearance && !item.clearanceRequired) {
+    return false;
+  }
+
+  return true;
 }
 
 // ===========================================
@@ -251,9 +457,33 @@ async function syncSource(supabase: ReturnType<typeof createClient>, source: Fed
     }
 
     result.itemsFetched = items.length;
+    console.log(`Fetched ${items.length} items from ${source.name}`);
 
-    // Process each item
-    for (const item of items) {
+    // ===========================================
+    // STEM FILTERING - Critical step to prevent non-STEM jobs
+    // ===========================================
+    const stemFilters = source.api_config?.stemFilters || source.rss_config?.stemFilters;
+    const filteredItems = items.filter(item => {
+      const passes = passesSTEMFilter(item, stemFilters);
+      if (!passes) {
+        result.itemsFailed++; // Count filtered items as "failed" for stats
+      }
+      return passes;
+    });
+
+    const rejectedCount = items.length - filteredItems.length;
+    if (rejectedCount > 0) {
+      console.log(`STEM Filter: Rejected ${rejectedCount} non-STEM items from ${source.name}`);
+      result.errors.push({
+        timestamp: new Date().toISOString(),
+        type: 'filter',
+        message: `Filtered out ${rejectedCount} non-STEM items`,
+      });
+    }
+    console.log(`Processing ${filteredItems.length} STEM-relevant items from ${source.name}`);
+
+    // Process each STEM-filtered item
+    for (const item of filteredItems) {
       try {
         const existingItem = await checkExistingItem(supabase, source.id, item.externalId);
 
@@ -346,7 +576,15 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
       const maxPages = config.paginationConfig?.maxPages || 10;
 
       while (hasMore && page <= maxPages) {
-        const url = buildAPIUrl(config.baseUrl, endpoint.url, config.paginationConfig, page);
+        // Build URL with STEM occupation filters for USAJobs
+        const url = buildAPIUrl(
+          config.baseUrl,
+          endpoint.url,
+          config.paginationConfig,
+          page,
+          config.stemFilters
+        );
+        console.log(`Fetching: ${url}`);
 
         const response = await fetch(url, { headers });
 
@@ -384,7 +622,8 @@ function buildAPIUrl(
   baseUrl: string,
   endpoint: string,
   pagination: APIConfig['paginationConfig'],
-  page: number
+  page: number,
+  stemFilters?: STEMFilterConfig
 ): string {
   const url = new URL(endpoint, baseUrl);
 
@@ -395,6 +634,29 @@ function buildAPIUrl(
     } else if (pagination.type === 'offset') {
       const offset = (page - 1) * pagination.maxItemsPerPage;
       url.searchParams.set(pagination.limitParam, String(pagination.maxItemsPerPage));
+    }
+  }
+
+  // ===========================================
+  // USAJobs-specific STEM filters
+  // Add occupation series codes to filter at API level
+  // This dramatically reduces data transfer and processing
+  // ===========================================
+  if (baseUrl.includes('usajobs.gov') && stemFilters?.occupationSeriesCodes) {
+    // USAJobs uses JobCategoryCode parameter for occupation series
+    // Multiple codes separated by semicolon
+    const codes = stemFilters.occupationSeriesCodes.join(';');
+    url.searchParams.set('JobCategoryCode', codes);
+    console.log(`USAJobs: Filtering by ${stemFilters.occupationSeriesCodes.length} occupation codes`);
+  }
+
+  // For USAJobs, we can also use keyword filtering at API level
+  if (baseUrl.includes('usajobs.gov') && stemFilters?.titleKeywords?.required) {
+    // Use the first few keywords as API-level filter
+    // Secondary filtering happens after fetch
+    const keywords = stemFilters.titleKeywords.required.slice(0, 5).join(' OR ');
+    if (keywords) {
+      url.searchParams.set('Keyword', keywords);
     }
   }
 
@@ -434,6 +696,16 @@ function transformAPIResult(
     }, obj);
   };
 
+  // Extract occupation code for USAJobs (used in STEM filtering)
+  let occupationCode: string | undefined;
+  if (source.website.includes('usajobs.gov')) {
+    // USAJobs stores job category in MatchedObjectDescriptor.JobCategory
+    const jobCategory = getValue('MatchedObjectDescriptor.JobCategory') as Array<{ Code: string }> | undefined;
+    if (jobCategory && jobCategory.length > 0) {
+      occupationCode = jobCategory[0].Code;
+    }
+  }
+
   return {
     externalId: String(getValue(mapping.id as string) || Math.random()),
     title: String(getValue(mapping.title as string) || 'Untitled'),
@@ -445,6 +717,7 @@ function transformAPIResult(
     expiresAt: getValue(mapping.deadline as string) as string | undefined,
     contentType,
     industries: source.industries || [],
+    occupationCode, // For STEM filtering verification
   };
 }
 

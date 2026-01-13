@@ -85,6 +85,260 @@ export interface FederatedSource {
 }
 
 // ===========================================
+// STEM FILTERING CONFIGURATION
+// Critical: Ensures only STEM-relevant content is synced
+// ===========================================
+
+export interface STEMFilterConfig {
+  // USAJobs-specific: Federal occupation series codes (OPM codes)
+  // Only jobs in these series will be fetched
+  occupationSeriesCodes?: string[];
+
+  // Keyword-based filtering
+  titleKeywords?: {
+    required?: string[];       // Must contain at least one (OR)
+    mustContainAll?: string[]; // Must contain all (AND)
+    exclude?: string[];        // Reject if contains any
+  };
+
+  descriptionKeywords?: {
+    required?: string[];       // Must contain at least one (OR)
+    mustContainAll?: string[]; // Must contain all (AND)
+    exclude?: string[];        // Reject if contains any
+  };
+
+  // Industry-based filtering
+  allowedIndustries?: string[];  // Only sync if matches these industries
+
+  // Additional filters
+  minSalary?: number;           // Minimum salary threshold
+  requireClearance?: boolean;   // Only jobs requiring clearance
+  educationLevels?: string[];   // Required education levels
+}
+
+// ===========================================
+// STEM OCCUPATION CODES (OPM/USAJobs)
+// Comprehensive list of STEM-related federal job series
+// ===========================================
+
+export const STEM_OCCUPATION_CODES = {
+  // ENGINEERING (0800 Series)
+  engineering: [
+    '0801', // General Engineering
+    '0802', // Engineering Technician
+    '0803', // Safety Engineering
+    '0804', // Fire Protection Engineering
+    '0806', // Materials Engineering
+    '0807', // Landscape Architecture
+    '0808', // Architecture
+    '0809', // Construction Control
+    '0810', // Civil Engineering
+    '0819', // Environmental Engineering
+    '0830', // Mechanical Engineering
+    '0840', // Nuclear Engineering
+    '0850', // Electrical Engineering
+    '0854', // Computer Engineering
+    '0855', // Electronics Engineering
+    '0856', // Electronics Technician
+    '0858', // Biomedical Engineering
+    '0861', // Aerospace Engineering
+    '0871', // Naval Architecture
+    '0880', // Mining Engineering
+    '0881', // Petroleum Engineering
+    '0890', // Agricultural Engineering
+    '0893', // Chemical Engineering
+    '0894', // Welding Engineering
+    '0895', // Industrial Engineering
+    '0896', // Quality Assurance
+  ],
+
+  // PHYSICAL SCIENCES (1300 Series)
+  physicalSciences: [
+    '1301', // General Physical Science
+    '1306', // Health Physics
+    '1310', // Physics
+    '1311', // Physical Science Technician
+    '1313', // Geophysics
+    '1315', // Hydrology
+    '1316', // Hydrologic Technician
+    '1320', // Chemistry
+    '1321', // Metallurgy
+    '1330', // Astronomy and Space Science
+    '1340', // Meteorology
+    '1341', // Meteorological Technician
+    '1350', // Geology
+    '1360', // Oceanography
+    '1370', // Cartography
+    '1372', // Geodesy
+    '1373', // Land Surveying
+    '1380', // Forest Products Technology
+    '1382', // Food Technology
+    '1384', // Textile Technology
+  ],
+
+  // MATHEMATICS & STATISTICS (1500 Series)
+  mathematics: [
+    '1501', // General Mathematics and Statistics
+    '1510', // Actuarial Science
+    '1515', // Operations Research
+    '1520', // Mathematics
+    '1521', // Mathematics Technician
+    '1529', // Mathematical Statistician
+    '1530', // Statistics
+    '1531', // Statistical Assistant
+    '1540', // Cryptography
+    '1541', // Cryptanalysis
+    '1550', // Computer Science
+    '1560', // Data Science
+  ],
+
+  // INFORMATION TECHNOLOGY (2200 Series)
+  informationTechnology: [
+    '2210', // IT Management
+    '2220', // IT Project Management (DEPRECATED - merged into 2210)
+  ],
+
+  // BIOLOGICAL SCIENCES (0400 Series)
+  biologicalSciences: [
+    '0401', // General Biological Science
+    '0403', // Microbiology
+    '0404', // Biological Science Technician
+    '0405', // Pharmacology
+    '0408', // Ecology
+    '0410', // Zoology
+    '0413', // Physiology
+    '0414', // Entomology
+    '0415', // Toxicology
+    '0420', // Wildlife Biology
+    '0430', // Botany
+    '0434', // Plant Pathology
+    '0435', // Plant Physiology
+    '0436', // Plant Protection and Quarantine
+    '0437', // Horticulture
+    '0440', // Genetics
+    '0454', // Range Conservation
+    '0455', // Range Technician
+    '0457', // Soil Conservation
+    '0458', // Soil Conservation Technician
+    '0459', // Irrigation System Operation
+    '0460', // Forestry
+    '0462', // Forestry Technician
+    '0470', // Soil Science
+    '0471', // Agronomy
+    '0480', // General Fish and Wildlife Administration
+    '0482', // Fish Biology
+    '0485', // Wildlife Refuge Management
+    '0486', // Wildlife Biology
+    '0487', // Animal Science
+    '0493', // Home Economics
+  ],
+
+  // MEDICAL & HEALTH (0600 Series - select STEM roles)
+  medicalSTEM: [
+    '0601', // General Health Science
+    '0602', // Medical Officer
+    '0610', // Nurse
+    '0620', // Practical Nurse
+    '0630', // Dietitian and Nutritionist
+    '0633', // Physical Therapist
+    '0635', // Corrective Therapist
+    '0636', // Rehabilitation Therapy Assistant
+    '0637', // Manual Arts Therapist
+    '0638', // Recreation/Creative Arts Therapist
+    '0639', // Educational Therapist
+    '0640', // Health Aid and Technician
+    '0642', // Nuclear Medicine Technician
+    '0644', // Medical Technologist
+    '0645', // Medical Technician
+    '0646', // Pathology Technician
+    '0647', // Diagnostic Radiologic Technologist
+    '0648', // Therapeutic Radiologic Technologist
+    '0649', // Medical Instrument Technician
+    '0650', // Medical Technical Assistant
+    '0651', // Respiratory Therapist
+    '0660', // Pharmacist
+    '0661', // Pharmacy Technician
+    '0662', // Optometrist
+    '0664', // Restoration Technician
+    '0665', // Speech Pathology and Audiology
+    '0667', // Orthotist and Prosthetist
+    '0668', // Podiatrist
+    '0669', // Medical Records Administration
+    '0670', // Health System Administration
+    '0671', // Health System Specialist
+    '0672', // Prosthetic Representative
+    '0679', // Medical Support Assistance
+    '0680', // Dental Officer
+    '0681', // Dental Assistant
+    '0682', // Dental Hygiene
+    '0683', // Dental Laboratory Aid and Technician
+    '0685', // Public Health Program Specialist
+    '0688', // Sanitarian
+    '0690', // Industrial Hygiene
+    '0696', // Consumer Safety
+  ],
+
+  // CYBERSECURITY (subset of 2200 + specialized)
+  cybersecurity: [
+    '2210', // IT Management (includes Cybersecurity)
+    '0132', // Intelligence
+    '0080', // Security Administration
+    '0083', // Police
+    '0085', // Security Guard
+    '0086', // Security Clerical and Assistance
+    '1811', // Criminal Investigation
+  ],
+
+  // AEROSPACE & AVIATION
+  aerospace: [
+    '0861', // Aerospace Engineering
+    '1330', // Astronomy and Space Science
+    '2181', // Aircraft Operation
+    '2183', // Air Navigation
+    '2185', // Aircrew Technician
+  ],
+} as const;
+
+// Flatten all STEM codes for easy use
+export const ALL_STEM_OCCUPATION_CODES = [
+  ...STEM_OCCUPATION_CODES.engineering,
+  ...STEM_OCCUPATION_CODES.physicalSciences,
+  ...STEM_OCCUPATION_CODES.mathematics,
+  ...STEM_OCCUPATION_CODES.informationTechnology,
+  ...STEM_OCCUPATION_CODES.biologicalSciences,
+  ...STEM_OCCUPATION_CODES.medicalSTEM,
+  ...STEM_OCCUPATION_CODES.cybersecurity,
+  ...STEM_OCCUPATION_CODES.aerospace,
+];
+
+// STEM Keywords for title/description matching
+export const STEM_KEYWORDS = {
+  // Must contain at least one of these in title
+  titleRequired: [
+    'engineer', 'scientist', 'developer', 'analyst', 'researcher',
+    'technician', 'architect', 'physicist', 'chemist', 'biologist',
+    'mathematician', 'statistician', 'data', 'software', 'hardware',
+    'cyber', 'security', 'nuclear', 'quantum', 'AI', 'machine learning',
+    'robotics', 'aerospace', 'semiconductor', 'biotech', 'computational',
+    'laboratory', 'research', 'STEM', 'science', 'technology',
+    'programming', 'coding', 'cloud', 'devops', 'network', 'systems',
+    'database', 'electrical', 'mechanical', 'chemical', 'materials',
+    'manufacturing', 'automation', 'instrumentation', 'cryptograph',
+  ],
+
+  // Exclude jobs with these in title (non-STEM roles)
+  titleExclude: [
+    'administrative assistant', 'secretary', 'receptionist', 'clerk',
+    'custodian', 'janitor', 'food service', 'cook', 'cashier',
+    'retail', 'sales representative', 'customer service',
+    'human resources specialist', 'recruiter', 'paralegal',
+    'legal assistant', 'accounting clerk', 'budget analyst',
+    'contract specialist', 'procurement', 'supply technician',
+    'mail clerk', 'file clerk', 'office automation',
+  ],
+} as const;
+
+// ===========================================
 // API CONFIGURATION
 // ===========================================
 
@@ -110,6 +364,9 @@ export interface APISourceConfig {
     challenges?: string;
     events?: string;
   };
+
+  // STEM-specific filtering configuration
+  stemFilters?: STEMFilterConfig;
 
   // Request configuration
   rateLimitPerMinute?: number;

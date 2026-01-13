@@ -630,41 +630,103 @@ INSERT INTO federated_sources (
     name, short_name, type, description, website,
     integration_method, sync_frequency,
     provides_jobs, provides_internships, provides_challenges, provides_events, provides_scholarships,
-    industries, attribution_required, attribution_text, data_usage_permission, status
+    industries, attribution_required, attribution_text, data_usage_permission, status,
+    api_config
 ) VALUES
 -- Federal API Sources
 (
     'USAJobs',
     'USAJOBS',
     'federal_agency',
-    'Official job site of the United States Federal Government',
+    'Official job site of the United States Federal Government - STEM positions only',
     'https://www.usajobs.gov',
     'api',
     'daily',
     true, true, false, false, false,
-    ARRAY['cybersecurity', 'aerospace', 'nuclear', 'ai', 'healthcare']::TEXT[],
+    ARRAY['cybersecurity', 'aerospace', 'nuclear', 'ai', 'healthcare', 'quantum', 'semiconductor', 'clean-energy', 'biotech', 'robotics', 'manufacturing']::TEXT[],
     true,
     'Jobs data provided by USAJobs.gov',
     'public_data',
-    'pending'
+    'pending',
+    -- STEM-filtered API configuration
+    '{
+        "baseUrl": "https://data.usajobs.gov/api",
+        "authType": "api_key",
+        "authConfig": {
+            "apiKeyHeader": "Authorization-Key",
+            "apiKeyValue": "USAJOBS_API_KEY_PLACEHOLDER"
+        },
+        "endpoints": {
+            "jobs": "/Search"
+        },
+        "rateLimitPerMinute": 25,
+        "paginationConfig": {
+            "type": "page",
+            "pageParam": "Page",
+            "limitParam": "ResultsPerPage",
+            "maxItemsPerPage": 50,
+            "maxPages": 20
+        },
+        "responseMapping": {
+            "id": "MatchedObjectId",
+            "title": "MatchedObjectDescriptor.PositionTitle",
+            "description": "MatchedObjectDescriptor.UserArea.Details.JobSummary",
+            "url": "MatchedObjectDescriptor.PositionURI",
+            "organization": "MatchedObjectDescriptor.OrganizationName",
+            "location": "MatchedObjectDescriptor.PositionLocationDisplay",
+            "postedDate": "MatchedObjectDescriptor.PublicationStartDate",
+            "deadline": "MatchedObjectDescriptor.ApplicationCloseDate"
+        },
+        "stemFilters": {
+            "occupationSeriesCodes": [
+                "0801", "0802", "0803", "0804", "0806", "0808", "0810", "0819",
+                "0830", "0840", "0850", "0854", "0855", "0856", "0858", "0861",
+                "0871", "0880", "0881", "0890", "0893", "0894", "0895", "0896",
+                "1301", "1306", "1310", "1311", "1313", "1315", "1316", "1320",
+                "1321", "1330", "1340", "1341", "1350", "1360", "1370", "1372",
+                "1501", "1510", "1515", "1520", "1521", "1529", "1530", "1531",
+                "1540", "1541", "1550", "1560",
+                "2210",
+                "0401", "0403", "0404", "0405", "0408", "0410", "0413", "0414",
+                "0415", "0420", "0430", "0434", "0435", "0440", "0460", "0470",
+                "0601", "0602", "0644", "0645", "0685", "0690",
+                "0132", "0080", "1811",
+                "2181", "2183", "2185"
+            ],
+            "titleKeywords": {
+                "required": [
+                    "engineer", "scientist", "developer", "analyst", "researcher",
+                    "technician", "physicist", "chemist", "biologist", "mathematician",
+                    "data", "software", "cyber", "nuclear", "quantum", "aerospace",
+                    "laboratory", "research", "science", "technology"
+                ],
+                "exclude": [
+                    "administrative assistant", "secretary", "receptionist", "clerk",
+                    "custodian", "janitor", "food service", "cashier", "retail",
+                    "human resources specialist", "paralegal", "accounting clerk"
+                ]
+            }
+        }
+    }'::JSONB
 ),
 (
     'Challenge.gov',
     'Challenge.gov',
     'federal_agency',
-    'Official hub for federal prize competitions and challenges',
+    'Official hub for federal STEM prize competitions and challenges',
     'https://www.challenge.gov',
     'rss',
     'daily',
     false, false, true, true, false,
-    ARRAY['ai', 'clean-energy', 'healthcare', 'aerospace', 'cybersecurity']::TEXT[],
+    ARRAY['ai', 'clean-energy', 'healthcare', 'aerospace', 'cybersecurity', 'quantum', 'nuclear', 'biotech', 'robotics', 'manufacturing']::TEXT[],
     true,
     'Federal challenges provided by Challenge.gov, GSA',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 
--- National Labs
+-- National Labs (inherently STEM - all positions are STEM-relevant)
 (
     'Oak Ridge National Laboratory',
     'ORNL',
@@ -678,7 +740,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Oak Ridge National Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Sandia National Laboratories',
@@ -693,7 +756,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Sandia National Laboratories',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Lawrence Livermore National Laboratory',
@@ -708,7 +772,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Lawrence Livermore National Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Los Alamos National Laboratory',
@@ -723,7 +788,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Los Alamos National Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Argonne National Laboratory',
@@ -738,7 +804,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Argonne National Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'National Renewable Energy Laboratory',
@@ -753,7 +820,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by National Renewable Energy Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Pacific Northwest National Laboratory',
@@ -768,10 +836,11 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by Pacific Northwest National Laboratory',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 
--- Federal Agencies
+-- Federal Agencies (STEM-focused agencies)
 (
     'NASA Internships',
     'NASA OSSI',
@@ -785,7 +854,8 @@ INSERT INTO federated_sources (
     true,
     'Internships provided by NASA',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'National Science Foundation',
@@ -800,7 +870,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by the National Science Foundation',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'National Institutes of Health',
@@ -815,7 +886,8 @@ INSERT INTO federated_sources (
     true,
     'Opportunities provided by the National Institutes of Health',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 ),
 (
     'Department of Defense STEM',
@@ -830,7 +902,8 @@ INSERT INTO federated_sources (
     true,
     'STEM opportunities provided by the Department of Defense',
     'public_data',
-    'pending'
+    'pending',
+    NULL
 )
 ON CONFLICT DO NOTHING;
 
