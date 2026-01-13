@@ -7,6 +7,16 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { INDUSTRIES_DATA, getIndustryById } from '@/data/industries';
+import { AIMetricsTooltip } from '@/components/common/AIMetricsTooltip';
+import {
+  industryAIMetrics,
+  getExposureLabel,
+  getOpportunityLabel,
+  getExposureColor,
+  getOpportunityColor,
+  getExposureBgColor,
+  getOpportunityBgColor,
+} from '@/data/aiMetrics';
 
 // Yellow/Gold accent color (matching Partners page)
 const ACCENT = {
@@ -307,6 +317,138 @@ const IndustryPage: React.FC = () => {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* AI Economy Outlook Section */}
+      <section className="py-20 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-6 bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              AI Economy Insights
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              AI Impact on <span className="text-yellow-400">{industry.name}</span>
+            </h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Understanding how AI will transform this industry helps you make informed career and workforce decisions.
+            </p>
+          </div>
+
+          {(() => {
+            const aiMetrics = industryAIMetrics[industry.id] || industryAIMetrics['manufacturing'];
+            return (
+              <div className="max-w-4xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* AI Exposure Card */}
+                  <div className="p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-orange-500/30 transition-all">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        AI Exposure Index
+                        <AIMetricsTooltip type="exposure" value={aiMetrics.exposureIndex} />
+                      </h3>
+                      <span className={`text-sm font-medium px-3 py-1 rounded-full ${getExposureBgColor(aiMetrics.exposureIndex)} ${getExposureColor(aiMetrics.exposureIndex)}`}>
+                        {getExposureLabel(aiMetrics.exposureIndex)}
+                      </span>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-400">Transformation Level</span>
+                        <span className="text-white font-semibold">{aiMetrics.exposureIndex}%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full transition-all ${
+                            aiMetrics.exposureIndex >= 70 ? 'bg-red-500' :
+                            aiMetrics.exposureIndex >= 50 ? 'bg-orange-500' :
+                            aiMetrics.exposureIndex >= 30 ? 'bg-yellow-500' :
+                            'bg-green-500'
+                          }`}
+                          style={{ width: `${aiMetrics.exposureIndex}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-gray-400">
+                      {aiMetrics.exposureIndex >= 70
+                        ? 'High AI integration expected. Focus on AI collaboration skills to stay competitive.'
+                        : aiMetrics.exposureIndex >= 50
+                        ? 'Significant AI tools will be adopted. Learning AI-assisted workflows is beneficial.'
+                        : aiMetrics.exposureIndex >= 30
+                        ? 'Moderate AI impact. Core skills remain valuable with some AI enhancement.'
+                        : 'Lower AI disruption. Traditional expertise remains highly valued.'}
+                    </p>
+                  </div>
+
+                  {/* AI Opportunity Card */}
+                  <div className="p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        AI Opportunity Index
+                        <AIMetricsTooltip type="opportunity" value={aiMetrics.opportunityIndex} />
+                      </h3>
+                      <span className={`text-sm font-medium px-3 py-1 rounded-full ${getOpportunityBgColor(aiMetrics.opportunityIndex)} ${getOpportunityColor(aiMetrics.opportunityIndex)}`}>
+                        {getOpportunityLabel(aiMetrics.opportunityIndex)}
+                      </span>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-400">Career Growth Potential</span>
+                        <span className="text-white font-semibold">{aiMetrics.opportunityIndex}%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full transition-all ${
+                            aiMetrics.opportunityIndex >= 75 ? 'bg-emerald-500' :
+                            aiMetrics.opportunityIndex >= 55 ? 'bg-blue-500' :
+                            aiMetrics.opportunityIndex >= 35 ? 'bg-yellow-500' :
+                            'bg-gray-500'
+                          }`}
+                          style={{ width: `${aiMetrics.opportunityIndex}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-gray-400">
+                      {aiMetrics.opportunityIndex >= 75
+                        ? 'Exceptional career prospects. AI skills significantly boost earning potential.'
+                        : aiMetrics.opportunityIndex >= 55
+                        ? 'Strong growth trajectory. Many AI-enhanced career paths available.'
+                        : aiMetrics.opportunityIndex >= 35
+                        ? 'Moderate opportunities. Consider supplementing with AI-adjacent skills.'
+                        : 'Traditional career paths. AI skills can add incremental value.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Recommended AI Skills */}
+                <div className="mt-8 p-8 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+                  <h3 className="text-xl font-bold text-white mb-4">Recommended AI Skills for {industry.name}</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {aiMetrics.recommendedAISkills.map((skill: string) => (
+                      <span
+                        key={skill}
+                        className="px-4 py-2 rounded-lg text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    to={`/training?industry=${industry.id}`}
+                    className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors"
+                  >
+                    Find Training Programs for These Skills
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
 

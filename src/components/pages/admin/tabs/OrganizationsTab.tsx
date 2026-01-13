@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import React, { useState } from 'react';
 import {
   Building2, Search, CheckCircle2, Clock, Eye, Settings,
-  XCircle, Plus, Download, Filter, ChevronDown, MapPin,
+  XCircle, Plus, Download, Filter, MapPin,
   Users, Globe, Shield, Atom, Cpu, Factory, FlaskConical,
-  Landmark, GraduationCap, School, Heart, Rocket, Zap,
-  Building, Microscope, Satellite, Briefcase, RefreshCw
+  Landmark, GraduationCap, School, Heart, Rocket,
+  Microscope, Briefcase
 } from 'lucide-react';
 
 // ===========================================
@@ -22,7 +21,7 @@ const ORGANIZATION_CATEGORIES = [
   },
   {
     id: 'ai',
-    label: 'Artificial Intelligence',
+    label: 'AI & Machine Learning',
     icon: Cpu,
     color: 'violet',
     description: 'AI/ML companies and research organizations',
@@ -30,7 +29,7 @@ const ORGANIZATION_CATEGORIES = [
   },
   {
     id: 'quantum',
-    label: 'Quantum Computing',
+    label: 'Quantum Technologies',
     icon: Atom,
     color: 'cyan',
     description: 'Quantum technology and computing companies',
@@ -103,16 +102,16 @@ const ORGANIZATION_CATEGORIES = [
 
 const SAMPLE_ORGANIZATIONS = [
   // AI Companies
-  { id: '1', name: 'OpenAI', type: 'ai', category: 'ai', industry: 'Artificial Intelligence', city: 'San Francisco', state: 'CA', verified: true, clearance_sponsor: false, employees: '1000+', website: 'openai.com', description: 'AI research and deployment company' },
-  { id: '2', name: 'Anthropic', type: 'ai', category: 'ai', industry: 'Artificial Intelligence', city: 'San Francisco', state: 'CA', verified: true, clearance_sponsor: false, employees: '500+', website: 'anthropic.com', description: 'AI safety research company' },
-  { id: '3', name: 'DeepMind', type: 'ai', category: 'ai', industry: 'Artificial Intelligence', city: 'Mountain View', state: 'CA', verified: true, clearance_sponsor: false, employees: '1000+', website: 'deepmind.com', description: 'AI research laboratory' },
-  { id: '4', name: 'NVIDIA AI Research', type: 'ai', category: 'ai', industry: 'Artificial Intelligence', city: 'Santa Clara', state: 'CA', verified: true, clearance_sponsor: true, employees: '5000+', website: 'nvidia.com', description: 'GPU and AI computing company' },
+  { id: '1', name: 'OpenAI', type: 'ai', category: 'ai', industry: 'AI & Machine Learning', city: 'San Francisco', state: 'CA', verified: true, clearance_sponsor: false, employees: '1000+', website: 'openai.com', description: 'AI research and deployment company' },
+  { id: '2', name: 'Anthropic', type: 'ai', category: 'ai', industry: 'AI & Machine Learning', city: 'San Francisco', state: 'CA', verified: true, clearance_sponsor: false, employees: '500+', website: 'anthropic.com', description: 'AI safety research company' },
+  { id: '3', name: 'DeepMind', type: 'ai', category: 'ai', industry: 'AI & Machine Learning', city: 'Mountain View', state: 'CA', verified: true, clearance_sponsor: false, employees: '1000+', website: 'deepmind.com', description: 'AI research laboratory' },
+  { id: '4', name: 'NVIDIA AI Research', type: 'ai', category: 'ai', industry: 'AI & Machine Learning', city: 'Santa Clara', state: 'CA', verified: true, clearance_sponsor: true, employees: '5000+', website: 'nvidia.com', description: 'GPU and AI computing company' },
 
   // Quantum Companies
-  { id: '5', name: 'IBM Quantum', type: 'quantum', category: 'quantum', industry: 'Quantum Computing', city: 'Yorktown Heights', state: 'NY', verified: true, clearance_sponsor: true, employees: '500+', website: 'ibm.com/quantum', description: 'Quantum computing division of IBM' },
-  { id: '6', name: 'IonQ', type: 'quantum', category: 'quantum', industry: 'Quantum Computing', city: 'College Park', state: 'MD', verified: true, clearance_sponsor: true, employees: '200+', website: 'ionq.com', description: 'Trapped ion quantum computing company' },
-  { id: '7', name: 'Rigetti Computing', type: 'quantum', category: 'quantum', industry: 'Quantum Computing', city: 'Berkeley', state: 'CA', verified: true, clearance_sponsor: false, employees: '150+', website: 'rigetti.com', description: 'Full-stack quantum computing company' },
-  { id: '8', name: 'D-Wave Systems', type: 'quantum', category: 'quantum', industry: 'Quantum Computing', city: 'Burnaby', state: 'BC', verified: true, clearance_sponsor: false, employees: '200+', website: 'dwavesys.com', description: 'Quantum annealing systems' },
+  { id: '5', name: 'IBM Quantum', type: 'quantum', category: 'quantum', industry: 'Quantum Technologies', city: 'Yorktown Heights', state: 'NY', verified: true, clearance_sponsor: true, employees: '500+', website: 'ibm.com/quantum', description: 'Quantum computing division of IBM' },
+  { id: '6', name: 'IonQ', type: 'quantum', category: 'quantum', industry: 'Quantum Technologies', city: 'College Park', state: 'MD', verified: true, clearance_sponsor: true, employees: '200+', website: 'ionq.com', description: 'Trapped ion quantum computing company' },
+  { id: '7', name: 'Rigetti Computing', type: 'quantum', category: 'quantum', industry: 'Quantum Technologies', city: 'Berkeley', state: 'CA', verified: true, clearance_sponsor: false, employees: '150+', website: 'rigetti.com', description: 'Full-stack quantum computing company' },
+  { id: '8', name: 'D-Wave Systems', type: 'quantum', category: 'quantum', industry: 'Quantum Technologies', city: 'Burnaby', state: 'BC', verified: true, clearance_sponsor: false, employees: '200+', website: 'dwavesys.com', description: 'Quantum annealing systems' },
 
   // Advanced Manufacturing
   { id: '9', name: 'Intel Corporation', type: 'manufacturing', category: 'manufacturing', industry: 'Semiconductors', city: 'Santa Clara', state: 'CA', verified: true, clearance_sponsor: true, employees: '100000+', website: 'intel.com', description: 'Semiconductor manufacturing company' },
@@ -172,8 +171,8 @@ const SAMPLE_ORGANIZATIONS = [
 // ===========================================
 
 const OrganizationsTab: React.FC = () => {
-  const [organizations, setOrganizations] = useState(SAMPLE_ORGANIZATIONS);
-  const [loading, setLoading] = useState(false);
+  const [organizations] = useState(SAMPLE_ORGANIZATIONS);
+  const [loading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
@@ -644,7 +643,7 @@ const OrganizationsTab: React.FC = () => {
                   <input
                     type="text"
                     className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
-                    placeholder="e.g., Artificial Intelligence"
+                    placeholder="e.g., AI & Machine Learning"
                   />
                 </div>
               </div>

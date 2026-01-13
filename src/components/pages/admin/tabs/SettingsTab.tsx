@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-  Settings, Globe, Lock, Link2, Palette, Code, Database,
-  Shield, Zap, DollarSign, Wrench, ChevronRight, Save,
+  Globe, Lock, Link2, Palette, Code, Database,
+  Shield, Zap, Wrench, ChevronRight, Save,
   Eye, EyeOff, Copy, RefreshCw, Plus, Trash2, ExternalLink,
-  Bell, Mail, Clock, Key, Users, Building2, AlertTriangle,
-  CheckCircle2, XCircle, Server, Image, Cookie, FileText,
+  Bell, Mail, Clock, Key, Building2, AlertTriangle,
+  CheckCircle2, Server, Image, Cookie, FileText,
   Sun, Moon, Check
 } from 'lucide-react';
 import { useTheme } from '@/contexts';
@@ -489,7 +489,7 @@ const IntegrationsSettings = () => {
 // ===========================================
 
 const BrandingSettings = () => {
-  const { paletteId, setPalette, palette } = useTheme();
+  const { paletteId, setPalette, palette, resetToDefault } = useTheme();
 
   return (
     <div className="space-y-6">
@@ -505,79 +505,118 @@ const BrandingSettings = () => {
             <span className="px-2 py-1 bg-violet-500/20 text-violet-400 rounded text-xs font-medium">
               {palette.name}
             </span>
+            <span className={`px-2 py-1 rounded text-xs font-medium ${
+              palette.wcagLevel === 'AAA'
+                ? 'bg-emerald-500/20 text-emerald-400'
+                : palette.wcagLevel === 'AA+'
+                ? 'bg-blue-500/20 text-blue-400'
+                : 'bg-slate-600/20 text-slate-400'
+            }`}>
+              WCAG {palette.wcagLevel}
+            </span>
           </div>
         </div>
-        <p className="text-sm text-slate-400 mb-4">
+        <p className="text-sm text-slate-400 mb-2">
           Choose a color palette that matches your brand. Each palette is designed by industry experts for specific use cases.
         </p>
+        <p className="text-xs text-slate-500 mb-4">
+          <strong>Recommended by:</strong> {palette.expertRecommendedBy.join(', ')}
+        </p>
 
-        {/* Palette Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PALETTE_LIST.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setPalette(p.id as PaletteId)}
-              className={`relative p-4 rounded-xl border-2 text-left transition-all ${
-                paletteId === p.id
-                  ? 'border-emerald-500 bg-emerald-500/10'
-                  : 'border-slate-700 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800'
-              }`}
-            >
-              {/* Selected indicator */}
-              {paletteId === p.id && (
-                <div className="absolute top-2 right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
-                  <Check size={14} className="text-white" />
+        {/* Dark Palettes */}
+        <div className="mb-6">
+          <h5 className="text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+            <Moon size={14} /> Dark Themes
+          </h5>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {PALETTE_LIST.filter(p => p.mode === 'dark').map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setPalette(p.id as PaletteId)}
+                className={`relative p-4 rounded-xl border-2 text-left transition-all ${
+                  paletteId === p.id
+                    ? 'border-emerald-500 bg-emerald-500/10'
+                    : 'border-slate-700 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800'
+                }`}
+              >
+                {paletteId === p.id && (
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <Check size={14} className="text-white" />
+                  </div>
+                )}
+                <div className="flex gap-1 mb-3">
+                  <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: p.colors.primary }} title="Primary" />
+                  <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: p.colors.secondary }} title="Secondary" />
+                  <div className="w-8 h-8 rounded-lg border border-slate-600" style={{ backgroundColor: p.colors.bgPrimary }} title="Background" />
+                  <div className="w-8 h-8 rounded-lg border border-slate-600" style={{ backgroundColor: p.colors.bgSecondary }} title="Surface" />
                 </div>
-              )}
+                <div className="flex items-center gap-2 mb-1">
+                  <h5 className="font-medium text-sm">{p.name}</h5>
+                  <span className="px-1.5 py-0.5 bg-slate-700 text-slate-300 rounded text-xs">{p.wcagLevel}</span>
+                </div>
+                <p className="text-xs text-slate-400 line-clamp-2">{p.description}</p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {p.bestFor.slice(0, 2).map((use, i) => (
+                    <span key={i} className="px-1.5 py-0.5 bg-slate-700/50 rounded text-xs text-slate-400">{use}</span>
+                  ))}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
 
-              {/* Color swatches */}
-              <div className="flex gap-1 mb-3">
-                <div
-                  className="w-8 h-8 rounded-lg"
-                  style={{ backgroundColor: p.colors.primary[500] }}
-                  title="Primary"
-                />
-                <div
-                  className="w-8 h-8 rounded-lg"
-                  style={{ backgroundColor: p.colors.secondary[500] }}
-                  title="Secondary"
-                />
-                <div
-                  className="w-8 h-8 rounded-lg"
-                  style={{ backgroundColor: p.colors.accent[500] }}
-                  title="Accent"
-                />
-                <div
-                  className="w-8 h-8 rounded-lg"
-                  style={{ backgroundColor: p.semantic.bgPrimary }}
-                  title="Background"
-                />
-              </div>
+        {/* Light Palettes */}
+        <div>
+          <h5 className="text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+            <Sun size={14} /> Light Themes
+          </h5>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {PALETTE_LIST.filter(p => p.mode === 'light').map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setPalette(p.id as PaletteId)}
+                className={`relative p-4 rounded-xl border-2 text-left transition-all ${
+                  paletteId === p.id
+                    ? 'border-emerald-500 bg-emerald-500/10'
+                    : 'border-slate-700 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800'
+                }`}
+              >
+                {paletteId === p.id && (
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <Check size={14} className="text-white" />
+                  </div>
+                )}
+                <div className="flex gap-1 mb-3">
+                  <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: p.colors.primary }} title="Primary" />
+                  <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: p.colors.secondary }} title="Secondary" />
+                  <div className="w-8 h-8 rounded-lg border border-slate-600" style={{ backgroundColor: p.colors.bgPrimary }} title="Background" />
+                  <div className="w-8 h-8 rounded-lg border border-slate-600" style={{ backgroundColor: p.colors.bgSecondary }} title="Surface" />
+                </div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h5 className="font-medium text-sm">{p.name}</h5>
+                  <span className={`px-1.5 py-0.5 rounded text-xs ${
+                    p.wcagLevel === 'AAA' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                  }`}>{p.wcagLevel}</span>
+                </div>
+                <p className="text-xs text-slate-400 line-clamp-2">{p.description}</p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {p.bestFor.slice(0, 2).map((use, i) => (
+                    <span key={i} className="px-1.5 py-0.5 bg-slate-700/50 rounded text-xs text-slate-400">{use}</span>
+                  ))}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
 
-              {/* Palette info */}
-              <div className="flex items-center gap-2 mb-1">
-                <h5 className="font-medium text-sm">{p.name}</h5>
-                <span className={`px-1.5 py-0.5 rounded text-xs ${
-                  p.mode === 'dark'
-                    ? 'bg-slate-700 text-slate-300'
-                    : 'bg-amber-500/20 text-amber-400'
-                }`}>
-                  {p.mode === 'dark' ? <Moon size={10} className="inline" /> : <Sun size={10} className="inline" />}
-                  <span className="ml-1">{p.mode}</span>
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 line-clamp-2">{p.description}</p>
-
-              {/* Best for tags */}
-              <div className="flex flex-wrap gap-1 mt-2">
-                {p.bestFor.slice(0, 2).map((use, i) => (
-                  <span key={i} className="px-1.5 py-0.5 bg-slate-700/50 rounded text-xs text-slate-400">
-                    {use}
-                  </span>
-                ))}
-              </div>
-            </button>
-          ))}
+        {/* Reset Button */}
+        <div className="mt-4 pt-4 border-t border-slate-700 flex justify-end">
+          <button
+            onClick={resetToDefault}
+            className="px-4 py-2 text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-600 rounded-lg transition-colors"
+          >
+            Reset to Default Theme
+          </button>
         </div>
       </div>
 
@@ -587,16 +626,16 @@ const BrandingSettings = () => {
           <Eye size={18} className="text-emerald-400" />
           Current Palette Preview
         </h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {[
-            { name: 'Primary', color: palette.colors.primary[500] },
-            { name: 'Secondary', color: palette.colors.secondary[500] },
-            { name: 'Accent', color: palette.colors.accent[500] },
-            { name: 'Success', color: palette.colors.success[500] },
-            { name: 'Warning', color: palette.colors.warning[500] },
-            { name: 'Error', color: palette.colors.error[500] },
-            { name: 'Background', color: palette.semantic.bgPrimary },
-            { name: 'Text', color: palette.semantic.textPrimary },
+            { name: 'Primary', color: palette.colors.primary },
+            { name: 'Secondary', color: palette.colors.secondary },
+            { name: 'Success', color: palette.colors.success },
+            { name: 'Warning', color: palette.colors.warning },
+            { name: 'Error', color: palette.colors.error },
+            { name: 'Info', color: palette.colors.info },
+            { name: 'Background', color: palette.colors.bgPrimary },
+            { name: 'Text', color: palette.colors.textPrimary },
           ].map((item) => (
             <div key={item.name} className="text-center">
               <div
@@ -607,6 +646,57 @@ const BrandingSettings = () => {
               <p className="text-xs font-mono text-slate-500">{item.color}</p>
             </div>
           ))}
+        </div>
+
+        {/* Live UI Preview */}
+        <div
+          className="p-4 rounded-xl"
+          style={{
+            backgroundColor: palette.colors.bgPrimary,
+            border: `1px solid ${palette.colors.borderPrimary}`,
+          }}
+        >
+          <h5 className="text-sm font-medium mb-3" style={{ color: palette.colors.textSecondary }}>
+            Live UI Preview
+          </h5>
+          <div
+            className="p-4 rounded-lg mb-3"
+            style={{
+              backgroundColor: palette.colors.bgSecondary,
+              border: `1px solid ${palette.colors.borderPrimary}`,
+            }}
+          >
+            <h6 className="font-semibold mb-1" style={{ color: palette.colors.textPrimary }}>
+              Sample Card
+            </h6>
+            <p className="text-sm mb-3" style={{ color: palette.colors.textSecondary }}>
+              This is how text and cards appear with the {palette.name} theme.
+            </p>
+            <div className="flex gap-2">
+              <button
+                className="px-3 py-1.5 rounded-lg text-sm font-medium"
+                style={{ backgroundColor: palette.colors.primary, color: palette.colors.textInverse }}
+              >
+                Primary
+              </button>
+              <button
+                className="px-3 py-1.5 rounded-lg text-sm font-medium"
+                style={{
+                  backgroundColor: palette.colors.bgTertiary,
+                  color: palette.colors.textPrimary,
+                  border: `1px solid ${palette.colors.borderPrimary}`,
+                }}
+              >
+                Secondary
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="px-2 py-1 text-xs rounded-full" style={{ backgroundColor: `${palette.colors.success}20`, color: palette.colors.success }}>Success</span>
+            <span className="px-2 py-1 text-xs rounded-full" style={{ backgroundColor: `${palette.colors.warning}20`, color: palette.colors.warning }}>Warning</span>
+            <span className="px-2 py-1 text-xs rounded-full" style={{ backgroundColor: `${palette.colors.error}20`, color: palette.colors.error }}>Error</span>
+            <span className="px-2 py-1 text-xs rounded-full" style={{ backgroundColor: `${palette.colors.info}20`, color: palette.colors.info }}>Info</span>
+          </div>
         </div>
       </div>
 

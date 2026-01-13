@@ -1,21 +1,87 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   Megaphone, BarChart3, Image, MousePointer, Eye, DollarSign,
-  Plus, Edit, Trash2, Play, Pause, Calendar, Target, Layers,
-  TrendingUp, ArrowUpRight, ArrowDownRight, Filter, Search,
-  Upload, Link, Globe, Mail, ChevronDown, CheckCircle2, XCircle,
-  AlertCircle, Clock, RefreshCw, Download, Settings
+  Plus, Edit, Play, Pause, Calendar, Target, Layers,
+  TrendingUp, ArrowUpRight, ArrowDownRight, Search,
+  Upload, Mail, CheckCircle2,
+  Download
 } from 'lucide-react';
 
 // ===========================================
 // ADVERTISING MANAGEMENT - COMPREHENSIVE
 // ===========================================
 
+interface AdStats {
+  totalCampaigns: number;
+  activeCampaigns: number;
+  totalImpressions: number;
+  totalClicks: number;
+  totalRevenue: number;
+  ctr: string | number;
+}
+
+interface Campaign {
+  id: string;
+  campaign_name: string;
+  campaign_type: string;
+  status: string;
+  budget_total?: number;
+  spent_total?: number;
+  total_impressions?: number;
+  total_clicks?: number;
+  advertisers?: { company_name: string } | null;
+}
+
+interface Creative {
+  id: string;
+  creative_name: string;
+  ad_size: string;
+  image_url?: string;
+  is_active: boolean;
+  impressions?: number;
+  clicks?: number;
+  ad_campaigns?: { campaign_name: string } | null;
+}
+
+interface Placement {
+  id: string;
+  name: string;
+  placement_key: string;
+  page_type: string;
+  ad_sizes: string[];
+  base_cpm: number;
+  premium_multiplier?: number;
+  is_active: boolean;
+}
+
+interface NewsletterAd {
+  id: string;
+  status: string;
+  newsletter_type: string;
+  emails_sent?: number;
+  opens?: number;
+  clicks?: number;
+  scheduled_date?: string;
+  price?: number;
+  advertisers?: { company_name: string } | null;
+}
+
+interface Sponsorship {
+  id: string;
+  sponsorship_level: string;
+  status: string;
+  industry?: string;
+  start_date?: string;
+  end_date?: string;
+  total_value?: number;
+  advertisers?: { company_name: string } | null;
+}
+
 const AdvertisingDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<AdStats | null>(null);
 
   useEffect(() => {
     fetchAdStats();
@@ -32,14 +98,16 @@ const AdvertisingDashboard = () => {
 
       const activeCampaigns = campaigns.data?.filter(c => c.status === 'active') || [];
       const totalRevenue = impressions.data?.reduce((sum, i) => sum + (i.cost || 0), 0) || 0;
+      const impressionCount = impressions.count ?? 0;
+      const clickCount = clicks.count ?? 0;
 
       setStats({
         totalCampaigns: campaigns.count || 0,
         activeCampaigns: activeCampaigns.length,
-        totalImpressions: impressions.count || 0,
-        totalClicks: clicks.count || 0,
+        totalImpressions: impressionCount,
+        totalClicks: clickCount,
         totalRevenue,
-        ctr: impressions.count > 0 ? ((clicks.count / impressions.count) * 100).toFixed(2) : 0
+        ctr: impressionCount > 0 ? ((clickCount / impressionCount) * 100).toFixed(2) : 0
       });
     } catch (error) {
       console.error('Error fetching ad stats:', error);
@@ -98,7 +166,7 @@ const AdvertisingDashboard = () => {
 // AD OVERVIEW
 // ===========================================
 
-const AdOverview = ({ stats, loading }) => {
+const AdOverview = ({ stats, loading }: { stats: AdStats | null; loading: boolean }) => {
   const metrics = [
     { label: 'Active Campaigns', value: stats?.activeCampaigns || 0, icon: Megaphone, color: 'amber', change: '+3', positive: true },
     { label: 'Total Impressions', value: stats?.totalImpressions || 0, format: 'number', icon: Eye, color: 'blue', change: '+24%', positive: true },
@@ -235,10 +303,10 @@ const AdOverview = ({ stats, loading }) => {
 // ===========================================
 
 const CampaignsTab = () => {
-  const [campaigns, setCampaigns] = useState([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingCampaign, setEditingCampaign] = useState(null);
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
@@ -261,7 +329,7 @@ const CampaignsTab = () => {
     setLoading(false);
   };
 
-  const handleStatusChange = async (campaignId, newStatus) => {
+  const handleStatusChange = async (campaignId: string, newStatus: string) => {
     await supabase.from('ad_campaigns').update({ status: newStatus }).eq('id', campaignId);
     fetchCampaigns();
   };
@@ -408,23 +476,23 @@ const CampaignsTab = () => {
 // CAMPAIGN MODAL
 // ===========================================
 
-const CampaignModal = ({ campaign, onClose, onSave }) => {
+const CampaignModal = ({ campaign, onClose, onSave }: { campaign: Campaign | null; onClose: () => void; onSave: () => void }) => {
   const [formData, setFormData] = useState({
     campaign_name: campaign?.campaign_name || '',
     campaign_type: campaign?.campaign_type || 'banner',
-    pricing_model: campaign?.pricing_model || 'cpm',
-    cpm_rate: campaign?.cpm_rate || 25,
-    cpc_rate: campaign?.cpc_rate || 1,
-    budget_type: campaign?.budget_type || 'total',
+    pricing_model: 'cpm',
+    cpm_rate: 25,
+    cpc_rate: 1,
+    budget_type: 'total',
     budget_total: campaign?.budget_total || 1000,
-    budget_daily: campaign?.budget_daily || 50,
-    start_date: campaign?.start_date || new Date().toISOString().split('T')[0],
-    end_date: campaign?.end_date || '',
-    target_industries: campaign?.target_industries || [],
-    target_user_types: campaign?.target_user_types || [],
+    budget_daily: 50,
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: '',
+    target_industries: [] as string[],
+    target_user_types: [] as string[],
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (campaign) {
       await supabase.from('ad_campaigns').update(formData).eq('id', campaign.id);
@@ -580,7 +648,7 @@ const CampaignModal = ({ campaign, onClose, onSave }) => {
                   type="button"
                   onClick={() => {
                     const industries = formData.target_industries.includes(industry)
-                      ? formData.target_industries.filter(i => i !== industry)
+                      ? formData.target_industries.filter((i: string) => i !== industry)
                       : [...formData.target_industries, industry];
                     setFormData({ ...formData, target_industries: industries });
                   }}
@@ -622,7 +690,7 @@ const CampaignModal = ({ campaign, onClose, onSave }) => {
 // ===========================================
 
 const CreativesTab = () => {
-  const [creatives, setCreatives] = useState([]);
+  const [creatives, setCreatives] = useState<Creative[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -692,7 +760,7 @@ const CreativesTab = () => {
 // ===========================================
 
 const PlacementsTab = () => {
-  const [placements, setPlacements] = useState([]);
+  const [placements, setPlacements] = useState<Placement[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -776,7 +844,7 @@ const PlacementsTab = () => {
 // ===========================================
 
 const NewsletterAdsTab = () => {
-  const [sponsorships, setSponsorships] = useState([]);
+  const [sponsorships, setSponsorships] = useState<NewsletterAd[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -860,7 +928,7 @@ const NewsletterAdsTab = () => {
 // ===========================================
 
 const SponsorshipsTab = () => {
-  const [sponsorships, setSponsorships] = useState([]);
+  const [sponsorships, setSponsorships] = useState<Sponsorship[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

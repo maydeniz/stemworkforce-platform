@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Users, Building2, Briefcase, FileText, Shield, DollarSign,
-  TrendingUp, AlertTriangle, Settings, Activity, BarChart3,
-  UserCheck, Clock, Eye, Download, Filter, Search, RefreshCw,
-  ChevronRight, ArrowUpRight, ArrowDownRight, CheckCircle2,
-  XCircle, AlertCircle, Bell, Menu, LogOut, Home,
+  TrendingUp, Settings, Activity, BarChart3,
+  UserCheck, Eye, Download, Search, RefreshCw,
+  ArrowUpRight, ArrowDownRight, CheckCircle2,
+  XCircle, Bell, Menu, LogOut, Home,
   Lock, Heart, ClipboardCheck, Megaphone, FileEdit, UserCog,
   ChevronDown, ShoppingBag, Package, Star, CreditCard, Zap,
   Store, UserCheck as UserVerified, Receipt, Wallet,
-  Sun, Moon, Palette
+  Sun, Moon, Palette, ToggleLeft, Trophy, Globe
 } from 'lucide-react';
 
 // Import new admin tabs
@@ -25,6 +26,10 @@ import BillingTab from './tabs/BillingTab';
 import StaffManagementTab from './tabs/StaffManagementTab';
 import MarketplaceProvidersTab from './tabs/MarketplaceProvidersTab';
 import SettingsTab from './tabs/SettingsTab';
+import UserVerificationTab from './tabs/UserVerificationTab';
+import FeatureFlagsTab from './tabs/FeatureFlagsTab';
+import ChallengesTab from './tabs/ChallengesTab';
+import FederationTab from './tabs/FederationTab';
 
 // ===========================================
 // ADMIN DASHBOARD - COMPREHENSIVE VERSION
@@ -75,11 +80,11 @@ const ROLE_MENU_ITEMS: Record<StakeholderRole, string[]> = {
   SECURITY_ADMIN: ['overview', 'staff', 'users', 'security', 'privacy', 'hipaa', 'soc2', 'compliance', 'audit'],
   PRIVACY_OFFICER: ['privacy', 'hipaa', 'security'],
   BILLING_ADMIN: ['overview', 'billing', 'revenue', 'marketplace-payouts', 'marketplace-orders'],
-  MARKETPLACE_ADMIN: ['overview', 'service-providers', 'services-catalog', 'marketplace-orders', 'marketplace-reviews', 'marketplace-payouts', 'marketplace-overview'],
-  CONTENT_ADMIN: ['communications', 'content'],
-  PARTNER_ADMIN: ['overview', 'organizations', 'users'],
+  MARKETPLACE_ADMIN: ['overview', 'service-providers', 'services-catalog', 'marketplace-orders', 'marketplace-reviews', 'marketplace-payouts', 'marketplace-overview', 'challenges'],
+  CONTENT_ADMIN: ['communications', 'content', 'feature-flags', 'challenges', 'federation'],
+  PARTNER_ADMIN: ['overview', 'organizations', 'users', 'federation'],
   SUPPORT_ADMIN: ['overview', 'users', 'organizations', 'applications'],
-  ANALYST: ['overview', 'analytics', 'audit'],
+  ANALYST: ['overview', 'analytics', 'audit', 'federation'],
   AUDITOR: ['audit', 'security', 'compliance'],
 };
 
@@ -133,16 +138,29 @@ const getThemeClasses = (isDark: boolean) => ({
   statusInfo: 'bg-blue-500/20 text-blue-400',
 });
 
+// Stats interface
+interface DashboardStats {
+  totalUsers: number;
+  totalOrganizations: number;
+  totalJobs: number;
+  totalApplications: number;
+  activeSubscriptions: number;
+  recentUsers: any[];
+  recentJobs: any[];
+}
+
 const AdminDashboard = () => {
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { isDark, setPalette } = useTheme();
+  const { signOut } = useAuth();
   const tc = getThemeClasses(isDark); // Theme classes
 
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [adminUser, setAdminUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<StakeholderRole>('SUPER_ADMIN'); // Default for demo
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   // Track which sections are expanded
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -226,10 +244,12 @@ const AdminDashboard = () => {
       items: [
         { id: 'overview', label: 'Overview', icon: Home },
         { id: 'staff', label: 'Staff & Roles', icon: UserCog },
+        { id: 'verifications', label: 'User Verifications', icon: UserCheck },
         { id: 'users', label: 'User Management', icon: Users },
         { id: 'organizations', label: 'Organizations', icon: Building2 },
         { id: 'jobs', label: 'Job Management', icon: Briefcase },
         { id: 'applications', label: 'Applications', icon: FileText },
+        { id: 'challenges', label: 'Challenges', icon: Trophy, badge: 'New' },
       ],
     },
     {
@@ -267,6 +287,7 @@ const AdminDashboard = () => {
       items: [
         { id: 'communications', label: 'Communications', icon: Megaphone },
         { id: 'content', label: 'Content', icon: FileEdit },
+        { id: 'federation', label: 'Federation', icon: Globe, badge: 'New' },
         { id: 'analytics', label: 'Analytics & Reports', icon: BarChart3 },
         { id: 'audit', label: 'Audit Logs', icon: Activity },
       ],
@@ -287,6 +308,7 @@ const AdminDashboard = () => {
       icon: Settings,
       defaultExpanded: false,
       items: [
+        { id: 'feature-flags', label: 'Feature Flags', icon: ToggleLeft, badge: 'New' },
         { id: 'settings', label: 'Settings', icon: Settings },
       ],
     },
@@ -315,7 +337,7 @@ const AdminDashboard = () => {
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     // Find which section contains this tab and expand it
-    const section = menuSections.find(s => s.items.some(item => item.id === tabId));
+    const section = menuSections.find((s: MenuSection) => s.items.some((item: MenuSection['items'][0]) => item.id === tabId));
     if (section && !expandedSections[section.id]) {
       setExpandedSections(prev => ({ ...prev, [section.id]: true }));
     }
@@ -357,7 +379,7 @@ const AdminDashboard = () => {
         </div>
 
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {menuSections.map((section) => (
+          {menuSections.map((section: MenuSection) => (
             <div key={section.id} className="mb-1">
               {/* Section Header */}
               <button
@@ -383,7 +405,7 @@ const AdminDashboard = () => {
               {/* Section Items */}
               {sidebarOpen && expandedSections[section.id] && (
                 <div className={`mt-1 ml-2 pl-3 border-l ${tc.borderPrimary} space-y-0.5`}>
-                  {section.items.map((item) => (
+                  {section.items.map((item: MenuSection['items'][0]) => (
                     <button
                       key={item.id}
                       onClick={() => handleTabChange(item.id)}
@@ -412,7 +434,7 @@ const AdminDashboard = () => {
               {/* Collapsed mode - show only icons */}
               {!sidebarOpen && expandedSections[section.id] && (
                 <div className="mt-1 space-y-1">
-                  {section.items.map((item) => (
+                  {section.items.map((item: MenuSection['items'][0]) => (
                     <button
                       key={item.id}
                       onClick={() => handleTabChange(item.id)}
@@ -457,7 +479,7 @@ const AdminDashboard = () => {
             <div className="flex items-center gap-3">
               {/* Theme Toggle */}
               <button
-                onClick={toggleTheme}
+                onClick={() => setPalette(isDark ? 'professional' : 'deep-space')}
                 className={`p-2 rounded-lg ${tc.buttonSecondary} transition-colors`}
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               >
@@ -499,15 +521,47 @@ const AdminDashboard = () => {
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">3</span>
               </button>
 
-              {/* User Profile */}
-              <div className={`flex items-center gap-3 pl-3 border-l ${tc.borderSecondary}`}>
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-bold text-sm text-white">
-                  {adminUser?.first_name?.[0]}{adminUser?.last_name?.[0]}
-                </div>
-                <div className="hidden md:block">
-                  <p className={`text-sm font-medium ${tc.textPrimary}`}>{adminUser?.first_name} {adminUser?.last_name}</p>
-                  <p className={`text-xs ${tc.textSecondary}`}>{adminUser?.user_role_assignments?.[0]?.admin_roles?.display_name || 'Admin'}</p>
-                </div>
+              {/* User Profile with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={`flex items-center gap-3 pl-3 border-l ${tc.borderSecondary} hover:opacity-80 transition-opacity`}
+                >
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-bold text-sm text-white">
+                    {adminUser?.first_name?.[0]}{adminUser?.last_name?.[0]}
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <p className={`text-sm font-medium ${tc.textPrimary}`}>{adminUser?.first_name} {adminUser?.last_name}</p>
+                    <p className={`text-xs ${tc.textSecondary}`}>{adminUser?.user_role_assignments?.[0]?.admin_roles?.display_name || 'Admin'}</p>
+                  </div>
+                  <ChevronDown size={16} className={`${tc.textSecondary} transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Dropdown Menu */}
+                {userMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setUserMenuOpen(false)}
+                    />
+                    <div className={`absolute right-0 top-full mt-2 w-48 rounded-lg shadow-lg ${tc.cardBg} border ${tc.borderSecondary} py-2 z-50`}>
+                      <div className={`px-4 py-2 border-b ${tc.borderSecondary}`}>
+                        <p className={`text-sm font-medium ${tc.textPrimary}`}>{adminUser?.first_name} {adminUser?.last_name}</p>
+                        <p className={`text-xs ${tc.textSecondary}`}>{adminUser?.email}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setUserMenuOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2`}
+                      >
+                        <LogOut size={16} />
+                        Sign Out
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -518,10 +572,12 @@ const AdminDashboard = () => {
           {/* Core Operations */}
           {activeTab === 'overview' && <OverviewTab stats={stats} loading={loading} onRefresh={fetchDashboardData} />}
           {activeTab === 'staff' && <StaffManagementTab />}
+          {activeTab === 'verifications' && <UserVerificationTab />}
           {activeTab === 'users' && <UserManagementTab />}
           {activeTab === 'organizations' && <OrganizationsTab />}
           {activeTab === 'jobs' && <JobManagementTab />}
           {activeTab === 'applications' && <ApplicationManagementTab />}
+          {activeTab === 'challenges' && <ChallengesTab />}
 
           {/* Marketplace */}
           {activeTab === 'marketplace-overview' && <MarketplaceOverviewTab />}
@@ -541,6 +597,7 @@ const AdminDashboard = () => {
           {/* Platform Management */}
           {activeTab === 'communications' && <CommunicationsTab />}
           {activeTab === 'content' && <ContentTab />}
+          {activeTab === 'federation' && <FederationTab />}
           {activeTab === 'analytics' && <AnalyticsTab />}
           {activeTab === 'audit' && <AuditLogsTab />}
 
@@ -549,6 +606,7 @@ const AdminDashboard = () => {
           {activeTab === 'revenue' && <RevenueMetricsTab />}
 
           {/* System Settings */}
+          {activeTab === 'feature-flags' && <FeatureFlagsTab />}
           {activeTab === 'settings' && <SettingsTab />}
         </div>
       </main>
@@ -682,12 +740,25 @@ const OverviewTab = ({ stats, loading, onRefresh }: { stats: any; loading: boole
 // USER MANAGEMENT TAB
 // ===========================================
 
+interface AdminUser {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  role: string;
+  clearance_level?: string;
+  citizenship?: string;
+  veteran_status?: string;
+  created_at: string;
+  organizations?: { name: string } | null;
+}
+
 const UserManagementTab = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -721,7 +792,7 @@ const UserManagementTab = () => {
     user.last_name?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleSuspendUser = async (userId) => {
+  const handleSuspendUser = async (userId: string) => {
     // Add audit log
     await supabase.from('audit_logs').insert({
       event_type: 'USER_SUSPENDED',
@@ -756,7 +827,7 @@ const UserManagementTab = () => {
             <option value="all">All Roles</option>
             <option value="job_seeker">Job Seekers</option>
             <option value="partner">Employers</option>
-            <option value="educator">Educators</option>
+            <option value="educator">Education Partners</option>
             <option value="admin">Admins</option>
           </select>
         </div>
@@ -915,8 +986,18 @@ const UserManagementTab = () => {
 // JOB MANAGEMENT TAB
 // ===========================================
 
+interface AdminJob {
+  id: string;
+  title: string;
+  location?: string;
+  status: string;
+  application_count?: number;
+  created_at: string;
+  organizations?: { name: string } | null;
+}
+
 const JobManagementTab = () => {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<AdminJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -1030,8 +1111,16 @@ const JobManagementTab = () => {
 // APPLICATION MANAGEMENT TAB
 // ===========================================
 
+interface AdminApplication {
+  id: string;
+  status: string;
+  created_at: string;
+  users?: { first_name?: string; last_name?: string; email?: string } | null;
+  jobs?: { title?: string; organizations?: { name?: string } | null } | null;
+}
+
 const ApplicationManagementTab = () => {
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState<AdminApplication[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1304,8 +1393,18 @@ const AnalyticsTab = () => {
 // AUDIT LOGS TAB
 // ===========================================
 
+interface AdminAuditLog {
+  id: string;
+  event_type: string;
+  action?: string;
+  actor_email?: string;
+  resource_type?: string;
+  severity?: string;
+  created_at: string;
+}
+
 const AuditLogsTab = () => {
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState<AdminAuditLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

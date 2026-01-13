@@ -78,6 +78,215 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Ecosystem Value Proposition Section */}
+      <section className="py-24 bg-dark-surface border-t border-dark-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              The Complete Ecosystem for America's
+              <span className="block gradient-text">Emerging Technology Workforce</span>
+            </h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              More than a job board. STEMWorkforce.net unites talent, employers, educators,
+              and service providers across 11 critical technology sectors powering national
+              security and economic competitiveness.
+            </p>
+          </div>
+
+          {/* Visual Ecosystem Model */}
+          <div className="relative max-w-4xl mx-auto mb-16">
+            <div className="grid grid-cols-3 gap-8 items-center">
+              {/* Left Column */}
+              <div className="space-y-8 text-right">
+                <div className="group">
+                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-blue-500/50 transition-all cursor-pointer">
+                    <div>
+                      <p className="text-white font-semibold">Employers</p>
+                      <p className="text-sm text-gray-500">Companies, Labs, Agencies</p>
+                    </div>
+                    <span className="text-3xl">🏢</span>
+                  </div>
+                </div>
+                <div className="group">
+                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-green-500/50 transition-all cursor-pointer">
+                    <div>
+                      <p className="text-white font-semibold">Education Partners</p>
+                      <p className="text-sm text-gray-500">Universities & Training</p>
+                    </div>
+                    <span className="text-3xl">🎓</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Center - Platform Hub */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
+                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-center shadow-2xl">
+                  <div className="w-16 h-16 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-4">
+                    <span className="text-4xl">🔗</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">STEMWorkforce</h3>
+                  <p className="text-sm text-blue-200">Connecting the Ecosystem</p>
+                </div>
+                {/* Connection lines (decorative) */}
+                <div className="absolute top-1/2 -left-8 w-8 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
+                <div className="absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-8">
+                <div className="group">
+                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-yellow-500/50 transition-all cursor-pointer">
+                    <span className="text-3xl">👤</span>
+                    <div>
+                      <p className="text-white font-semibold">Talent</p>
+                      <p className="text-sm text-gray-500">Job Seekers & Professionals</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="group">
+                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-pink-500/50 transition-all cursor-pointer">
+                    <span className="text-3xl">⭐</span>
+                    <div>
+                      <p className="text-white font-semibold">Providers</p>
+                      <p className="text-sm text-gray-500">Consultants & Coaches</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Students at bottom */}
+            <div className="flex justify-center mt-8">
+              <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-cyan-500/50 transition-all cursor-pointer">
+                <span className="text-3xl">🎒</span>
+                <div>
+                  <p className="text-white font-semibold">Students</p>
+                  <p className="text-sm text-gray-500">Future STEM Workforce</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Three Pillars */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-blue-500/30 transition-all">
+              <div className="w-16 h-16 mx-auto bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-3xl">🔗</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Unified Platform</h3>
+              <p className="text-gray-400">
+                All 5 stakeholder types connected in one place. Find opportunities, talent,
+                programs, and expertise without switching platforms.
+              </p>
+            </div>
+            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-purple-500/30 transition-all">
+              <div className="w-16 h-16 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-3xl">📊</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Workforce Intelligence</h3>
+              <p className="text-gray-400">
+                Data-driven insights and matching across 24+ states. Real-time job market
+                data, skills gap analysis, and trend forecasting.
+              </p>
+            </div>
+            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-green-500/30 transition-all">
+              <div className="w-16 h-16 mx-auto bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-3xl">🏛️</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">National Mission</h3>
+              <p className="text-gray-400">
+                A DOE-backed initiative focused on critical technology sectors. Supporting
+                national security, economic competitiveness, and workforce development.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Audience Pathways Section */}
+      <section className="py-24 bg-dark-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              I am a...
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Choose your path to explore tailored opportunities and resources.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {[
+              {
+                icon: '👤',
+                title: 'Talent',
+                subtitle: 'Job Seeker or Professional',
+                description: 'Find jobs, grow your career, connect with mentors',
+                cta: 'Explore Jobs',
+                link: '/jobs',
+                color: 'yellow',
+              },
+              {
+                icon: '🏢',
+                title: 'Employer',
+                subtitle: 'Company, Lab, or Agency',
+                description: 'Post jobs, find talent, build your pipeline',
+                cta: 'Post Jobs',
+                link: '/register?role=partner',
+                color: 'blue',
+              },
+              {
+                icon: '🎓',
+                title: 'Educator',
+                subtitle: 'University or Training Provider',
+                description: 'List programs, connect with industry',
+                cta: 'Partner With Us',
+                link: '/register?role=educator',
+                color: 'green',
+              },
+              {
+                icon: '⭐',
+                title: 'Provider',
+                subtitle: 'Consultant or Coach',
+                description: 'Offer services, find clients, grow practice',
+                cta: 'Join Network',
+                link: '/register?role=service-provider',
+                color: 'pink',
+              },
+              {
+                icon: '🎒',
+                title: 'Student',
+                subtitle: 'Future STEM Professional',
+                description: 'Explore careers, prep for college, find mentors',
+                cta: 'Start Free',
+                link: '/register?role=student',
+                color: 'cyan',
+              },
+            ].map((audience) => (
+              <Link
+                key={audience.title}
+                to={audience.link}
+                className={`group relative p-6 bg-dark-surface border border-dark-border rounded-2xl hover:border-${audience.color}-500/50 transition-all hover:transform hover:-translate-y-1`}
+              >
+                <div className={`w-14 h-14 bg-${audience.color}-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <span className="text-3xl">{audience.icon}</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">{audience.title}</h3>
+                <p className="text-sm text-gray-500 mb-3">{audience.subtitle}</p>
+                <p className="text-sm text-gray-400 mb-4">{audience.description}</p>
+                <span className={`inline-flex items-center text-sm font-medium text-${audience.color}-400 group-hover:text-${audience.color}-300`}>
+                  {audience.cta}
+                  <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Industries Section */}
       <section className="py-24 bg-dark-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,6 +387,51 @@ const HomePage: React.FC = () => {
                 </Card>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof / Trust Section */}
+      <section className="py-16 bg-dark-bg border-y border-dark-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-sm text-gray-500 uppercase tracking-wider mb-4">Trusted By Leading Organizations</p>
+          </div>
+
+          {/* Partner Logos (placeholder grid) */}
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-12 opacity-60">
+            {[
+              { name: 'Department of Energy', abbr: 'DOE' },
+              { name: 'National Laboratories', abbr: 'NAT LABS' },
+              { name: 'Federal Agencies', abbr: 'FED GOVT' },
+              { name: 'Fortune 500', abbr: 'F500' },
+              { name: 'Top Universities', abbr: 'ACADEMIA' },
+              { name: 'Healthcare Systems', abbr: 'HEALTH' },
+            ].map((partner) => (
+              <div key={partner.abbr} className="flex items-center justify-center w-24 h-12 bg-dark-surface rounded-lg border border-dark-border">
+                <span className="text-xs font-bold text-gray-500">{partner.abbr}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Trust Stats Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white mb-1">650+</div>
+              <div className="text-sm text-gray-500">Industry Partners</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white mb-1">11</div>
+              <div className="text-sm text-gray-500">Critical Sectors</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white mb-1">24+</div>
+              <div className="text-sm text-gray-500">States Covered</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white mb-1">DOE</div>
+              <div className="text-sm text-gray-500">Backed Initiative</div>
+            </div>
           </div>
         </div>
       </section>

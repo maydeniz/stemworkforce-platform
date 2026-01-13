@@ -17,12 +17,12 @@
 // - STEM Ecosystems 2025: Uses orange, yellow, blue, green
 // ===========================================
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Briefcase, Users, GraduationCap, Building2, Cpu, Factory,
-  Shield, Zap, Award, ChevronRight, Star, MapPin, Clock,
-  CheckCircle, ArrowRight, Bell, Search, Menu
+  Briefcase, Users, GraduationCap, Cpu, Factory,
+  Shield, Zap, Award, Star, MapPin, Clock,
+  CheckCircle, Bell, Search
 } from 'lucide-react';
 
 // ===========================================
@@ -693,7 +693,7 @@ const ColorPaletteTest: React.FC = () => {
                   border: `1px solid ${INDUSTRY_COLORS.ai.border}`
                 }}
               >
-                <Cpu className="w-4 h-4" /> Artificial Intelligence
+                <Cpu className="w-4 h-4" /> AI & Machine Learning
               </span>
               <span
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
@@ -743,7 +743,7 @@ const ColorPaletteTest: React.FC = () => {
                   border: `1px solid ${INDUSTRY_COLORS.quantum.border}`
                 }}
               >
-                <Award className="w-4 h-4" /> Quantum Computing
+                <Award className="w-4 h-4" /> Quantum Technologies
               </span>
             </div>
           </div>

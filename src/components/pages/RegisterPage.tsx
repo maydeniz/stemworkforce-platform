@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { OrganizationSelector } from '@/components/common/OrganizationSelector';
+import { validateEmailDomain, willBeAutoVerified } from '@/utils/emailDomain';
 
 // Role options for registration
 const ROLE_OPTIONS = [
@@ -59,6 +60,24 @@ const RegisterPage: React.FC = () => {
   // Check if role uses hierarchical organization selector
   const usesOrgSelector = ['educator', 'partner_academic', 'partner_lab', 'partner_federal'].includes(formData.role);
 
+  // Email domain validation for organizations
+  const emailDomainValidation = useMemo(() => {
+    if (!usesOrgSelector || !organizationData.organizationId || !formData.email) {
+      return { valid: true, message: undefined, autoVerified: false };
+    }
+    return validateEmailDomain(
+      formData.email,
+      organizationData.organizationId,
+      organizationData.organizationName
+    );
+  }, [formData.email, organizationData.organizationId, organizationData.organizationName, usesOrgSelector]);
+
+  // Check if user will be auto-verified
+  const isAutoVerified = useMemo(() => {
+    if (!usesOrgSelector || !organizationData.organizationId) return false;
+    return willBeAutoVerified(formData.email, organizationData.organizationId);
+  }, [formData.email, organizationData.organizationId, usesOrgSelector]);
+
   // Get the effective organization name for submission
   const getEffectiveOrgName = () => {
     if (usesOrgSelector) {
@@ -111,6 +130,13 @@ const RegisterPage: React.FC = () => {
         const hasOrg = organizationData.organizationName || organizationData.customOrganization;
         if (!hasOrg) {
           setError('Please select or enter your organization');
+          setLoading(false);
+          return;
+        }
+
+        // Validate email domain matches organization
+        if (!emailDomainValidation.valid) {
+          setError(emailDomainValidation.message || 'Email domain does not match the selected organization');
           setLoading(false);
           return;
         }
@@ -292,16 +318,33 @@ const RegisterPage: React.FC = () => {
                   disabled={loading}
                 />
               </div>
-              <Input
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                required
-                disabled={loading}
-              />
+              <div>
+                <Input
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                  required
+                  disabled={loading}
+                />
+                {/* Domain validation feedback */}
+                {usesOrgSelector && organizationData.organizationId && formData.email && (
+                  <div className="mt-1">
+                    {isAutoVerified ? (
+                      <p className="text-sm text-green-400 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Email verified - matches organization domain
+                      </p>
+                    ) : !emailDomainValidation.valid ? (
+                      <p className="text-sm text-red-400">{emailDomainValidation.message}</p>
+                    ) : null}
+                  </div>
+                )}
+              </div>
               <Input
                 label="Password"
                 name="password"

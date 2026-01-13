@@ -64,7 +64,7 @@ export interface IndustryData {
 export const INDUSTRIES_DATA: Record<string, IndustryData> = {
   'artificial-intelligence': {
     id: 'artificial-intelligence',
-    name: 'Artificial Intelligence',
+    name: 'AI & Machine Learning',
     shortName: 'AI',
     icon: '🤖',
     color: '#8b5cf6',
@@ -170,12 +170,12 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
 
     topEmployers: ['Google', 'OpenAI', 'Anthropic', 'Microsoft', 'Meta', 'NVIDIA', 'Amazon', 'IBM'],
 
-    relatedIndustries: ['quantum-computing', 'cybersecurity', 'robotics', 'healthcare'],
+    relatedIndustries: ['quantum-technologies', 'cybersecurity', 'robotics', 'healthcare'],
   },
 
-  'quantum-computing': {
-    id: 'quantum-computing',
-    name: 'Quantum Computing',
+  'quantum-technologies': {
+    id: 'quantum-technologies',
+    name: 'Quantum Technologies',
     shortName: 'Quantum',
     icon: '🔬',
     color: '#ec4899',
@@ -725,12 +725,12 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
 
     topEmployers: ['CrowdStrike', 'Palo Alto Networks', 'Fortinet', 'NSA', 'CISA', 'Microsoft', 'Google', 'Amazon'],
 
-    relatedIndustries: ['artificial-intelligence', 'quantum-computing', 'aerospace'],
+    relatedIndustries: ['artificial-intelligence', 'quantum-technologies', 'aerospace'],
   },
 
   'aerospace': {
     id: 'aerospace',
-    name: 'Aerospace & Space',
+    name: 'Aerospace & Defense',
     shortName: 'Aerospace',
     icon: '🚀',
     color: '#06b6d4',
@@ -1287,7 +1287,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
 
     topEmployers: ['Intel', 'AMD', 'NVIDIA', 'Texas Instruments', 'Micron', 'GlobalFoundries', 'TSMC', 'Samsung'],
 
-    relatedIndustries: ['advanced-manufacturing', 'artificial-intelligence', 'quantum-computing'],
+    relatedIndustries: ['advanced-manufacturing', 'artificial-intelligence', 'quantum-technologies'],
   },
 };
 

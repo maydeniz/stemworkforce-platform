@@ -436,7 +436,7 @@ const SAMPLE_PROVIDERS: Provider[] = [
   {
     id: 'p20',
     name: 'Yuki Tanaka',
-    title: 'Quantum Computing Career Advisor',
+    title: 'Quantum Technologies Career Advisor',
     category: 'career_coaching',
     specialties: ['Quantum Industry', 'Research to Industry', 'PhD Careers'],
     bio: 'Former IBM Quantum researcher. Helping scientists transition to industry roles.',
@@ -450,7 +450,7 @@ const SAMPLE_PROVIDERS: Provider[] = [
     isFeatured: false,
     responseTime: '< 4 hours',
     languages: ['English', 'Japanese'],
-    industries: ['Technology', 'Research', 'Quantum Computing'],
+    industries: ['Technology', 'Research', 'Quantum Technologies'],
   },
 ];
 

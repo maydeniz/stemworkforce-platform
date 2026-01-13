@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-
-interface TrainingProgram {
-  id: string;
-  title: string;
-  provider: string;
-  description: string;
-  duration: string;
-  format: string;
-  level: string;
-  industries: string[];
-  skills: string[];
-  cost: number;
-  placement_rate: number | null;
-  rating: number;
-  reviews_count: number;
-  certification_type: string | null;
-  featured: boolean;
-}
+import { AIMetricsTooltip } from '@/components/common/AIMetricsTooltip';
+import { trainingPrograms, enrichWithAIMetrics, TrainingProgramWithAI } from '@/data/trainingPrograms';
+import {
+  getExposureLabel,
+  getOpportunityLabel,
+  getExposureColor,
+  getOpportunityColor,
+  getExposureBgColor,
+  getOpportunityBgColor,
+} from '@/data/aiMetrics';
 
 const FORMATS = [
   { value: '', label: 'All Formats' },
@@ -38,54 +29,146 @@ const LEVELS = [
   { value: 'expert', label: 'Expert' },
 ];
 
+const INDUSTRIES = [
+  { value: '', label: 'All Industries' },
+  { value: 'ai', label: 'AI & Machine Learning' },
+  { value: 'quantum', label: 'Quantum Technologies' },
+  { value: 'semiconductor', label: 'Semiconductor' },
+  { value: 'nuclear', label: 'Nuclear Energy' },
+  { value: 'cybersecurity', label: 'Cybersecurity' },
+  { value: 'aerospace', label: 'Aerospace & Defense' },
+  { value: 'biotech', label: 'Biotechnology' },
+  { value: 'healthcare', label: 'Healthcare IT' },
+  { value: 'robotics', label: 'Robotics & Automation' },
+  { value: 'clean-energy', label: 'Clean Energy' },
+  { value: 'manufacturing', label: 'Advanced Manufacturing' },
+];
+
+const STATES = [
+  { value: '', label: 'All States' },
+  { value: 'AL', label: 'Alabama' },
+  { value: 'AK', label: 'Alaska' },
+  { value: 'AZ', label: 'Arizona' },
+  { value: 'AR', label: 'Arkansas' },
+  { value: 'CA', label: 'California' },
+  { value: 'CO', label: 'Colorado' },
+  { value: 'CT', label: 'Connecticut' },
+  { value: 'DE', label: 'Delaware' },
+  { value: 'FL', label: 'Florida' },
+  { value: 'GA', label: 'Georgia' },
+  { value: 'HI', label: 'Hawaii' },
+  { value: 'ID', label: 'Idaho' },
+  { value: 'IL', label: 'Illinois' },
+  { value: 'IN', label: 'Indiana' },
+  { value: 'IA', label: 'Iowa' },
+  { value: 'KS', label: 'Kansas' },
+  { value: 'KY', label: 'Kentucky' },
+  { value: 'LA', label: 'Louisiana' },
+  { value: 'ME', label: 'Maine' },
+  { value: 'MD', label: 'Maryland' },
+  { value: 'MA', label: 'Massachusetts' },
+  { value: 'MI', label: 'Michigan' },
+  { value: 'MN', label: 'Minnesota' },
+  { value: 'MS', label: 'Mississippi' },
+  { value: 'MO', label: 'Missouri' },
+  { value: 'MT', label: 'Montana' },
+  { value: 'NE', label: 'Nebraska' },
+  { value: 'NV', label: 'Nevada' },
+  { value: 'NH', label: 'New Hampshire' },
+  { value: 'NJ', label: 'New Jersey' },
+  { value: 'NM', label: 'New Mexico' },
+  { value: 'NY', label: 'New York' },
+  { value: 'NC', label: 'North Carolina' },
+  { value: 'ND', label: 'North Dakota' },
+  { value: 'OH', label: 'Ohio' },
+  { value: 'OK', label: 'Oklahoma' },
+  { value: 'OR', label: 'Oregon' },
+  { value: 'PA', label: 'Pennsylvania' },
+  { value: 'RI', label: 'Rhode Island' },
+  { value: 'SC', label: 'South Carolina' },
+  { value: 'SD', label: 'South Dakota' },
+  { value: 'TN', label: 'Tennessee' },
+  { value: 'TX', label: 'Texas' },
+  { value: 'UT', label: 'Utah' },
+  { value: 'VT', label: 'Vermont' },
+  { value: 'VA', label: 'Virginia' },
+  { value: 'WA', label: 'Washington' },
+  { value: 'WV', label: 'West Virginia' },
+  { value: 'WI', label: 'Wisconsin' },
+  { value: 'WY', label: 'Wyoming' },
+];
+
 const TrainingPage: React.FC = () => {
-  const [programs, setPrograms] = useState<TrainingProgram[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [format, setFormat] = useState('');
   const [level, setLevel] = useState('');
+  const [industry, setIndustry] = useState(searchParams.get('industry') || '');
+  const [state, setState] = useState(searchParams.get('state') || '');
   const [freeOnly, setFreeOnly] = useState(false);
 
+  // Sync filters with URL params
   useEffect(() => {
-    fetchPrograms();
-  }, [format, level, freeOnly]);
-
-  const fetchPrograms = async () => {
-    setLoading(true);
-    try {
-      let query = supabase
-        .from('training_programs')
-        .select('*')
-        .eq('active', true)
-        .order('rating', { ascending: false });
-
-      if (format) {
-        query = query.eq('format', format);
-      }
-      if (level) {
-        query = query.eq('level', level);
-      }
-      if (freeOnly) {
-        query = query.eq('cost', 0);
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching programs:', error);
-        return;
-      }
-
-      setPrograms((data as TrainingProgram[]) || []);
-    } catch (err) {
-      console.error('Failed to fetch programs:', err);
-    } finally {
-      setLoading(false);
+    const urlIndustry = searchParams.get('industry') || '';
+    const urlState = searchParams.get('state') || '';
+    if (urlIndustry !== industry) {
+      setIndustry(urlIndustry);
     }
+    if (urlState !== state) {
+      setState(urlState);
+    }
+  }, [searchParams]);
+
+  // Update URL when filters change
+  const updateSearchParams = (newIndustry: string, newState: string) => {
+    const params: Record<string, string> = {};
+    if (newIndustry) params.industry = newIndustry;
+    if (newState) params.state = newState;
+    setSearchParams(params);
   };
 
-  const formatCost = (cost: number) => {
-    if (cost === 0) return 'Free';
-    return `$${cost.toLocaleString()}`;
+  const handleIndustryChange = (newIndustry: string) => {
+    setIndustry(newIndustry);
+    updateSearchParams(newIndustry, state);
+  };
+
+  const handleStateChange = (newState: string) => {
+    setState(newState);
+    updateSearchParams(industry, newState);
+  };
+
+  // Filter programs based on selected filters and enrich with AI metrics
+  const filteredPrograms = useMemo((): TrainingProgramWithAI[] => {
+    return trainingPrograms
+      .filter(program => {
+        // Format filter
+        if (format && program.format !== format) return false;
+
+        // Level filter
+        if (level && program.level !== level) return false;
+
+        // Industry filter
+        if (industry && !program.industries.includes(industry)) return false;
+
+        // State filter
+        if (state && program.stateCode !== state) return false;
+
+        // Free only filter
+        if (freeOnly && program.costNumeric > 0) return false;
+
+        return true;
+      })
+      .map(enrichWithAIMetrics) // Add AI metrics
+      .sort((a, b) => {
+        // Sort by featured first, then by rating
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return b.rating - a.rating;
+      });
+  }, [format, level, industry, state, freeOnly]);
+
+  const formatCost = (cost: string, costNumeric: number) => {
+    if (costNumeric === 0) return 'Free';
+    return cost;
   };
 
   const renderStars = (rating: number) => {
@@ -112,7 +195,7 @@ const TrainingPage: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Training Programs</h1>
           <p className="text-gray-400 text-lg">
-            Explore 850+ training programs to advance your STEM career.
+            Explore {trainingPrograms.length}+ training programs to advance your STEM career.
           </p>
         </div>
 
@@ -137,6 +220,24 @@ const TrainingPage: React.FC = () => {
                 <option key={l.value} value={l.value}>{l.label}</option>
               ))}
             </select>
+            <select
+              value={industry}
+              onChange={(e) => handleIndustryChange(e.target.value)}
+              className="bg-dark-bg border border-dark-border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {INDUSTRIES.map(i => (
+                <option key={i.value} value={i.value}>{i.label}</option>
+              ))}
+            </select>
+            <select
+              value={state}
+              onChange={(e) => handleStateChange(e.target.value)}
+              className="bg-dark-bg border border-dark-border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {STATES.map(s => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
             <label className="flex items-center gap-2 text-white cursor-pointer">
               <input
                 type="checkbox"
@@ -147,20 +248,76 @@ const TrainingPage: React.FC = () => {
               Free Programs Only
             </label>
           </div>
+
+          {/* Active filters summary */}
+          {(industry || state || format || level || freeOnly) && (
+            <div className="mt-4 pt-4 border-t border-dark-border">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-gray-400 text-sm">Showing {filteredPrograms.length} programs</span>
+                {industry && (
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
+                    {INDUSTRIES.find(i => i.value === industry)?.label}
+                  </span>
+                )}
+                {state && (
+                  <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
+                    {STATES.find(s => s.value === state)?.label}
+                  </span>
+                )}
+                {format && (
+                  <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">
+                    {FORMATS.find(f => f.value === format)?.label}
+                  </span>
+                )}
+                {level && (
+                  <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">
+                    {LEVELS.find(l => l.value === level)?.label}
+                  </span>
+                )}
+                {freeOnly && (
+                  <span className="px-2 py-1 bg-teal-500/20 text-teal-400 rounded text-xs">
+                    Free Only
+                  </span>
+                )}
+                <button
+                  onClick={() => {
+                    setFormat('');
+                    setLevel('');
+                    setIndustry('');
+                    setState('');
+                    setFreeOnly(false);
+                    setSearchParams({});
+                  }}
+                  className="text-gray-400 hover:text-white text-xs underline ml-2"
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Programs List */}
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <LoadingSpinner size="lg" />
-          </div>
-        ) : programs.length === 0 ? (
+        {filteredPrograms.length === 0 ? (
           <Card className="text-center py-12">
-            <p className="text-gray-400 text-lg">No training programs found.</p>
+            <p className="text-gray-400 text-lg mb-4">No training programs found matching your filters.</p>
+            <button
+              onClick={() => {
+                setFormat('');
+                setLevel('');
+                setIndustry('');
+                setState('');
+                setFreeOnly(false);
+                setSearchParams({});
+              }}
+              className="text-blue-400 hover:text-blue-300"
+            >
+              Clear filters to see all programs
+            </button>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {programs.map(program => (
+            {filteredPrograms.map(program => (
               <Card key={program.id} className="flex flex-col">
                 {program.featured && (
                   <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white text-xs font-bold px-3 py-1 rounded-t-lg -mt-4 -mx-4 mb-4 text-center">
@@ -178,14 +335,15 @@ const TrainingPage: React.FC = () => {
                     {program.level}
                   </span>
                   <span className={`px-3 py-1 rounded-full text-sm ${
-                    program.cost === 0 ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                    program.costNumeric === 0 ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
                   }`}>
-                    {formatCost(program.cost)}
+                    {formatCost(program.cost, program.costNumeric)}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-white mb-1">{program.title}</h3>
-                <p className="text-blue-400 text-sm mb-2">{program.provider}</p>
+                <h3 className="text-xl font-bold text-white mb-1">{program.name}</h3>
+                <p className="text-blue-400 text-sm mb-1">{program.provider}</p>
+                <p className="text-gray-500 text-xs mb-2">{program.state} • {program.type}</p>
                 <p className="text-gray-300 mb-4 flex-1 line-clamp-3">{program.description}</p>
 
                 <div className="space-y-2 text-sm mb-4">
@@ -197,25 +355,64 @@ const TrainingPage: React.FC = () => {
                     <span className="text-gray-400">Format:</span>
                     <span className="text-white capitalize">{program.format.replace('_', ' ')}</span>
                   </div>
-                  {program.placement_rate && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Placement Rate:</span>
-                      <span className="text-green-400">{program.placement_rate}%</span>
-                    </div>
-                  )}
-                  {program.certification_type && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Certificate:</span>
-                      <span className="text-white text-xs">{program.certification_type}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Placement Rate:</span>
+                    <span className="text-green-400">{program.placement}%</span>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between mb-4">
                   {renderStars(program.rating)}
                   <span className="text-gray-400 text-sm">
-                    ({program.reviews_count.toLocaleString()} reviews)
+                    ({program.reviewsCount.toLocaleString()} reviews)
                   </span>
+                </div>
+
+                {/* AI Metrics */}
+                <div className="border-t border-dark-border pt-4 mb-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-400 text-sm">AI Exposure:</span>
+                      <AIMetricsTooltip type="exposure" value={program.aiExposureIndex} />
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${getExposureBgColor(program.aiExposureIndex)} ${getExposureColor(program.aiExposureIndex)}`}>
+                        {getExposureLabel(program.aiExposureIndex)}
+                      </span>
+                    </div>
+                    <span className="text-white text-sm font-medium">{program.aiExposureIndex}%</span>
+                  </div>
+                  <div className="w-full bg-dark-bg rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full transition-all ${
+                        program.aiExposureIndex >= 70 ? 'bg-red-500' :
+                        program.aiExposureIndex >= 50 ? 'bg-orange-500' :
+                        program.aiExposureIndex >= 30 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`}
+                      style={{ width: `${program.aiExposureIndex}%` }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-400 text-sm">AI Opportunity:</span>
+                      <AIMetricsTooltip type="opportunity" value={program.aiOpportunityIndex} />
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${getOpportunityBgColor(program.aiOpportunityIndex)} ${getOpportunityColor(program.aiOpportunityIndex)}`}>
+                        {getOpportunityLabel(program.aiOpportunityIndex)}
+                      </span>
+                    </div>
+                    <span className="text-white text-sm font-medium">{program.aiOpportunityIndex}%</span>
+                  </div>
+                  <div className="w-full bg-dark-bg rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full transition-all ${
+                        program.aiOpportunityIndex >= 75 ? 'bg-emerald-500' :
+                        program.aiOpportunityIndex >= 55 ? 'bg-blue-500' :
+                        program.aiOpportunityIndex >= 35 ? 'bg-yellow-500' :
+                        'bg-gray-500'
+                      }`}
+                      style={{ width: `${program.aiOpportunityIndex}%` }}
+                    />
+                  </div>
                 </div>
 
                 {program.skills && program.skills.length > 0 && (
@@ -234,7 +431,7 @@ const TrainingPage: React.FC = () => {
                 )}
 
                 <Button fullWidth className="mt-auto">
-                  Enroll Now
+                  Learn More
                 </Button>
               </Card>
             ))}

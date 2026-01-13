@@ -1,5 +1,59 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
+import { AIMetricsTooltip } from '@/components/common/AIMetricsTooltip';
+import {
+  industryAIMetrics,
+  getExposureBgColor,
+  getOpportunityBgColor,
+  getExposureColor,
+  getOpportunityColor,
+} from '@/data/aiMetrics';
+
+// Job data type
+interface JobData {
+  id: number | string;
+  type: string;
+  title: string;
+  company: string;
+  industry: string;
+  orgType: string;
+  location: string;
+  workType: string;
+  salary: string;
+  clearance: string;
+  citizenship: string;
+  experience: string;
+  posted: string;
+  applicants: number;
+  description: string;
+  skills: string[];
+  logo: string;
+  featured: boolean;
+  source: string;
+  duration?: string;
+}
+
+// Map job industry IDs to AI metrics industry codes
+const jobIndustryToMetricsCode: Record<string, string> = {
+  semiconductor: 'semiconductor',
+  nuclear: 'nuclear',
+  ai: 'ai',
+  quantum: 'quantum',
+  cybersecurity: 'cybersecurity',
+  aerospace: 'aerospace',
+  biotech: 'biotech',
+  healthcare: 'healthcare',
+  robotics: 'robotics',
+  clean_energy: 'clean-energy',
+  manufacturing: 'manufacturing',
+};
+
+// Get AI metrics for a job's industry
+const getJobAIMetrics = (industry: string) => {
+  const code = jobIndustryToMetricsCode[industry] || 'manufacturing';
+  return industryAIMetrics[code] || industryAIMetrics['manufacturing'];
+};
 
 // Industry sectors with icons
 const industries = [
@@ -7,7 +61,7 @@ const industries = [
   { id: 'semiconductor', name: 'Semiconductor', icon: '💎' },
   { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
   { id: 'ai', name: 'AI & Machine Learning', icon: '🤖' },
-  { id: 'quantum', name: 'Quantum Computing', icon: '⚛️' },
+  { id: 'quantum', name: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cybersecurity', name: 'Cybersecurity', icon: '🛡️' },
   { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
   { id: 'biotech', name: 'Biotechnology', icon: '🧬' },
@@ -131,24 +185,24 @@ const realJobsData = [
   { id: 217, type: 'job', title: 'Research Engineer - LLMs', company: 'Cohere', industry: 'ai', orgType: 'industry', location: 'San Francisco, CA', workType: 'hybrid', salary: '$170,000 - $280,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 234, description: 'Develop and optimize large language models for enterprise applications.', skills: ['LLMs', 'PyTorch', 'Transformers', 'Python', 'NLP'], logo: '🤖', featured: false, source: 'Cohere Careers' },
   { id: 218, type: 'job', title: 'Chief AI Officer', company: 'Fortune 500 Company', industry: 'ai', orgType: 'industry', location: 'New York, NY', workType: 'hybrid', salary: '$400,000 - $650,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'executive', posted: '1 week ago', applicants: 89, description: 'Set AI strategy for entire organization. Lead AI transformation initiatives.', skills: ['AI Strategy', 'Executive Leadership', 'Digital Transformation', 'Team Building'], logo: '🤖', featured: true, source: 'Analytics Insight' },
 
-  // ========== QUANTUM COMPUTING JOBS (16 positions) ==========
+  // ========== QUANTUM TECHNOLOGIES JOBS (16 positions) ==========
   // Source: IBM Quantum, Google Quantum AI, IonQ, Rigetti, Amazon Braket
   { id: 301, type: 'job', title: 'Quantum Software Engineer', company: 'IBM Quantum', industry: 'quantum', orgType: 'industry', location: 'Yorktown Heights, NY', workType: 'hybrid', salary: '$140,000 - $200,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 89, description: 'Develop quantum software and Qiskit ecosystem. Build tools for 1000+ qubit systems.', skills: ['Qiskit', 'Python', 'Quantum Algorithms', 'Linear Algebra', 'Software Engineering'], logo: '⚛️', featured: true, source: 'IBM Careers' },
-  { id: 302, type: 'job', title: 'Quantum Research Scientist', company: 'Google Quantum AI', industry: 'quantum', orgType: 'industry', location: 'Santa Barbara, CA', workType: 'onsite', salary: '$180,000 - $280,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '1 week ago', applicants: 67, description: 'Research quantum error correction for fault-tolerant quantum computing using Sycamore processor.', skills: ['Quantum Computing', 'Physics', 'Cirq', 'Research', 'Error Correction'], logo: '⚛️', featured: true, source: 'Google Careers' },
+  { id: 302, type: 'job', title: 'Quantum Research Scientist', company: 'Google Quantum AI', industry: 'quantum', orgType: 'industry', location: 'Santa Barbara, CA', workType: 'onsite', salary: '$180,000 - $280,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '1 week ago', applicants: 67, description: 'Research quantum error correction for fault-tolerant quantum computing using Sycamore processor.', skills: ['Quantum Technologies', 'Physics', 'Cirq', 'Research', 'Error Correction'], logo: '⚛️', featured: true, source: 'Google Careers' },
   { id: 303, type: 'job', title: 'Quantum Hardware Engineer', company: 'IonQ', industry: 'quantum', orgType: 'industry', location: 'College Park, MD', workType: 'onsite', salary: '$120,000 - $180,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 45, description: 'Design and build trapped ion quantum systems. Improve gate fidelities and qubit coherence.', skills: ['Ion Traps', 'Optics', 'Vacuum Systems', 'Electronics', 'RF Engineering'], logo: '⚛️', featured: false, source: 'IonQ Careers' },
   { id: 304, type: 'job', title: 'Quantum Algorithm Developer', company: 'Rigetti Computing', industry: 'quantum', orgType: 'industry', location: 'Berkeley, CA', workType: 'hybrid', salary: '$130,000 - $190,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '5 days ago', applicants: 56, description: 'Develop and implement quantum algorithms on Rigetti QPU using Forest SDK.', skills: ['Quil', 'Python', 'Quantum Algorithms', 'Linear Algebra', 'Optimization'], logo: '⚛️', featured: false, source: 'Rigetti Careers' },
-  { id: 305, type: 'job', title: 'Quantum Applications Scientist', company: 'Amazon Braket', industry: 'quantum', orgType: 'industry', location: 'Seattle, WA', workType: 'hybrid', salary: '$150,000 - $220,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 78, description: 'Develop quantum applications for AWS customers using Amazon Braket service.', skills: ['Amazon Braket', 'Python', 'Quantum Computing', 'Cloud', 'Customer Solutions'], logo: '⚛️', featured: false, source: 'Amazon Jobs' },
+  { id: 305, type: 'job', title: 'Quantum Applications Scientist', company: 'Amazon Braket', industry: 'quantum', orgType: 'industry', location: 'Seattle, WA', workType: 'hybrid', salary: '$150,000 - $220,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 78, description: 'Develop quantum applications for AWS customers using Amazon Braket service.', skills: ['Amazon Braket', 'Python', 'Quantum Technologies', 'Cloud', 'Customer Solutions'], logo: '⚛️', featured: false, source: 'Amazon Jobs' },
   { id: 306, type: 'job', title: 'Quantum Control Engineer', company: 'Atom Computing', industry: 'quantum', orgType: 'industry', location: 'Boulder, CO', workType: 'onsite', salary: '$110,000 - $160,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 34, description: 'Develop control systems for 1000+ qubit neutral atom quantum computers.', skills: ['Control Systems', 'FPGA', 'Python', 'Optics', 'Real-time Systems'], logo: '⚛️', featured: false, source: 'ZipRecruiter' },
   { id: 307, type: 'job', title: 'Quantum Error Correction Researcher', company: 'Microsoft Quantum', industry: 'quantum', orgType: 'industry', location: 'Redmond, WA', workType: 'hybrid', salary: '$160,000 - $240,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '2 days ago', applicants: 45, description: 'Research topological quantum error correction for Azure Quantum.', skills: ['Quantum Error Correction', 'Q#', 'Physics', 'Research', 'Topology'], logo: '⚛️', featured: false, source: 'Microsoft Careers' },
   { id: 308, type: 'job', title: 'Cryogenic Engineer', company: 'PsiQuantum', industry: 'quantum', orgType: 'industry', location: 'Palo Alto, CA', workType: 'onsite', salary: '$100,000 - $150,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '6 days ago', applicants: 28, description: 'Design cryogenic systems for photonic quantum computer at manufacturing scale.', skills: ['Cryogenics', 'Vacuum Systems', 'Mechanical Engineering', 'Thermodynamics'], logo: '⚛️', featured: false, source: 'PsiQuantum Careers' },
-  { id: 309, type: 'job', title: 'Quantum Machine Learning Researcher', company: 'Xanadu', industry: 'quantum', orgType: 'industry', location: 'Toronto, ON (Remote US)', workType: 'remote', salary: '$120,000 - $180,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '4 days ago', applicants: 67, description: 'Research quantum machine learning algorithms using PennyLane framework.', skills: ['PennyLane', 'ML', 'Quantum Computing', 'Python', 'Research'], logo: '⚛️', featured: false, source: 'Xanadu Careers' },
+  { id: 309, type: 'job', title: 'Quantum Machine Learning Researcher', company: 'Xanadu', industry: 'quantum', orgType: 'industry', location: 'Toronto, ON (Remote US)', workType: 'remote', salary: '$120,000 - $180,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '4 days ago', applicants: 67, description: 'Research quantum machine learning algorithms using PennyLane framework.', skills: ['PennyLane', 'ML', 'Quantum Technologies', 'Python', 'Research'], logo: '⚛️', featured: false, source: 'Xanadu Careers' },
   { id: 310, type: 'job', title: 'Quantum Network Engineer', company: 'Cisco Quantum', industry: 'quantum', orgType: 'industry', location: 'San Jose, CA', workType: 'hybrid', salary: '$130,000 - $190,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 34, description: 'Develop quantum networking protocols and QKD systems for secure communications.', skills: ['Quantum Networks', 'QKD', 'Networking', 'Python', 'Cryptography'], logo: '⚛️', featured: false, source: 'ZipRecruiter' },
   { id: 311, type: 'job', title: 'Quantum Physics Postdoc', company: 'Sandia National Laboratories', industry: 'quantum', orgType: 'national_lab', location: 'Albuquerque, NM', workType: 'onsite', salary: '$80,000 - $100,000', clearance: 'q_clearance', citizenship: 'us_citizen', experience: 'entry', posted: '2 weeks ago', applicants: 56, description: 'Conduct quantum physics research for national security applications.', skills: ['Physics', 'Quantum Systems', 'Research', 'Publications', 'Security'], logo: '⚛️', featured: false, source: 'Sandia Careers' },
   { id: 312, type: 'job', title: 'Quantum Systems Engineer', company: 'Honeywell Quantinuum', industry: 'quantum', orgType: 'industry', location: 'Broomfield, CO', workType: 'onsite', salary: '$120,000 - $170,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '5 days ago', applicants: 45, description: 'Integrate quantum systems and subsystems for H-Series quantum computers.', skills: ['Systems Engineering', 'Quantum Hardware', 'Testing', 'Integration'], logo: '⚛️', featured: false, source: 'Quantinuum Careers' },
   { id: 313, type: 'job', title: 'Quantum Algorithms Lead', company: 'JPMorgan Chase', industry: 'quantum', orgType: 'industry', location: 'New York, NY', workType: 'hybrid', salary: '$180,000 - $280,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '3 days ago', applicants: 78, description: 'Lead quantum algorithms research for financial optimization and Monte Carlo methods.', skills: ['Quantum Algorithms', 'Finance', 'Optimization', 'Python', 'Research'], logo: '⚛️', featured: false, source: 'JPMC Careers' },
   { id: 314, type: 'job', title: 'Quantum Firmware Engineer', company: 'D-Wave Systems', industry: 'quantum', orgType: 'industry', location: 'Burnaby, BC (Remote US)', workType: 'remote', salary: '$110,000 - $160,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '1 week ago', applicants: 34, description: 'Develop firmware for quantum annealing systems with 5000+ qubits.', skills: ['Embedded Systems', 'C/C++', 'FPGA', 'Python', 'Low-level Programming'], logo: '⚛️', featured: false, source: 'D-Wave Careers' },
   { id: 315, type: 'job', title: 'Quantum Education Specialist', company: 'IBM Quantum', industry: 'quantum', orgType: 'industry', location: 'Remote', workType: 'remote', salary: '$80,000 - $120,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '2 weeks ago', applicants: 123, description: 'Develop quantum computing educational content for IBM Quantum Learning platform.', skills: ['Qiskit', 'Education', 'Technical Writing', 'Python', 'Communication'], logo: '⚛️', featured: false, source: 'IBM Quantum Learning' },
-  { id: 316, type: 'job', title: 'Senior Quantum Physicist', company: 'QuEra Computing', industry: 'quantum', orgType: 'industry', location: 'Boston, MA', workType: 'onsite', salary: '$140,000 - $200,000', clearance: 'none', citizenship: 'us_person', experience: 'senior', posted: '4 days ago', applicants: 38, description: 'Lead neutral atom quantum computing research. Develop new qubit architectures.', skills: ['Atomic Physics', 'Quantum Computing', 'Optics', 'Research', 'Python'], logo: '⚛️', featured: false, source: 'QuEra Careers' },
+  { id: 316, type: 'job', title: 'Senior Quantum Physicist', company: 'QuEra Computing', industry: 'quantum', orgType: 'industry', location: 'Boston, MA', workType: 'onsite', salary: '$140,000 - $200,000', clearance: 'none', citizenship: 'us_person', experience: 'senior', posted: '4 days ago', applicants: 38, description: 'Lead neutral atom quantum computing research. Develop new qubit architectures.', skills: ['Atomic Physics', 'Quantum Technologies', 'Optics', 'Research', 'Python'], logo: '⚛️', featured: false, source: 'QuEra Careers' },
 
   // ========== CYBERSECURITY JOBS (17 positions) ==========
   // Source: Northrop Grumman, NSA, CISA, CrowdStrike, Booz Allen Hamilton
@@ -191,7 +245,7 @@ const realJobsData = [
   { id: 517, type: 'job', title: 'Engineering Support', company: 'Lockheed Martin', industry: 'aerospace', orgType: 'industry', location: 'Palmdale, CA', workType: 'onsite', salary: '$55,000 - $75,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '2 weeks ago', applicants: 345, description: 'Support engineering activities on classified aircraft programs.', skills: ['Engineering Support', 'CAD', 'Documentation', 'Technical Skills'], logo: '🚀', featured: false, source: 'Lockheed Martin Jobs' },
 
   // ========== INTERNSHIPS (Various Industries - 15 positions) ==========
-  { id: 601, type: 'internship', title: 'Quantum Computing Intern', company: 'IBM Quantum', industry: 'quantum', orgType: 'industry', location: 'Yorktown Heights, NY', workType: 'hybrid', salary: '$35/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 456, description: 'Summer internship in quantum computing research. Work on Qiskit development.', skills: ['Qiskit', 'Python', 'Physics', 'Linear Algebra'], logo: '⚛️', featured: true, duration: '12 weeks', source: 'IBM Quantum' },
+  { id: 601, type: 'internship', title: 'Quantum Technologies Intern', company: 'IBM Quantum', industry: 'quantum', orgType: 'industry', location: 'Yorktown Heights, NY', workType: 'hybrid', salary: '$35/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 456, description: 'Summer internship in quantum computing research. Work on Qiskit development.', skills: ['Qiskit', 'Python', 'Physics', 'Linear Algebra'], logo: '⚛️', featured: true, duration: '12 weeks', source: 'IBM Quantum' },
   { id: 602, type: 'internship', title: 'Nuclear Engineering Intern', company: 'Oak Ridge National Laboratory', industry: 'nuclear', orgType: 'national_lab', location: 'Oak Ridge, TN', workType: 'onsite', salary: '$25/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '2 weeks ago', applicants: 234, description: 'Support reactor modeling research at DOEs largest lab. HFIR and SNS access.', skills: ['MCNP', 'Python', 'Nuclear Physics', 'SCALE'], logo: '☢️', featured: true, duration: '10 weeks', source: 'ORNL Internships' },
   { id: 603, type: 'internship', title: 'AI Research Intern', company: 'Anthropic', industry: 'ai', orgType: 'industry', location: 'San Francisco, CA', workType: 'onsite', salary: '$60/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '5 days ago', applicants: 1234, description: 'Research AI safety and alignment. Work on Claude model development.', skills: ['Python', 'ML', 'Research', 'Mathematics'], logo: '🤖', featured: true, duration: '12 weeks', source: 'Business Insider' },
   { id: 604, type: 'internship', title: 'Cybersecurity Intern', company: 'CISA', industry: 'cybersecurity', orgType: 'federal', location: 'Arlington, VA', workType: 'hybrid', salary: '$22/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '3 days ago', applicants: 345, description: 'Support federal cybersecurity initiatives. Pathways program eligible.', skills: ['Security+', 'Network Analysis', 'Python', 'Risk Assessment'], logo: '🛡️', featured: false, duration: '16 weeks', source: 'USAJobs' },
@@ -203,14 +257,14 @@ const realJobsData = [
   { id: 610, type: 'internship', title: 'SpaceX Engineering Intern', company: 'SpaceX', industry: 'aerospace', orgType: 'industry', location: 'Hawthorne, CA', workType: 'onsite', salary: '$34/hour', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '3 days ago', applicants: 1567, description: 'Work on Starship and Dragon spacecraft. Fast-paced hands-on experience.', skills: ['CAD', 'MATLAB', 'Manufacturing', 'Testing'], logo: '🚀', featured: true, duration: '12 weeks', source: 'SpaceX Internships' },
   { id: 611, type: 'internship', title: 'Semiconductor Engineer Intern', company: 'Samsung Austin Semiconductor', industry: 'semiconductor', orgType: 'industry', location: 'Austin, TX', workType: 'onsite', salary: '$30/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 345, description: 'Learn semiconductor manufacturing at 14nm/7nm fab. Department-specific project.', skills: ['Clean Room', 'Process Engineering', 'Data Analysis'], logo: '💎', featured: false, duration: '12 weeks', source: 'Lensa/Samsung' },
   { id: 612, type: 'internship', title: 'Meta AI Research Intern', company: 'Meta AI', industry: 'ai', orgType: 'industry', location: 'Menlo Park, CA', workType: 'onsite', salary: '$50/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '2 weeks ago', applicants: 1234, description: 'Research fellowship in computer vision, NLP, or reinforcement learning.', skills: ['PyTorch', 'Python', 'ML', 'Research'], logo: '🤖', featured: false, duration: '12 weeks', source: 'Business Insider' },
-  { id: 613, type: 'internship', title: 'IonQ Quantum Intern', company: 'IonQ', industry: 'quantum', orgType: 'industry', location: 'College Park, MD', workType: 'onsite', salary: '$32/hour', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '1 week ago', applicants: 234, description: 'Work on trapped ion quantum computing systems. Hardware or software tracks.', skills: ['Physics', 'Python', 'Quantum Computing', 'Optics'], logo: '⚛️', featured: false, duration: '10 weeks', source: 'IonQ Careers' },
+  { id: 613, type: 'internship', title: 'IonQ Quantum Intern', company: 'IonQ', industry: 'quantum', orgType: 'industry', location: 'College Park, MD', workType: 'onsite', salary: '$32/hour', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '1 week ago', applicants: 234, description: 'Work on trapped ion quantum computing systems. Hardware or software tracks.', skills: ['Physics', 'Python', 'Quantum Technologies', 'Optics'], logo: '⚛️', featured: false, duration: '10 weeks', source: 'IonQ Careers' },
   { id: 614, type: 'internship', title: 'Blue Origin Propulsion Intern', company: 'Blue Origin', industry: 'aerospace', orgType: 'industry', location: 'Kent, WA', workType: 'onsite', salary: '$33/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '4 days ago', applicants: 456, description: 'Support BE-4 engine development for New Glenn rocket.', skills: ['Thermodynamics', 'MATLAB', 'CFD', 'Propulsion'], logo: '🚀', featured: false, duration: '12 weeks', source: 'Blue Origin Careers' },
   { id: 615, type: 'internship', title: 'Anthropic Research Fellow', company: 'Anthropic', industry: 'ai', orgType: 'industry', location: 'San Francisco, CA', workType: 'onsite', salary: '$65/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 789, description: '6-month research fellowship program on AI safety and alignment.', skills: ['Python', 'ML', 'Research', 'Mathematics', 'AI Safety'], logo: '🤖', featured: true, duration: '24 weeks', source: 'Business Insider' },
 ];
 
 // Quick Apply Modal Component
 const QuickApplyModal: React.FC<{
-  opportunity: typeof realJobsData[0] | null;
+  opportunity: JobData | null;
   onClose: () => void;
   onSubmit: () => void;
 }> = ({ opportunity, onClose, onSubmit }) => {
@@ -308,10 +362,29 @@ const Toast: React.FC<{ message: string; type: 'success' | 'info'; onClose: () =
   );
 };
 
+// Helper to map organization type to filter category
+const mapOrgTypeToFilter = (orgType: string | null): string => {
+  if (!orgType) return 'industry';
+  const typeMap: Record<string, string> = {
+    'academia': 'academia',
+    'university': 'academia',
+    'college': 'academia',
+    'national_lab': 'national_lab',
+    'federal': 'federal',
+    'government': 'federal',
+    'nonprofit': 'nonprofit',
+    'non-profit': 'nonprofit',
+    'private': 'industry',
+    'industry': 'industry',
+    'corporation': 'industry',
+  };
+  return typeMap[orgType.toLowerCase()] || 'industry';
+};
+
 const JobsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const [opportunityType, setOpportunityType] = useState<'job' | 'internship'>('job');
   const [selectedIndustry, setSelectedIndustry] = useState('all');
   const [selectedOrgTypes, setSelectedOrgTypes] = useState<string[]>(['all']);
@@ -321,9 +394,78 @@ const JobsPage: React.FC = () => {
   const [experienceLevel, setExperienceLevel] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [savedJobs, setSavedJobs] = useState<number[]>([]);
-  const [applyingTo, setApplyingTo] = useState<typeof realJobsData[0] | null>(null);
+  const [savedJobs, setSavedJobs] = useState<(number | string)[]>([]);
+  const [applyingTo, setApplyingTo] = useState<JobData | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
+
+  // Database jobs state
+  const [databaseJobs, setDatabaseJobs] = useState<JobData[]>([]);
+  const [, setLoadingDbJobs] = useState(true);
+
+  // Fetch jobs from database
+  useEffect(() => {
+    const fetchDatabaseJobs = async () => {
+      try {
+        // Fetch active jobs with organization info
+        const { data: jobs, error } = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            organizations:organization_id (
+              id,
+              name,
+              type,
+              logo_url
+            )
+          `)
+          .eq('status', 'active')
+          .gt('expires_at', new Date().toISOString())
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching jobs:', error);
+          setLoadingDbJobs(false);
+          return;
+        }
+
+        // Transform database jobs to match the expected format
+        const transformedJobs: JobData[] = (jobs || []).map(job => ({
+          id: job.id,
+          title: job.title,
+          company: job.organizations?.name || 'Unknown Organization',
+          logo: job.organizations?.logo_url || '🏢',
+          location: job.location || 'Location TBD',
+          salary: job.salary_min && job.salary_max
+            ? (job.salary_period === 'hourly'
+              ? `$${job.salary_min} - $${job.salary_max}/hr`
+              : `$${(job.salary_min/1000).toFixed(0)}K - $${(job.salary_max/1000).toFixed(0)}K`)
+            : 'Competitive',
+          type: job.type === 'internship' ? 'internship' : 'job',
+          workType: job.remote ? 'remote' : (job.work_arrangement === 'hybrid' ? 'hybrid' : 'onsite'),
+          clearance: job.clearance_level || 'none',
+          citizenship: job.citizenship_required || 'any',
+          experience: job.experience_level || 'entry',
+          industry: job.industry || 'ai',
+          orgType: mapOrgTypeToFilter(job.organizations?.type),
+          skills: job.required_skills || [],
+          description: job.description,
+          posted: new Date(job.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          applicants: 0,
+          featured: false,
+          source: 'database',
+        }));
+
+        console.log('Fetched database jobs:', transformedJobs.length, 'jobs');
+        setDatabaseJobs(transformedJobs);
+      } catch (err) {
+        console.error('Error in fetchDatabaseJobs:', err);
+      } finally {
+        setLoadingDbJobs(false);
+      }
+    };
+
+    fetchDatabaseJobs();
+  }, []);
 
   useEffect(() => {
     const industry = searchParams.get('industry');
@@ -345,8 +487,13 @@ const JobsPage: React.FC = () => {
     }
   };
 
+  // Combine mock data with database jobs
+  const allOpportunities = useMemo(() => {
+    return [...realJobsData, ...databaseJobs];
+  }, [databaseJobs]);
+
   const filteredOpportunities = useMemo(() => {
-    return realJobsData.filter(opp => {
+    return allOpportunities.filter(opp => {
       if (opp.type !== opportunityType) return false;
       if (selectedIndustry !== 'all' && opp.industry !== selectedIndustry) return false;
       if (!selectedOrgTypes.includes('all') && !selectedOrgTypes.includes(opp.orgType)) return false;
@@ -356,13 +503,14 @@ const JobsPage: React.FC = () => {
       if (experienceLevel !== 'all' && opp.experience !== experienceLevel) return false;
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        return opp.title.toLowerCase().includes(query) || opp.company.toLowerCase().includes(query) || opp.skills.some(s => s.toLowerCase().includes(query));
+        const skills = opp.skills || [];
+        return opp.title.toLowerCase().includes(query) || opp.company.toLowerCase().includes(query) || skills.some((s: string) => s.toLowerCase().includes(query));
       }
       return true;
     });
-  }, [opportunityType, selectedIndustry, selectedOrgTypes, workType, clearance, citizenship, experienceLevel, searchQuery]);
+  }, [allOpportunities, opportunityType, selectedIndustry, selectedOrgTypes, workType, clearance, citizenship, experienceLevel, searchQuery]);
 
-  const handleSaveJob = (jobId: number) => {
+  const handleSaveJob = (jobId: number | string) => {
     if (savedJobs.includes(jobId)) {
       setSavedJobs(savedJobs.filter(id => id !== jobId));
       setToast({ message: 'Removed from saved jobs', type: 'info' });
@@ -377,8 +525,8 @@ const JobsPage: React.FC = () => {
     setToast({ message: 'Application submitted successfully!', type: 'success' });
   };
 
-  const jobCount = realJobsData.filter(o => o.type === 'job').length;
-  const internshipCount = realJobsData.filter(o => o.type === 'internship').length;
+  const jobCount = allOpportunities.filter(o => o.type === 'job').length;
+  const internshipCount = allOpportunities.filter(o => o.type === 'internship').length;
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20">
@@ -516,9 +664,32 @@ const JobsPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {opp.skills.slice(0, 4).map(skill => (<span key={skill} className="px-2 py-1 bg-gray-800 text-gray-300 rounded text-xs">{skill}</span>))}
+                  {opp.skills.slice(0, 4).map((skill: string) => (<span key={skill} className="px-2 py-1 bg-gray-800 text-gray-300 rounded text-xs">{skill}</span>))}
                   {opp.skills.length > 4 && (<span className="px-2 py-1 text-gray-500 text-xs">+{opp.skills.length - 4} more</span>)}
                 </div>
+
+                {/* AI Economy Metrics */}
+                {(() => {
+                  const aiMetrics = getJobAIMetrics(opp.industry);
+                  return (
+                    <div className="flex items-center gap-4 mb-4 py-3 px-3 bg-gray-800/30 rounded-lg">
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-gray-500 text-xs">AI Exposure:</span>
+                        <AIMetricsTooltip type="exposure" value={aiMetrics.exposureIndex} />
+                        <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${getExposureBgColor(aiMetrics.exposureIndex)} ${getExposureColor(aiMetrics.exposureIndex)}`}>
+                          {aiMetrics.exposureIndex}%
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-gray-500 text-xs">AI Opportunity:</span>
+                        <AIMetricsTooltip type="opportunity" value={aiMetrics.opportunityIndex} />
+                        <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${getOpportunityBgColor(aiMetrics.opportunityIndex)} ${getOpportunityColor(aiMetrics.opportunityIndex)}`}>
+                          {aiMetrics.opportunityIndex}%
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-800">
                   <div className="text-sm text-gray-500"><span>📅 {opp.posted}</span><span className="mx-2">•</span><span>👥 {opp.applicants} applicants</span></div>

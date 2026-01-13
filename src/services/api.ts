@@ -219,25 +219,6 @@ export const jobsApi = {
   getApplications: () => api.get<import('@/types').JobApplication[]>('/jobs/applications'),
 };
 
-// Events API
-export const eventsApi = {
-  list: (_filters?: SearchFilters) => api.get<ApiResponse<import('@/types').Event[]>>('/events'),
-  
-  get: (id: string) => api.get<import('@/types').Event>(`/events/${id}`),
-  
-  create: (event: Partial<import('@/types').Event>) => api.post<import('@/types').Event>('/events', event),
-  
-  update: (id: string, event: Partial<import('@/types').Event>) => api.patch<import('@/types').Event>(`/events/${id}`, event),
-  
-  delete: (id: string) => api.delete<void>(`/events/${id}`),
-  
-  register: (eventId: string) => api.post<import('@/types').EventRegistration>(`/events/${eventId}/register`, {}),
-  
-  unregister: (eventId: string) => api.delete<void>(`/events/${eventId}/register`),
-  
-  getRegistrations: () => api.get<import('@/types').EventRegistration[]>('/events/registrations'),
-};
-
 // Training API
 export const trainingApi = {
   list: (_filters?: SearchFilters) => api.get<ApiResponse<import('@/types').TrainingProgram[]>>('/training'),
@@ -280,13 +261,14 @@ export const workforceApi = {
   getIndustryStats: (industry: string) => api.get<import('@/types').Industry>(`/workforce/industries/${industry}`),
 };
 
-// Challenges API
-export const challengesApi = {
+// Simple Challenges API (basic REST operations)
+// For full challenge operations, use challengesApi from './challengesApi'
+export const simpleChallengesApi = {
   list: () => api.get<import('@/types').Challenge[]>('/challenges'),
-  
+
   get: (id: string) => api.get<import('@/types').Challenge>(`/challenges/${id}`),
-  
+
   submit: (challengeId: string, submission: unknown) => api.post<void>(`/challenges/${challengeId}/submit`, submission),
-  
+
   getLeaderboard: () => api.get<import('@/types').Leaderboard[]>('/challenges/leaderboard'),
 };

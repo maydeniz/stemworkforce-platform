@@ -4,7 +4,7 @@
 
 import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, NotificationProvider, BillingProvider, ThemeProvider } from '@/contexts';
+import { AuthProvider, NotificationProvider, BillingProvider, ThemeProvider, FeatureProvider } from '@/contexts';
 import { Layout, MinimalLayout, LayoutLight } from '@/components/layout';
 import { PageLoader, ErrorBoundary } from '@/components/common';
 import { useAuth } from '@/contexts';
@@ -15,8 +15,11 @@ const HomePage = lazy(() => import('@/components/pages/HomePage'));
 const JobsPage = lazy(() => import('@/components/pages/JobsPage'));
 const JobDetailPage = lazy(() => import('@/components/pages/JobDetailPage'));
 const EventsPage = lazy(() => import('@/components/pages/EventsPage'));
+const EventDetailPage = lazy(() => import('@/components/events/EventDetailPage'));
+const EventCategoryPage = lazy(() => import('@/components/events/EventCategoryPage'));
 const TrainingPage = lazy(() => import('@/components/pages/TrainingPage'));
 const WorkforceMapPage = lazy(() => import('@/components/pages/WorkforceMapPage'));
+const AICareerGuidePage = lazy(() => import('@/components/pages/AICareerGuidePage'));
 const PartnersPage = lazy(() => import('@/components/pages/PartnersPage'));
 const PricingPage = lazy(() => import('@/components/pages/PricingPage'));
 const DashboardPage = lazy(() => import('@/components/pages/DashboardPage'));
@@ -40,15 +43,157 @@ const ServiceProviderProfilePage = lazy(() => import('@/components/pages/Service
 
 // Test pages - lazy loaded
 const ColorPaletteTest = lazy(() => import('@/components/pages/ColorPaletteTest'));
+const WorkforceMapModalTestPage = lazy(() => import('@/components/pages/WorkforceMapModalTestPage'));
 
 // Provider Dashboard - lazy loaded
 const ProviderDashboard = lazy(() => import('@/components/pages/provider/ProviderDashboard'));
+const ProviderOnboardingPage = lazy(() => import('@/components/pages/provider/ProviderOnboardingPage'));
+const ProviderLandingPage = lazy(() => import('@/components/pages/provider/ProviderLandingPage'));
+const ProviderResourcesPage = lazy(() => import('@/components/pages/provider/ProviderResourcesPage'));
+
+// Education Partners pages - lazy loaded
+const EducationPartnersLandingPage = lazy(() => import('@/components/pages/education-partners/EducationPartnersLandingPage'));
+const EducationPartnersOnboardingPage = lazy(() => import('@/components/pages/education-partners/EducationPartnersOnboardingPage'));
+const EducationPartnersResourcesPage = lazy(() => import('@/components/pages/education-partners/EducationPartnersResourcesPage'));
+
+// Partner Organization pages - lazy loaded
+const NationalLabsPartnerPage = lazy(() => import('@/components/pages/partners/NationalLabsPartnerPage'));
+const GovernmentPartnersPage = lazy(() => import('@/components/pages/partners/GovernmentPartnersPage'));
+const IndustryPartnersPage = lazy(() => import('@/components/pages/partners/IndustryPartnersPage'));
+const NonprofitPartnersPage = lazy(() => import('@/components/pages/partners/NonprofitPartnersPage'));
+
+// Industry Consulting pages - lazy loaded
+const AIConsultingPage = lazy(() => import('@/components/pages/consulting/AIConsultingPage'));
+const QuantumConsultingPage = lazy(() => import('@/components/pages/consulting/QuantumConsultingPage'));
+const SemiconductorConsultingPage = lazy(() => import('@/components/pages/consulting/SemiconductorConsultingPage'));
+const NuclearConsultingPage = lazy(() => import('@/components/pages/consulting/NuclearConsultingPage'));
+const CybersecurityConsultingPage = lazy(() => import('@/components/pages/consulting/CybersecurityConsultingPage'));
+const AerospaceConsultingPage = lazy(() => import('@/components/pages/consulting/AerospaceConsultingPage'));
+const BiotechConsultingPage = lazy(() => import('@/components/pages/consulting/BiotechConsultingPage'));
+const HealthcareConsultingPage = lazy(() => import('@/components/pages/consulting/HealthcareConsultingPage'));
+const RoboticsConsultingPage = lazy(() => import('@/components/pages/consulting/RoboticsConsultingPage'));
+const CleanEnergyConsultingPage = lazy(() => import('@/components/pages/consulting/CleanEnergyConsultingPage'));
+const ManufacturingConsultingPage = lazy(() => import('@/components/pages/consulting/ManufacturingConsultingPage'));
 
 // Admin dashboards - lazy loaded
 const AdminDashboard = lazy(() => import('@/components/pages/admin/AdminDashboard'));
 const BillingDashboard = lazy(() => import('@/components/pages/billing/BillingDashboard'));
 const AdvertisingDashboard = lazy(() => import('@/components/pages/advertising/AdvertisingDashboard'));
 const MarketplaceDashboard = lazy(() => import('@/components/pages/marketplace/MarketplaceDashboard'));
+
+// Workforce Services pages - lazy loaded
+const StaffingServicesPage = lazy(() => import('@/components/pages/services/StaffingServicesPage'));
+const RecruitingServicesPage = lazy(() => import('@/components/pages/services/RecruitingServicesPage'));
+const CareerCoachingPage = lazy(() => import('@/components/pages/services/CareerCoachingPage'));
+const TrainingServicesPage = lazy(() => import('@/components/pages/services/TrainingServicesPage'));
+const ClearanceServicesPage = lazy(() => import('@/components/pages/services/ClearanceServicesPage'));
+const ImmigrationServicesPage = lazy(() => import('@/components/pages/services/ImmigrationServicesPage'));
+const OutplacementServicesPage = lazy(() => import('@/components/pages/services/OutplacementServicesPage'));
+
+// Student pages - lazy loaded
+const EssayCoachPage = lazy(() => import('@/components/pages/students/EssayCoachPage'));
+const ResearchWriterPage = lazy(() => import('@/components/pages/students/ResearchWriterPage'));
+const WhySchoolPage = lazy(() => import('@/components/pages/students/WhySchoolPage'));
+const ApplicationTrackerPage = lazy(() => import('@/components/pages/students/ApplicationTrackerPage'));
+const InterviewPrepPage = lazy(() => import('@/components/pages/students/InterviewPrepPage'));
+const MockAdmissionsPage = lazy(() => import('@/components/pages/students/MockAdmissionsPage'));
+
+// College Discovery pages - lazy loaded with error logging
+const CollegeMatcherPage = lazy(() =>
+  import('@/components/pages/students/CollegeMatcherPage').catch(err => {
+    console.error('Failed to load CollegeMatcherPage:', err);
+    throw err;
+  })
+);
+const MajorExplorerPage = lazy(() =>
+  import('@/components/pages/students/MajorExplorerPage').catch(err => {
+    console.error('Failed to load MajorExplorerPage:', err);
+    throw err;
+  })
+);
+const CampusCulturePage = lazy(() =>
+  import('@/components/pages/students/CampusCulturePage').catch(err => {
+    console.error('Failed to load CampusCulturePage:', err);
+    throw err;
+  })
+);
+const FinancialFitPage = lazy(() =>
+  import('@/components/pages/students/FinancialFitPage').catch(err => {
+    console.error('Failed to load FinancialFitPage:', err);
+    throw err;
+  })
+);
+const VirtualToursPage = lazy(() =>
+  import('@/components/pages/students/VirtualToursPage').catch(err => {
+    console.error('Failed to load VirtualToursPage:', err);
+    throw err;
+  })
+);
+const CompareSchoolsPage = lazy(() =>
+  import('@/components/pages/students/CompareSchoolsPage').catch(err => {
+    console.error('Failed to load CompareSchoolsPage:', err);
+    throw err;
+  })
+);
+
+// Financial Planning pages - lazy loaded
+const ScholarshipMatcherPage = lazy(() => import('@/components/pages/students/ScholarshipMatcherPage'));
+const NetPriceCalculatorPage = lazy(() => import('@/components/pages/students/NetPriceCalculatorPage'));
+const AwardLetterAnalyzerPage = lazy(() => import('@/components/pages/students/AwardLetterAnalyzerPage'));
+const CSSProfileOptimizerPage = lazy(() => import('@/components/pages/students/CSSProfileOptimizerPage'));
+const AppealLetterPage = lazy(() => import('@/components/pages/students/AppealLetterPage'));
+const STEMFundingPage = lazy(() => import('@/components/pages/students/STEMFundingPage'));
+const LoanPayoffModelerPage = lazy(() => import('@/components/pages/students/LoanPayoffModelerPage'));
+const CareerROICalculatorPage = lazy(() => import('@/components/pages/students/CareerROICalculatorPage'));
+
+// Career Pathways Pages (High School)
+const InternshipFinderPage = lazy(() => import('@/components/pages/students/InternshipFinderPage'));
+const WorkBasedLearningPage = lazy(() => import('@/components/pages/students/WorkBasedLearningPage'));
+const ApprenticeshipPathwaysPage = lazy(() => import('@/components/pages/students/ApprenticeshipPathwaysPage'));
+
+// College Student Pages - Hub Pages
+const CareerLaunchHubPage = lazy(() => import('@/components/pages/college/CareerLaunchHubPage'));
+const ProfessionalDevelopmentPage = lazy(() => import('@/components/pages/college/ProfessionalDevelopmentPage'));
+const GraduateSchoolPrepPage = lazy(() => import('@/components/pages/college/GraduateSchoolPrepPage'));
+const ResearchOpportunitiesPage = lazy(() => import('@/components/pages/college/ResearchOpportunitiesPage'));
+const GovernmentCareersPage = lazy(() => import('@/components/pages/college/GovernmentCareersPage'));
+
+// College Student Pages - Career Launch
+const ResumeBuilderPage = lazy(() => import('@/components/pages/college/ResumeBuilderPage'));
+const CollegeInterviewPrepPage = lazy(() => import('@/components/pages/college/InterviewPrepPage'));
+const SalaryNegotiationPage = lazy(() => import('@/components/pages/college/SalaryNegotiationPage'));
+const CollegeInternshipFinderPage = lazy(() => import('@/components/pages/college/InternshipFinderPage'));
+const OfferComparisonPage = lazy(() => import('@/components/pages/college/OfferComparisonPage'));
+
+// College Student Pages - Professional Development
+const SkillsAssessmentPage = lazy(() => import('@/components/pages/college/SkillsAssessmentPage'));
+const TechnicalPortfolioPage = lazy(() => import('@/components/pages/college/TechnicalPortfolioPage'));
+const NetworkingPage = lazy(() => import('@/components/pages/college/NetworkingPage'));
+const MentorshipPage = lazy(() => import('@/components/pages/college/MentorshipPage'));
+const CollegeEventsPage = lazy(() => import('@/components/pages/college/EventsPage'));
+
+// College Student Pages - Graduate & Research
+const FellowshipFinderPage = lazy(() => import('@/components/pages/college/FellowshipFinderPage'));
+const SOPCoachPage = lazy(() => import('@/components/pages/college/SOPCoachPage'));
+const FacultyMatchPage = lazy(() => import('@/components/pages/college/FacultyMatchPage'));
+const PhDDecisionPage = lazy(() => import('@/components/pages/college/PhDDecisionPage'));
+
+// College Student Pages - Government & Finance
+const ClearanceGuidePage = lazy(() => import('@/components/pages/college/ClearanceGuidePage'));
+const LoanStrategyPage = lazy(() => import('@/components/pages/college/LoanStrategyPage'));
+const GradFundingPage = lazy(() => import('@/components/pages/college/GradFundingPage'));
+const RelocationCalculatorPage = lazy(() => import('@/components/pages/college/RelocationCalculatorPage'));
+const BudgetPlannerPage = lazy(() => import('@/components/pages/college/BudgetPlannerPage'));
+
+// Challenges pages - lazy loaded
+const ChallengesPage = lazy(() => import('@/components/pages/challenges/ChallengesPage'));
+const ChallengeDetailPage = lazy(() => import('@/components/pages/challenges/ChallengeDetailPage'));
+const CreateChallengePage = lazy(() => import('@/components/pages/challenges/CreateChallengePage'));
+const PostChallengePage = lazy(() => import('@/components/pages/challenges/PostChallengePage'));
+const SolveChallengePage = lazy(() => import('@/components/pages/challenges/SolveChallengePage'));
+
+// Federation pages - lazy loaded
+const FederatedListingsPage = lazy(() => import('@/components/federation/FederatedListingsPage'));
 
 // Protected route wrapper
 interface ProtectedRouteProps {
@@ -176,6 +321,38 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/events/:id"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EventDetailPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/events/category/:category"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EventCategoryPage />
+            </Suspense>
+          }
+        />
+        {/* Event category shortcuts */}
+        <Route path="/events/career-fairs" element={<Navigate to="/events/category/career-fairs" replace />} />
+        <Route path="/events/networking" element={<Navigate to="/events/category/networking" replace />} />
+        <Route path="/events/workshops" element={<Navigate to="/events/category/workshops" replace />} />
+        <Route path="/events/clearance" element={<Navigate to="/events/category/clearance" replace />} />
+        <Route path="/events/semiconductor" element={<Navigate to="/events/category/semiconductor" replace />} />
+        <Route path="/events/nuclear-energy" element={<Navigate to="/events/category/nuclear-energy" replace />} />
+        <Route path="/events/ai-quantum" element={<Navigate to="/events/category/ai-quantum" replace />} />
+        <Route path="/events/aerospace-defense" element={<Navigate to="/events/category/aerospace-defense" replace />} />
+        <Route path="/events/certifications" element={<Navigate to="/events/category/certifications" replace />} />
+        <Route path="/events/leadership" element={<Navigate to="/events/category/leadership" replace />} />
+        <Route path="/events/compliance" element={<Navigate to="/events/category/compliance" replace />} />
+        <Route path="/events/university" element={<Navigate to="/events/category/university" replace />} />
+        <Route path="/events/national-labs" element={<Navigate to="/events/category/national-labs" replace />} />
+        <Route path="/events/government" element={<Navigate to="/events/category/government" replace />} />
+        <Route path="/events/employers" element={<Navigate to="/events/category/employers" replace />} />
+        <Route
           path="/training"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -188,6 +365,22 @@ const AppRoutes: React.FC = () => {
           element={
             <Suspense fallback={<PageLoader />}>
               <WorkforceMapPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/workforce-map"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <WorkforceMapPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/ai-career-guide"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AICareerGuidePage />
             </Suspense>
           }
         />
@@ -260,6 +453,702 @@ const AppRoutes: React.FC = () => {
           element={
             <Suspense fallback={<PageLoader />}>
               <ColorPaletteTest />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/workforce-map-test"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <WorkforceMapModalTestPage />
+            </Suspense>
+          }
+        />
+
+        {/* Industry Consulting Pages */}
+        <Route
+          path="/services/ai-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AIConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/quantum-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <QuantumConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/semiconductor-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SemiconductorConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/nuclear-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NuclearConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/cybersecurity-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CybersecurityConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/aerospace-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AerospaceConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/biotech-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BiotechConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/healthcare-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <HealthcareConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/robotics-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <RoboticsConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/clean-energy-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CleanEnergyConsultingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/manufacturing-consulting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ManufacturingConsultingPage />
+            </Suspense>
+          }
+        />
+
+        {/* Workforce Services Pages */}
+        <Route
+          path="/services/staffing"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <StaffingServicesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/recruiting"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <RecruitingServicesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/career-coaching"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CareerCoachingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/training-services"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TrainingServicesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/clearance-services"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ClearanceServicesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/immigration"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ImmigrationServicesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/services/outplacement"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <OutplacementServicesPage />
+            </Suspense>
+          }
+        />
+
+        {/* Provider Pages */}
+        <Route
+          path="/become-a-provider"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ProviderLandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/provider-apply"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ProviderOnboardingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/provider-resources"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ProviderResourcesPage />
+            </Suspense>
+          }
+        />
+
+        {/* Education Partners Pages */}
+        <Route
+          path="/education-partners"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EducationPartnersLandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/education-partner-apply"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EducationPartnersOnboardingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/education-partner-resources"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EducationPartnersResourcesPage />
+            </Suspense>
+          }
+        />
+
+        {/* Partner Organization Pages */}
+        <Route
+          path="/partners/national-labs"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NationalLabsPartnerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/partners/government"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <GovernmentPartnersPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/partners/industry"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <IndustryPartnersPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/partners/nonprofits"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NonprofitPartnersPage />
+            </Suspense>
+          }
+        />
+
+        {/* Student Application Support Pages */}
+        <Route
+          path="/students/essay-coach"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EssayCoachPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/research-writer"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ResearchWriterPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/why-school"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <WhySchoolPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/app-tracker"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ApplicationTrackerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/interview-prep"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <InterviewPrepPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/mock-review"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <MockAdmissionsPage />
+            </Suspense>
+          }
+        />
+
+        {/* Student College Discovery Pages */}
+        <Route
+          path="/students/college-matcher"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CollegeMatcherPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/major-explorer"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <MajorExplorerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/campus-culture"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CampusCulturePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/financial-fit"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FinancialFitPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/virtual-tours"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <VirtualToursPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/compare-schools"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CompareSchoolsPage />
+            </Suspense>
+          }
+        />
+
+        {/* Student Financial Planning Pages */}
+        <Route
+          path="/students/scholarship-matcher"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ScholarshipMatcherPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/net-price-calculator"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NetPriceCalculatorPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/award-letter-analyzer"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AwardLetterAnalyzerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/css-profile"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CSSProfileOptimizerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/appeal-letter"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AppealLetterPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/stem-funding"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <STEMFundingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/loan-payoff"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LoanPayoffModelerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/career-roi"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CareerROICalculatorPage />
+            </Suspense>
+          }
+        />
+
+        {/* Career Pathways Pages */}
+        <Route
+          path="/students/internship-finder"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <InternshipFinderPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/work-based-learning"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <WorkBasedLearningPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/students/apprenticeship-pathways"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ApprenticeshipPathwaysPage />
+            </Suspense>
+          }
+        />
+
+        {/* College Student Pages */}
+        <Route
+          path="/college/career-launch"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CareerLaunchHubPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/professional-development"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ProfessionalDevelopmentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/grad-school-prep"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <GraduateSchoolPrepPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/research-opportunities"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ResearchOpportunitiesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/government-careers"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <GovernmentCareersPage />
+            </Suspense>
+          }
+        />
+
+        {/* College Career Launch Pages */}
+        <Route
+          path="/college/resume-builder"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ResumeBuilderPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/interview-prep"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CollegeInterviewPrepPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/salary-negotiation"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SalaryNegotiationPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/internships"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CollegeInternshipFinderPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/offer-compare"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <OfferComparisonPage />
+            </Suspense>
+          }
+        />
+
+        {/* College Professional Development Pages */}
+        <Route
+          path="/college/skills-assessment"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SkillsAssessmentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/portfolio-builder"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TechnicalPortfolioPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/networking"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NetworkingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/mentorship"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <MentorshipPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/events"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CollegeEventsPage />
+            </Suspense>
+          }
+        />
+
+        {/* College Graduate & Research Pages */}
+        <Route
+          path="/college/fellowships"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FellowshipFinderPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/sop-coach"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SOPCoachPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/faculty-match"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FacultyMatchPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/phd-decision"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PhDDecisionPage />
+            </Suspense>
+          }
+        />
+
+        {/* College Government & Finance Pages */}
+        <Route
+          path="/college/clearance-guide"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ClearanceGuidePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/loan-strategy"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LoanStrategyPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/grad-funding"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <GradFundingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/relocation"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <RelocationCalculatorPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college/budget-planner"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BudgetPlannerPage />
+            </Suspense>
+          }
+        />
+
+        {/* Challenges Pages */}
+        <Route
+          path="/challenges"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ChallengesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/challenges/post"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PostChallengePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/challenges/solve"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SolveChallengePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/challenges/create"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CreateChallengePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/challenges/:slug"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ChallengeDetailPage />
+            </Suspense>
+          }
+        />
+
+        {/* Federation Pages - Aggregated Listings */}
+        <Route
+          path="/explore"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FederatedListingsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/explore/:contentType"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FederatedListingsPage />
             </Suspense>
           }
         />
@@ -395,13 +1284,15 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
-            <BillingProvider>
-              <NotificationProvider>
-                <AppRoutes />
-              </NotificationProvider>
-            </BillingProvider>
+            <FeatureProvider>
+              <BillingProvider>
+                <NotificationProvider>
+                  <AppRoutes />
+                </NotificationProvider>
+              </BillingProvider>
+            </FeatureProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>

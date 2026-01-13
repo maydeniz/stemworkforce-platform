@@ -26,13 +26,13 @@ const PALETTE = {
 
 // Industries data for the dropdown
 const INDUSTRIES_MENU = [
-  { id: 'artificial-intelligence', name: 'Artificial Intelligence', icon: '🤖', color: '#8b5cf6', path: '/industries-light/artificial-intelligence' },
-  { id: 'quantum-computing', name: 'Quantum Computing', icon: '🔬', color: '#ec4899', path: '/industries-light/quantum-computing' },
+  { id: 'artificial-intelligence', name: 'AI & Machine Learning', icon: '🤖', color: '#8b5cf6', path: '/industries-light/artificial-intelligence' },
+  { id: 'quantum-technologies', name: 'Quantum Technologies', icon: '🔬', color: '#ec4899', path: '/industries-light/quantum-technologies' },
   { id: 'nuclear-energy', name: 'Nuclear Energy', icon: '⚛️', color: '#22c55e', path: '/industries-light/nuclear-energy' },
   { id: 'biotechnology', name: 'Biotechnology', icon: '🧬', color: '#10b981', path: '/industries-light/biotechnology' },
   { id: 'healthcare', name: 'Healthcare & Medical Technology', icon: '🏥', color: '#14b8a6', path: '/industries-light/healthcare' },
   { id: 'cybersecurity', name: 'Cybersecurity', icon: '🛡️', color: '#ef4444', path: '/industries-light/cybersecurity' },
-  { id: 'aerospace', name: 'Aerospace & Space', icon: '🚀', color: '#06b6d4', path: '/industries-light/aerospace' },
+  { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀', color: '#06b6d4', path: '/industries-light/aerospace' },
   { id: 'advanced-manufacturing', name: 'Advanced Manufacturing', icon: '🏭', color: '#64748b', path: '/industries-light/advanced-manufacturing' },
   { id: 'semiconductor', name: 'Semiconductor', icon: '💻', color: '#3b82f6', path: '/industries-light/semiconductor' },
   { id: 'robotics', name: 'Robotics & Automation', icon: '🦾', color: '#f59e0b', path: '/industries-light/robotics' },

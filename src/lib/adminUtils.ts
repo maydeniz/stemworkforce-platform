@@ -17,6 +17,16 @@ export const logAdminAction = async ({
   newValues = null,
   metadata = {},
   severity = 'info',
+}: {
+  eventType: string;
+  action: string;
+  resourceType: string;
+  resourceId: string | null;
+  resourceName?: string;
+  oldValues?: Record<string, unknown> | null;
+  newValues?: Record<string, unknown> | null;
+  metadata?: Record<string, unknown>;
+  severity?: 'info' | 'warning' | 'error' | 'critical';
 }) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -267,7 +277,7 @@ export const ADMIN_PERMISSIONS = {
 /**
  * Validate string input
  */
-export const validateString = (value, { minLength = 0, maxLength = 255, required = false, label = 'Field' }) => {
+export const validateString = (value: string | null | undefined, { minLength = 0, maxLength = 255, required = false, label = 'Field' }: { minLength?: number; maxLength?: number; required?: boolean; label?: string }) => {
   if (required && (!value || value.trim() === '')) {
     return `${label} is required`;
   }
@@ -283,7 +293,7 @@ export const validateString = (value, { minLength = 0, maxLength = 255, required
 /**
  * Validate email
  */
-export const validateEmail = (email) => {
+export const validateEmail = (email: string | null | undefined): string | null => {
   if (!email) return 'Email is required';
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) return 'Invalid email format';
@@ -293,11 +303,11 @@ export const validateEmail = (email) => {
 /**
  * Validate number in range
  */
-export const validateNumber = (value, { min = null, max = null, required = false, label = 'Value' }) => {
+export const validateNumber = (value: string | number | null | undefined, { min = null, max = null, required = false, label = 'Value' }: { min?: number | null; max?: number | null; required?: boolean; label?: string }) => {
   if (required && (value === null || value === undefined || value === '')) {
     return `${label} is required`;
   }
-  const num = parseFloat(value);
+  const num = parseFloat(String(value));
   if (isNaN(num)) return `${label} must be a number`;
   if (min !== null && num < min) return `${label} must be at least ${min}`;
   if (max !== null && num > max) return `${label} must be at most ${max}`;
@@ -307,27 +317,38 @@ export const validateNumber = (value, { min = null, max = null, required = false
 /**
  * Validate form data object
  */
-export const validateForm = (data, rules) => {
-  const errors = {};
-  
+interface ValidationRule {
+  type?: 'string' | 'email' | 'number';
+  minLength?: number;
+  maxLength?: number;
+  min?: number | null;
+  max?: number | null;
+  required?: boolean;
+  label?: string;
+  custom?: (value: unknown, data: Record<string, unknown>) => string | null;
+}
+
+export const validateForm = (data: Record<string, unknown>, rules: Record<string, ValidationRule>) => {
+  const errors: Record<string, string> = {};
+
   for (const [field, fieldRules] of Object.entries(rules)) {
     const value = data[field];
-    
+
     if (fieldRules.type === 'string') {
-      const error = validateString(value, fieldRules);
+      const error = validateString(value as string, fieldRules);
       if (error) errors[field] = error;
     } else if (fieldRules.type === 'email') {
-      const error = validateEmail(value);
+      const error = validateEmail(value as string);
       if (error) errors[field] = error;
     } else if (fieldRules.type === 'number') {
-      const error = validateNumber(value, fieldRules);
+      const error = validateNumber(value as number, fieldRules);
       if (error) errors[field] = error;
     } else if (fieldRules.custom) {
       const error = fieldRules.custom(value, data);
       if (error) errors[field] = error;
     }
   }
-  
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
@@ -341,14 +362,15 @@ export const validateForm = (data, rules) => {
 /**
  * Show confirmation dialog for destructive actions
  */
-export const confirmAction = async (message, { 
+export const confirmAction = async (message: string, {
   title = 'Confirm Action',
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  isDangerous = false,
-}) => {
+  confirmText: _confirmText = 'Confirm',
+  cancelText: _cancelText = 'Cancel',
+  isDangerous: _isDangerous = false,
+}: { title?: string; confirmText?: string; cancelText?: string; isDangerous?: boolean }) => {
   // For now, use browser confirm
-  // In production, replace with custom modal
+  // In production, replace with custom modal (and use confirmText, cancelText, isDangerous)
+  void _confirmText; void _cancelText; void _isDangerous;
   return window.confirm(`${title}\n\n${message}`);
 };
 
@@ -356,28 +378,28 @@ export const confirmAction = async (message, {
  * Pre-built confirmation messages
  */
 export const CONFIRM_MESSAGES = {
-  suspendUser: (name) => `Are you sure you want to suspend ${name}? They will lose access to their account.`,
-  deleteUser: (name) => `Are you sure you want to permanently delete ${name}'s account? This action cannot be undone.`,
-  suspendOrg: (name) => `Are you sure you want to suspend ${name}? All associated users will lose access.`,
+  suspendUser: (name: string) => `Are you sure you want to suspend ${name}? They will lose access to their account.`,
+  deleteUser: (name: string) => `Are you sure you want to permanently delete ${name}'s account? This action cannot be undone.`,
+  suspendOrg: (name: string) => `Are you sure you want to suspend ${name}? All associated users will lose access.`,
   cancelSubscription: () => 'Are you sure you want to cancel this subscription? Access will continue until the end of the billing period.',
-  approveProvider: (name) => `Approve ${name} as a marketplace provider? They will be able to list services.`,
-  suspendProvider: (name) => `Suspend ${name}? Their services will be hidden from the marketplace.`,
+  approveProvider: (name: string) => `Approve ${name} as a marketplace provider? They will be able to list services.`,
+  suspendProvider: (name: string) => `Suspend ${name}? Their services will be hidden from the marketplace.`,
   rejectReview: () => 'Reject this review? It will not be visible to other users.',
-  processRefund: (amount) => `Process a refund of $${amount}? This action cannot be undone.`,
-  pauseCampaign: (name) => `Pause the campaign "${name}"? Ads will stop serving immediately.`,
-  deletePlan: (name) => `Delete the "${name}" plan? Existing subscribers will be moved to a default plan.`,
+  processRefund: (amount: number | string) => `Process a refund of $${amount}? This action cannot be undone.`,
+  pauseCampaign: (name: string) => `Pause the campaign "${name}"? Ads will stop serving immediately.`,
+  deletePlan: (name: string) => `Delete the "${name}" plan? Existing subscribers will be moved to a default plan.`,
 };
 
 // ===========================================
 // RATE LIMITING
 // ===========================================
 
-const rateLimitStore = new Map();
+const rateLimitStore = new Map<string, number[]>();
 
 /**
  * Simple client-side rate limiter
  */
-export const checkRateLimit = (key, { maxCalls = 10, windowMs = 60000 }) => {
+export const checkRateLimit = (key: string, { maxCalls = 10, windowMs = 60000 }: { maxCalls?: number; windowMs?: number }) => {
   const now = Date.now();
   const windowStart = now - windowMs;
   
@@ -385,8 +407,8 @@ export const checkRateLimit = (key, { maxCalls = 10, windowMs = 60000 }) => {
     rateLimitStore.set(key, []);
   }
   
-  const calls = rateLimitStore.get(key);
-  
+  const calls = rateLimitStore.get(key) || [];
+
   // Remove calls outside the window
   const validCalls = calls.filter(time => time > windowStart);
   rateLimitStore.set(key, validCalls);
@@ -409,7 +431,7 @@ export const checkRateLimit = (key, { maxCalls = 10, windowMs = 60000 }) => {
 /**
  * Check if user has specific permission
  */
-export const checkPermission = async (permissionName) => {
+export const checkPermission = async (permissionName: string) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
@@ -429,8 +451,8 @@ export const checkPermission = async (permissionName) => {
     if (error || !data) return false;
     
     // Flatten permissions
-    const permissions = data.flatMap(assignment => 
-      assignment.admin_roles?.role_permissions?.map(rp => 
+    const permissions = (data as unknown as Array<{ admin_roles: { role_permissions: Array<{ admin_permissions: { name: string } }> } }>).flatMap((assignment) =>
+      assignment.admin_roles?.role_permissions?.map((rp) =>
         rp.admin_permissions?.name
       ) || []
     );
@@ -445,7 +467,7 @@ export const checkPermission = async (permissionName) => {
 /**
  * Check if user has any of the specified roles
  */
-export const hasAnyRole = async (roleNames) => {
+export const hasAnyRole = async (roleNames: string[]) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
@@ -458,8 +480,8 @@ export const hasAnyRole = async (roleNames) => {
     
     if (error || !data) return false;
     
-    const userRoles = data.map(d => d.admin_roles?.name).filter(Boolean);
-    return roleNames.some(role => userRoles.includes(role));
+    const userRoles = (data as unknown as Array<{ admin_roles: { name: string } }>).map((d) => d.admin_roles?.name).filter(Boolean) as string[];
+    return roleNames.some((role: string) => userRoles.includes(role));
   } catch (err) {
     console.error('Role check error:', err);
     return false;
@@ -473,32 +495,35 @@ export const hasAnyRole = async (roleNames) => {
 /**
  * Handle Supabase errors consistently
  */
-export const handleSupabaseError = (error, defaultMessage = 'An error occurred') => {
+export const handleSupabaseError = (error: { code?: string; message?: string } | null, defaultMessage = 'An error occurred'): string | null => {
   if (!error) return null;
-  
+
   // Map common Supabase errors to user-friendly messages
-  const errorMessages = {
+  const errorMessages: Record<string, string> = {
     '23505': 'This item already exists',
     '23503': 'Cannot delete: item is referenced by other records',
     '42501': 'You do not have permission to perform this action',
     'PGRST301': 'You do not have access to this resource',
   };
-  
-  const code = error.code || error.message;
+
+  const code = error.code || error.message || '';
   return errorMessages[code] || error.message || defaultMessage;
 };
 
 /**
  * Wrap async function with error handling
  */
-export const withErrorHandling = (fn, { onError, onSuccess }) => {
-  return async (...args) => {
+export const withErrorHandling = <T, Args extends unknown[]>(
+  fn: (...args: Args) => Promise<T>,
+  { onError, onSuccess }: { onError?: (message: string | null, error: unknown) => void; onSuccess?: (result: T) => void }
+) => {
+  return async (...args: Args): Promise<T> => {
     try {
       const result = await fn(...args);
       if (onSuccess) onSuccess(result);
       return result;
     } catch (error) {
-      const message = handleSupabaseError(error);
+      const message = handleSupabaseError(error as { code?: string; message?: string });
       if (onError) onError(message, error);
       throw error;
     }

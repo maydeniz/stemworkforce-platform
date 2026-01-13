@@ -13,10 +13,10 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   Users, UserPlus, Shield, Mail, Clock, CheckCircle2,
-  XCircle, MoreVertical, Search, Filter, Download,
-  ChevronRight, Eye, Edit2, Trash2, RefreshCw,
-  Key, Building2, Calendar, AlertTriangle, Send,
-  UserCheck, Settings, Crown, Lock, Unlock, Globe
+  XCircle, Search,
+  ChevronRight, Edit2, Trash2, RefreshCw,
+  Key, Building2, AlertTriangle, Send,
+  UserCheck, Crown, Lock, Unlock, Globe
 } from 'lucide-react';
 
 // ===========================================
@@ -271,7 +271,7 @@ const StaffDirectory: React.FC<{ onInvite: () => void; onAddStaff: () => void }>
 
   const fetchRoles = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('admin_roles')
         .select('*')
         .order('hierarchy_level');
@@ -281,8 +281,8 @@ const StaffDirectory: React.FC<{ onInvite: () => void; onAddStaff: () => void }>
         // Use sample data if database is empty
         setRoles(SAMPLE_ROLES);
       }
-    } catch (error) {
-      console.error('Error fetching roles:', error);
+    } catch (err) {
+      console.error('Error fetching roles:', err);
       setRoles(SAMPLE_ROLES);
     }
   };
@@ -838,7 +838,6 @@ const RolesSection: React.FC<{ onViewRole: (role: AdminRole) => void }> = ({ onV
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [rolePermissions, setRolePermissions] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     fetchRolesAndPermissions();

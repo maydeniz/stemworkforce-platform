@@ -5,16 +5,16 @@ import type { ProgramFormData } from '@/types/program';
 
 // Industry options for program categorization
 const industryOptions = [
-  { id: 'semiconductor', name: 'Semiconductor Manufacturing', icon: '💎' },
+  { id: 'semiconductor', name: 'Semiconductor', icon: '💎' },
   { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
-  { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
-  { id: 'ai', name: 'Artificial Intelligence', icon: '🤖' },
+  { id: 'ai', name: 'AI & Machine Learning', icon: '🤖' },
+  { id: 'quantum', name: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cyber', name: 'Cybersecurity', icon: '🛡️' },
-  { id: 'quantum', name: 'Quantum Computing', icon: '⚛️' },
+  { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
   { id: 'biotech', name: 'Biotechnology', icon: '🧬' },
   { id: 'healthcare', name: 'Healthcare & Medical Technology', icon: '🏥' },
   { id: 'robotics', name: 'Robotics & Automation', icon: '🦾' },
-  { id: 'cleanenergy', name: 'Clean Energy Tech', icon: '⚡' },
+  { id: 'cleanenergy', name: 'Clean Energy', icon: '⚡' },
   { id: 'advmfg', name: 'Advanced Manufacturing', icon: '🏭' },
 ];
 

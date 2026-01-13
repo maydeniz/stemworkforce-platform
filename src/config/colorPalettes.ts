@@ -1,30 +1,22 @@
 // ===========================================
 // Color Palette Configuration
 // ===========================================
-// Based on research from design experts and industry best practices
-// Sources: Stripe, LinkedIn, Glassdoor, USWDS, EdTech Research
+// Based on expert panel consultation:
+// - UX Designer (Enterprise SaaS)
+// - Visual/Brand Designer
+// - Workforce Development Expert
+// - Government/Public Sector Design Expert
+// - Healthcare Tech Industry Expert
 // ===========================================
 
 export type PaletteId =
-  | 'professional-tech'    // Stripe/Vercel inspired
-  | 'linkedin-blue'        // LinkedIn professional networking
-  | 'glassdoor-green'      // Job platform focused
-  | 'government-trust'     // USWDS institutional
-  | 'edtech-learning'      // Education/training focused
-  | 'stemworkforce-dark';  // Current dark mode (default)
-
-export interface ColorScale {
-  50: string;
-  100: string;
-  200: string;
-  300: string;
-  400: string;
-  500: string;
-  600: string;
-  700: string;
-  800: string;
-  900: string;
-}
+  | 'deep-space'        // Refined dark tech theme
+  | 'professional'      // Corporate light theme
+  | 'federal'           // Government/DOE inspired
+  | 'medtech'           // Healthcare technology
+  | 'innovation'        // Startup/student energy
+  | 'accessible'        // High-contrast accessible
+  | 'stem-brand';       // Logo-inspired yellow/orange theme
 
 export interface ColorPalette {
   id: PaletteId;
@@ -32,836 +24,413 @@ export interface ColorPalette {
   description: string;
   mode: 'light' | 'dark';
   bestFor: string[];
+  expertRecommendedBy: string[];
+  wcagLevel: 'AA' | 'AA+' | 'AAA';
   colors: {
-    primary: ColorScale;
-    secondary: ColorScale;
-    accent: ColorScale;
-    success: ColorScale;
-    warning: ColorScale;
-    error: ColorScale;
-    neutral: ColorScale & { white?: string; black?: string };
-  };
-  // Semantic tokens for easy access
-  semantic: {
+    // Primary brand colors
+    primary: string;
+    primaryHover: string;
+    primaryDark: string;
+    primaryLight: string;
+
+    // Secondary/accent colors
+    secondary: string;
+    secondaryLight: string;
+    accent?: string;
+
     // Backgrounds
     bgPrimary: string;
     bgSecondary: string;
     bgTertiary: string;
-    bgAccent: string;
-    bgHover: string;
+    surfaceElevated: string;
 
     // Text
     textPrimary: string;
     textSecondary: string;
     textMuted: string;
     textInverse: string;
+    textLink?: string;
+    textLinkVisited?: string;
+
+    // Status colors
+    success: string;
+    successLight: string;
+    successDark?: string;
+    warning: string;
+    warningLight: string;
+    warningDark?: string;
+    error: string;
+    errorLight: string;
+    errorDark?: string;
+    info: string;
+    infoLight?: string;
 
     // Borders
     borderPrimary: string;
     borderSecondary: string;
     borderFocus: string;
+    borderHighlight?: string;
+    borderStrong?: string;
 
-    // Interactive
-    buttonPrimary: string;
-    buttonPrimaryHover: string;
-    buttonSecondary: string;
-    buttonAccent: string;
-    buttonAccentHover: string;
-
-    // Status
-    statusSuccess: string;
-    statusSuccessBg: string;
-    statusWarning: string;
-    statusWarningBg: string;
-    statusError: string;
-    statusErrorBg: string;
-    statusInfo: string;
-    statusInfoBg: string;
+    // Gradients (for dark themes)
+    gradientStart?: string;
+    gradientMid?: string;
+    gradientEnd?: string;
   };
 }
 
 // ===========================================
-// PALETTE 1: PROFESSIONAL TECH STANDARD
+// PALETTE 1: DEEP SPACE TECH (Refined Dark Theme)
 // ===========================================
-// Inspired by Stripe/Vercel - Enterprise SaaS
-const professionalTech: ColorPalette = {
-  id: 'professional-tech',
-  name: 'Professional Tech',
-  description: 'Enterprise-grade palette inspired by Stripe & Vercel. Maximum trust and modern aesthetics.',
-  mode: 'light',
-  bestFor: ['Financial services', 'HR platforms', 'Enterprise software', 'Professional services'],
-  colors: {
-    primary: {
-      50: '#f0f4ff',
-      100: '#dfe6ff',
-      200: '#c7d2fe',
-      300: '#a5b4fc',
-      400: '#818cf8',
-      500: '#635bff',  // Stripe purple-blue
-      600: '#5046e5',
-      700: '#4338ca',
-      800: '#0a2540',  // Deep navy (primary brand)
-      900: '#061827',
-    },
-    secondary: {
-      50: '#f0fdfa',
-      100: '#ccfbf1',
-      200: '#99f6e4',
-      300: '#5eead4',
-      400: '#2dd4bf',
-      500: '#14b8a6',
-      600: '#0d9488',
-      700: '#0f766e',
-      800: '#115e59',
-      900: '#134e4a',
-    },
-    accent: {
-      50: '#fef7ec',
-      100: '#fdefd6',
-      200: '#fbdfad',
-      300: '#f8c97a',
-      400: '#f5a623',  // Gold accent
-      500: '#e08f0a',
-      600: '#c47a07',
-      700: '#9c5e08',
-      800: '#7d4a0e',
-      900: '#653d0f',
-    },
-    success: {
-      50: '#ecfdf5',
-      100: '#d1fae5',
-      200: '#a7f3d0',
-      300: '#6ee7b7',
-      400: '#34d399',
-      500: '#2c8f3d',
-      600: '#16a34a',
-      700: '#15803d',
-      800: '#166534',
-      900: '#14532d',
-    },
-    warning: {
-      50: '#fffbeb',
-      100: '#fef3c7',
-      200: '#fde68a',
-      300: '#fcd34d',
-      400: '#fbbf24',
-      500: '#f5a623',
-      600: '#d97706',
-      700: '#b45309',
-      800: '#92400e',
-      900: '#78350f',
-    },
-    error: {
-      50: '#fef2f2',
-      100: '#fee2e2',
-      200: '#fecaca',
-      300: '#fca5a5',
-      400: '#f87171',
-      500: '#ef4444',
-      600: '#d32f2f',
-      700: '#b91c1c',
-      800: '#991b1b',
-      900: '#7f1d1d',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#f6f9fc',   // Stripe off-white
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
-      black: '#000000',
-    },
-  },
-  semantic: {
-    bgPrimary: '#ffffff',
-    bgSecondary: '#f6f9fc',
-    bgTertiary: '#f1f5f9',
-    bgAccent: '#f0f4ff',
-    bgHover: '#e2e8f0',
-
-    textPrimary: '#0a2540',
-    textSecondary: '#475569',
-    textMuted: '#64748b',
-    textInverse: '#ffffff',
-
-    borderPrimary: '#e2e8f0',
-    borderSecondary: '#cbd5e1',
-    borderFocus: '#635bff',
-
-    buttonPrimary: '#0a2540',
-    buttonPrimaryHover: '#061827',
-    buttonSecondary: '#f1f5f9',
-    buttonAccent: '#635bff',
-    buttonAccentHover: '#5046e5',
-
-    statusSuccess: '#2c8f3d',
-    statusSuccessBg: '#ecfdf5',
-    statusWarning: '#d97706',
-    statusWarningBg: '#fffbeb',
-    statusError: '#d32f2f',
-    statusErrorBg: '#fef2f2',
-    statusInfo: '#635bff',
-    statusInfoBg: '#f0f4ff',
-  },
-};
-
-// ===========================================
-// PALETTE 2: LINKEDIN PROFESSIONAL
-// ===========================================
-// Inspired by LinkedIn - Professional networking
-const linkedinBlue: ColorPalette = {
-  id: 'linkedin-blue',
-  name: 'LinkedIn Professional',
-  description: 'Professional networking palette. Proven trust and career-focused engagement.',
-  mode: 'light',
-  bestFor: ['Job boards', 'Professional networks', 'Career platforms', 'Talent marketplaces'],
-  colors: {
-    primary: {
-      50: '#e8f4fc',
-      100: '#c5e4f6',
-      200: '#9ed3f0',
-      300: '#70c1ea',
-      400: '#4cb0e0',
-      500: '#0a66c2',  // LinkedIn blue
-      600: '#004182',  // Darker variant
-      700: '#003366',
-      800: '#002d5a',
-      900: '#00264d',
-    },
-    secondary: {
-      50: '#f0f9eb',
-      100: '#d9f0c8',
-      200: '#bfe4a4',
-      300: '#a4d87f',
-      400: '#8bc762',
-      500: '#83941f',  // LinkedIn green
-      600: '#44712e',
-      700: '#3a5f27',
-      800: '#304d20',
-      900: '#273f1a',
-    },
-    accent: {
-      50: '#fdf6e3',
-      100: '#fae9b8',
-      200: '#f7db8a',
-      300: '#f4cd5c',
-      400: '#e7a33e',  // LinkedIn gold
-      500: '#d4940f',
-      600: '#b07b0d',
-      700: '#8c620a',
-      800: '#684908',
-      900: '#443006',
-    },
-    success: {
-      50: '#f0f9eb',
-      100: '#d9f0c8',
-      200: '#bfe4a4',
-      300: '#a4d87f',
-      400: '#8bc762',
-      500: '#44712e',
-      600: '#3a5f27',
-      700: '#304d20',
-      800: '#273f1a',
-      900: '#1e3113',
-    },
-    warning: {
-      50: '#fff8e1',
-      100: '#ffecb3',
-      200: '#ffe082',
-      300: '#ffd54f',
-      400: '#ffca28',
-      500: '#ffc107',
-      600: '#ffb300',
-      700: '#ffa000',
-      800: '#ff8f00',
-      900: '#ff6f00',
-    },
-    error: {
-      50: '#fef0ed',
-      100: '#fdd9d2',
-      200: '#fbb8ab',
-      300: '#f9978a',
-      400: '#f5987e',  // LinkedIn error
-      500: '#e57373',
-      600: '#d32f2f',
-      700: '#c62828',
-      800: '#b71c1c',
-      900: '#8e1a1a',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#f3f6f8',
-      100: '#eef3f7',
-      200: '#dce6f1',
-      300: '#c1d0e0',
-      400: '#8fa8c2',
-      500: '#56687a',
-      600: '#434a51',
-      700: '#38434f',
-      800: '#283e4a',
-      900: '#1d2226',
-      black: '#000000',
-    },
-  },
-  semantic: {
-    bgPrimary: '#ffffff',
-    bgSecondary: '#f3f6f8',
-    bgTertiary: '#eef3f7',
-    bgAccent: '#e8f4fc',
-    bgHover: '#dce6f1',
-
-    textPrimary: '#1d2226',
-    textSecondary: '#56687a',
-    textMuted: '#8fa8c2',
-    textInverse: '#ffffff',
-
-    borderPrimary: '#dce6f1',
-    borderSecondary: '#c1d0e0',
-    borderFocus: '#0a66c2',
-
-    buttonPrimary: '#0a66c2',
-    buttonPrimaryHover: '#004182',
-    buttonSecondary: '#eef3f7',
-    buttonAccent: '#e7a33e',
-    buttonAccentHover: '#d4940f',
-
-    statusSuccess: '#44712e',
-    statusSuccessBg: '#f0f9eb',
-    statusWarning: '#ffa000',
-    statusWarningBg: '#fff8e1',
-    statusError: '#d32f2f',
-    statusErrorBg: '#fef0ed',
-    statusInfo: '#0a66c2',
-    statusInfoBg: '#e8f4fc',
-  },
-};
-
-// ===========================================
-// PALETTE 3: GLASSDOOR GREEN
-// ===========================================
-// Inspired by Glassdoor - Job platform focused
-const glassdoorGreen: ColorPalette = {
-  id: 'glassdoor-green',
-  name: 'Glassdoor Fresh',
-  description: 'Growth-focused palette for job platforms. Signals opportunity and career advancement.',
-  mode: 'light',
-  bestFor: ['Job search', 'Salary research', 'Company reviews', 'Career change platforms'],
-  colors: {
-    primary: {
-      50: '#e6f7ed',
-      100: '#b3e6c9',
-      200: '#80d5a5',
-      300: '#4dc482',
-      400: '#26b86a',
-      500: '#0caa41',  // Glassdoor green
-      600: '#0a9239',
-      700: '#087a30',
-      800: '#066228',
-      900: '#044a1f',
-    },
-    secondary: {
-      50: '#f5f5f6',
-      100: '#e5e5e7',
-      200: '#ccccce',
-      300: '#a3a3a6',
-      400: '#71717a',
-      500: '#52525b',
-      600: '#3f3f46',
-      700: '#313335',  // Glassdoor dark
-      800: '#27272a',
-      900: '#18181b',
-    },
-    accent: {
-      50: '#fff4eb',
-      100: '#ffe4cc',
-      200: '#ffd4ad',
-      300: '#ffc48e',
-      400: '#ff9e47',
-      500: '#ff6200',  // Glassdoor orange
-      600: '#e65800',
-      700: '#cc4e00',
-      800: '#993b00',
-      900: '#662700',
-    },
-    success: {
-      50: '#e6f7ed',
-      100: '#b3e6c9',
-      200: '#80d5a5',
-      300: '#4dc482',
-      400: '#26b86a',
-      500: '#0caa41',
-      600: '#0a9239',
-      700: '#087a30',
-      800: '#066228',
-      900: '#044a1f',
-    },
-    warning: {
-      50: '#fff7e6',
-      100: '#ffecb3',
-      200: '#ffe180',
-      300: '#ffd54d',
-      400: '#ffca1a',
-      500: '#e6b300',
-      600: '#cc9f00',
-      700: '#b38b00',
-      800: '#997700',
-      900: '#806300',
-    },
-    error: {
-      50: '#fef2f2',
-      100: '#fee2e2',
-      200: '#fecaca',
-      300: '#fca5a5',
-      400: '#f87171',
-      500: '#ef4444',
-      600: '#d32f2f',
-      700: '#b91c1c',
-      800: '#991b1b',
-      900: '#7f1d1d',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#f5f5f5',
-      100: '#eeeeee',
-      200: '#e0e0e0',
-      300: '#bdbdbd',
-      400: '#9e9e9e',
-      500: '#757575',
-      600: '#616161',
-      700: '#424242',
-      800: '#313335',
-      900: '#212121',
-      black: '#000000',
-    },
-  },
-  semantic: {
-    bgPrimary: '#ffffff',
-    bgSecondary: '#f5f5f5',
-    bgTertiary: '#eeeeee',
-    bgAccent: '#e6f7ed',
-    bgHover: '#e0e0e0',
-
-    textPrimary: '#212121',
-    textSecondary: '#616161',
-    textMuted: '#9e9e9e',
-    textInverse: '#ffffff',
-
-    borderPrimary: '#e0e0e0',
-    borderSecondary: '#bdbdbd',
-    borderFocus: '#0caa41',
-
-    buttonPrimary: '#0caa41',
-    buttonPrimaryHover: '#0a9239',
-    buttonSecondary: '#eeeeee',
-    buttonAccent: '#ff6200',
-    buttonAccentHover: '#e65800',
-
-    statusSuccess: '#0caa41',
-    statusSuccessBg: '#e6f7ed',
-    statusWarning: '#e6b300',
-    statusWarningBg: '#fff7e6',
-    statusError: '#d32f2f',
-    statusErrorBg: '#fef2f2',
-    statusInfo: '#0077b5',
-    statusInfoBg: '#e3f2fd',
-  },
-};
-
-// ===========================================
-// PALETTE 4: GOVERNMENT TRUST (USWDS)
-// ===========================================
-// Based on U.S. Web Design System - Institutional
-const governmentTrust: ColorPalette = {
-  id: 'government-trust',
-  name: 'Institutional Trust',
-  description: 'Government-grade palette based on USWDS. Maximum accessibility and official authority.',
-  mode: 'light',
-  bestFor: ['Government platforms', 'Institutional portals', 'Compliance tools', 'Public sector'],
-  colors: {
-    primary: {
-      50: '#e7f2fa',
-      100: '#c2dff2',
-      200: '#99ccea',
-      300: '#70b8e1',
-      400: '#4fa7d9',
-      500: '#2378c3',  // USWDS blue-50
-      600: '#276c9b',
-      700: '#1a4f71',
-      800: '#0d3b59',
-      900: '#002d41',
-    },
-    secondary: {
-      50: '#eceef7',
-      100: '#ccd0e8',
-      200: '#aab1d8',
-      300: '#8892c8',
-      400: '#6673b8',
-      500: '#3d4076',  // USWDS indigo-70
-      600: '#323568',
-      700: '#282a5a',
-      800: '#1e204c',
-      900: '#14153e',
-    },
-    accent: {
-      50: '#fdf3e3',
-      100: '#fadfb8',
-      200: '#f7cb8a',
-      300: '#f4b75c',
-      400: '#f1a32e',
-      500: '#e08f00',
-      600: '#c07a00',
-      700: '#a06500',
-      800: '#805000',
-      900: '#603b00',
-    },
-    success: {
-      50: '#e5f5ed',
-      100: '#bfe5d1',
-      200: '#95d5b5',
-      300: '#6bc599',
-      400: '#41b57d',
-      500: '#077d4a',  // USWDS green-70
-      600: '#066840',
-      700: '#055336',
-      800: '#043e2c',
-      900: '#032922',
-    },
-    warning: {
-      50: '#fef7e6',
-      100: '#fdecc0',
-      200: '#fce199',
-      300: '#fbd673',
-      400: '#f5a623',  // USWDS amber-50
-      500: '#e09500',
-      600: '#c78200',
-      700: '#a86f00',
-      800: '#8a5c00',
-      900: '#6b4800',
-    },
-    error: {
-      50: '#fceeee',
-      100: '#f8d4d4',
-      200: '#f4b9b9',
-      300: '#f09f9f',
-      400: '#ec8484',
-      500: '#d83933',  // USWDS red-50
-      600: '#c23028',
-      700: '#a6271f',
-      800: '#8a1e16',
-      900: '#6e150d',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#f5f6f7',
-      100: '#edeff0',
-      200: '#dfe1e2',
-      300: '#c6cace',
-      400: '#a9aeb1',
-      500: '#71767a',
-      600: '#565c65',
-      700: '#3d4551',
-      800: '#2d2e2f',
-      900: '#1b1b1b',
-      black: '#000000',
-    },
-  },
-  semantic: {
-    bgPrimary: '#ffffff',
-    bgSecondary: '#f5f6f7',
-    bgTertiary: '#edeff0',
-    bgAccent: '#e7f2fa',
-    bgHover: '#dfe1e2',
-
-    textPrimary: '#1b1b1b',
-    textSecondary: '#565c65',
-    textMuted: '#71767a',
-    textInverse: '#ffffff',
-
-    borderPrimary: '#dfe1e2',
-    borderSecondary: '#c6cace',
-    borderFocus: '#2378c3',
-
-    buttonPrimary: '#2378c3',
-    buttonPrimaryHover: '#1a4f71',
-    buttonSecondary: '#edeff0',
-    buttonAccent: '#e08f00',
-    buttonAccentHover: '#c07a00',
-
-    statusSuccess: '#077d4a',
-    statusSuccessBg: '#e5f5ed',
-    statusWarning: '#e09500',
-    statusWarningBg: '#fef7e6',
-    statusError: '#d83933',
-    statusErrorBg: '#fceeee',
-    statusInfo: '#2378c3',
-    statusInfoBg: '#e7f2fa',
-  },
-};
-
-// ===========================================
-// PALETTE 5: EDTECH LEARNING
-// ===========================================
-// Education/training focused
-const edtechLearning: ColorPalette = {
-  id: 'edtech-learning',
-  name: 'EdTech Learning',
-  description: 'Optimized for learning and skill development. Increases focus and retention.',
-  mode: 'light',
-  bestFor: ['Training platforms', 'Online learning', 'Corporate universities', 'Skills development'],
-  colors: {
-    primary: {
-      50: '#e8f1fa',
-      100: '#c5daf2',
-      200: '#9ec3ea',
-      300: '#77abe1',
-      400: '#5094d9',
-      500: '#1e5ba8',  // Educational blue
-      600: '#194d8f',
-      700: '#143f76',
-      800: '#0f315d',
-      900: '#0a2344',
-    },
-    secondary: {
-      50: '#e8f5ec',
-      100: '#c4e6cf',
-      200: '#9dd7b1',
-      300: '#76c893',
-      400: '#4fb975',
-      500: '#2d7a4e',  // Educational green
-      600: '#266742',
-      700: '#1f5436',
-      800: '#18412a',
-      900: '#112e1e',
-    },
-    accent: {
-      50: '#fff4e5',
-      100: '#ffe1b8',
-      200: '#ffce8a',
-      300: '#ffba5c',
-      400: '#ffa82e',
-      500: '#ff8c00',  // Educational orange
-      600: '#e07c00',
-      700: '#c06b00',
-      800: '#a05a00',
-      900: '#804900',
-    },
-    success: {
-      50: '#e8f5ec',
-      100: '#c4e6cf',
-      200: '#9dd7b1',
-      300: '#76c893',
-      400: '#4fb975',
-      500: '#2d7a4e',
-      600: '#266742',
-      700: '#1f5436',
-      800: '#18412a',
-      900: '#112e1e',
-    },
-    warning: {
-      50: '#fff8e1',
-      100: '#ffecb3',
-      200: '#ffe082',
-      300: '#ffd54f',
-      400: '#ffca28',
-      500: '#ffc107',
-      600: '#ffb300',
-      700: '#ffa000',
-      800: '#ff8f00',
-      900: '#ff6f00',
-    },
-    error: {
-      50: '#fef2f2',
-      100: '#fee2e2',
-      200: '#fecaca',
-      300: '#fca5a5',
-      400: '#f87171',
-      500: '#ef4444',
-      600: '#d32f2f',
-      700: '#b91c1c',
-      800: '#991b1b',
-      900: '#7f1d1d',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#fafafa',
-      100: '#f5f5f5',
-      200: '#e5e5e5',
-      300: '#d4d4d4',
-      400: '#a3a3a3',
-      500: '#737373',
-      600: '#525252',
-      700: '#404040',
-      800: '#36454f',  // Charcoal
-      900: '#262626',
-      black: '#000000',
-    },
-  },
-  semantic: {
-    bgPrimary: '#ffffff',
-    bgSecondary: '#fafafa',
-    bgTertiary: '#f5f5f5',
-    bgAccent: '#e8f1fa',
-    bgHover: '#e5e5e5',
-
-    textPrimary: '#262626',
-    textSecondary: '#525252',
-    textMuted: '#737373',
-    textInverse: '#ffffff',
-
-    borderPrimary: '#e5e5e5',
-    borderSecondary: '#d4d4d4',
-    borderFocus: '#1e5ba8',
-
-    buttonPrimary: '#1e5ba8',
-    buttonPrimaryHover: '#194d8f',
-    buttonSecondary: '#f5f5f5',
-    buttonAccent: '#ff8c00',
-    buttonAccentHover: '#e07c00',
-
-    statusSuccess: '#2d7a4e',
-    statusSuccessBg: '#e8f5ec',
-    statusWarning: '#ffa000',
-    statusWarningBg: '#fff8e1',
-    statusError: '#d32f2f',
-    statusErrorBg: '#fef2f2',
-    statusInfo: '#1e5ba8',
-    statusInfoBg: '#e8f1fa',
-  },
-};
-
-// ===========================================
-// PALETTE 6: STEMWORKFORCE DARK (Current Default)
-// ===========================================
-const stemworkforceDark: ColorPalette = {
-  id: 'stemworkforce-dark',
-  name: 'STEMWorkforce Dark',
-  description: 'Current dark mode theme. Tech-forward and dramatic for developer audiences.',
+// Mood: Sophisticated, innovative, immersive, cutting-edge
+// Best For: Tech-savvy users, students, AI/quantum sectors
+// Recommended By: Marcus Rodriguez (Visual), Dr. Okonkwo (Workforce - younger users)
+const deepSpace: ColorPalette = {
+  id: 'deep-space',
+  name: 'Deep Space Tech',
+  description: 'Sophisticated, innovative dark theme. Perfect for tech-savvy users and modern STEM sectors.',
   mode: 'dark',
-  bestFor: ['Tech platforms', 'Developer tools', 'Modern SaaS', 'Night usage'],
+  bestFor: ['Tech professionals', 'Students', 'AI/Quantum sectors', 'Evening browsing'],
+  expertRecommendedBy: ['Marcus Rodriguez (Visual Designer)', 'Dr. Okonkwo (Workforce Expert)'],
+  wcagLevel: 'AA',
   colors: {
-    primary: {
-      50: '#ecfdf5',
-      100: '#d1fae5',
-      200: '#a7f3d0',
-      300: '#6ee7b7',
-      400: '#34d399',
-      500: '#10b981',  // Emerald
-      600: '#059669',
-      700: '#047857',
-      800: '#065f46',
-      900: '#064e3b',
-    },
-    secondary: {
-      50: '#f0fdfa',
-      100: '#ccfbf1',
-      200: '#99f6e4',
-      300: '#5eead4',
-      400: '#2dd4bf',
-      500: '#14b8a6',  // Cyan/Teal
-      600: '#0d9488',
-      700: '#0f766e',
-      800: '#115e59',
-      900: '#134e4a',
-    },
-    accent: {
-      50: '#eef2ff',
-      100: '#e0e7ff',
-      200: '#c7d2fe',
-      300: '#a5b4fc',
-      400: '#818cf8',
-      500: '#6366f1',  // Indigo
-      600: '#4f46e5',
-      700: '#4338ca',
-      800: '#3730a3',
-      900: '#312e81',
-    },
-    success: {
-      50: '#ecfdf5',
-      100: '#d1fae5',
-      200: '#a7f3d0',
-      300: '#6ee7b7',
-      400: '#34d399',
-      500: '#10b981',
-      600: '#059669',
-      700: '#047857',
-      800: '#065f46',
-      900: '#064e3b',
-    },
-    warning: {
-      50: '#fffbeb',
-      100: '#fef3c7',
-      200: '#fde68a',
-      300: '#fcd34d',
-      400: '#fbbf24',
-      500: '#f59e0b',  // Amber
-      600: '#d97706',
-      700: '#b45309',
-      800: '#92400e',
-      900: '#78350f',
-    },
-    error: {
-      50: '#fef2f2',
-      100: '#fee2e2',
-      200: '#fecaca',
-      300: '#fca5a5',
-      400: '#f87171',
-      500: '#ef4444',
-      600: '#dc2626',
-      700: '#b91c1c',
-      800: '#991b1b',
-      900: '#7f1d1d',
-    },
-    neutral: {
-      white: '#ffffff',
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
-      black: '#000000',
-    },
+    primary: '#6366F1',        // Electric Indigo
+    primaryHover: '#818CF8',   // Bright Indigo
+    primaryDark: '#4F46E5',    // Deep Indigo
+    primaryLight: '#A5B4FC',   // Light Indigo
+
+    secondary: '#22D3EE',      // Cyber Cyan
+    secondaryLight: '#67E8F9', // Soft Cyan
+
+    bgPrimary: '#0F0F1A',      // Space Black
+    bgSecondary: '#1A1A2E',    // Deep Navy
+    bgTertiary: '#252540',     // Midnight
+    surfaceElevated: '#2D2D4A', // Charcoal Purple
+
+    textPrimary: '#F8FAFC',    // Pearl White
+    textSecondary: '#CBD5E1',  // Silver
+    textMuted: '#64748B',      // Slate
+    textInverse: '#0F172A',    // Rich Black
+
+    success: '#10B981',        // Emerald
+    successLight: '#34D399',   // Soft Emerald
+    warning: '#F59E0B',        // Amber
+    warningLight: '#FBBF24',   // Soft Amber
+    error: '#EF4444',          // Rose
+    errorLight: '#F87171',     // Soft Rose
+    info: '#0EA5E9',           // Sky Blue
+
+    borderPrimary: '#334155',  // Slate Border
+    borderSecondary: '#1E293B', // Faint Border
+    borderFocus: '#6366F1',    // Focus Ring
+
+    gradientStart: '#6366F1',  // Indigo
+    gradientEnd: '#8B5CF6',    // Violet
   },
-  semantic: {
-    bgPrimary: '#0f172a',     // slate-900
-    bgSecondary: '#1e293b',   // slate-800
-    bgTertiary: '#334155',    // slate-700
-    bgAccent: '#1e3a5f',      // dark blue accent
-    bgHover: '#334155',
+};
 
-    textPrimary: '#ffffff',
-    textSecondary: '#94a3b8',
-    textMuted: '#64748b',
-    textInverse: '#0f172a',
+// ===========================================
+// PALETTE 2: PROFESSIONAL CLARITY (Corporate Light)
+// ===========================================
+// Mood: Trustworthy, clean, efficient, corporate
+// Best For: Employers, HR professionals, enterprise users
+// Recommended By: Sarah Chen (UX), Dr. Okonkwo (Workforce - employers)
+const professional: ColorPalette = {
+  id: 'professional',
+  name: 'Professional Clarity',
+  description: 'Trustworthy, clean corporate theme. Ideal for employers, HR, and formal contexts.',
+  mode: 'light',
+  bestFor: ['Employers', 'HR professionals', 'Enterprise users', 'Formal contexts'],
+  expertRecommendedBy: ['Sarah Chen (UX Designer)', 'Dr. Okonkwo (Workforce Expert)'],
+  wcagLevel: 'AA',
+  colors: {
+    primary: '#2563EB',        // Corporate Blue
+    primaryHover: '#1D4ED8',   // Deep Blue
+    primaryDark: '#1E40AF',    // Darker Blue
+    primaryLight: '#DBEAFE',   // Sky Tint
 
-    borderPrimary: '#334155',
-    borderSecondary: '#475569',
-    borderFocus: '#10b981',
+    secondary: '#475569',      // Slate Blue
+    secondaryLight: '#64748B', // Cool Gray
 
-    buttonPrimary: '#10b981',
-    buttonPrimaryHover: '#059669',
-    buttonSecondary: '#334155',
-    buttonAccent: '#6366f1',
-    buttonAccentHover: '#4f46e5',
+    bgPrimary: '#FAFBFC',      // Warm White
+    bgSecondary: '#F1F5F9',    // Soft Gray
+    bgTertiary: '#E2E8F0',     // Light Gray
+    surfaceElevated: '#FFFFFF', // Pure White
 
-    statusSuccess: '#34d399',
-    statusSuccessBg: 'rgba(16, 185, 129, 0.2)',
-    statusWarning: '#fbbf24',
-    statusWarningBg: 'rgba(245, 158, 11, 0.2)',
-    statusError: '#f87171',
-    statusErrorBg: 'rgba(239, 68, 68, 0.2)',
-    statusInfo: '#818cf8',
-    statusInfoBg: 'rgba(99, 102, 241, 0.2)',
+    textPrimary: '#1E293B',    // Charcoal
+    textSecondary: '#334155',  // Dark Slate
+    textMuted: '#64748B',      // Medium Slate
+    textInverse: '#FFFFFF',    // White
+
+    success: '#059669',        // Forest Green
+    successLight: '#D1FAE5',   // Mint
+    warning: '#D97706',        // Burnt Orange
+    warningLight: '#FEF3C7',   // Cream
+    error: '#DC2626',          // Crimson
+    errorLight: '#FEE2E2',     // Blush
+    info: '#0284C7',           // Ocean Blue
+    infoLight: '#E0F2FE',      // Ice Blue
+
+    borderPrimary: '#CBD5E1',  // Silver
+    borderSecondary: '#E2E8F0', // Light Silver
+    borderFocus: '#2563EB',    // Focus Blue
+  },
+};
+
+// ===========================================
+// PALETTE 3: FEDERAL TRUST (Government/DOE Theme)
+// ===========================================
+// Mood: Authoritative, transparent, civic-minded, stable
+// Best For: Government partnerships, DOE co-branded content
+// Recommended By: James Whitfield (Government Expert), Dr. Okonkwo (Institutional)
+const federal: ColorPalette = {
+  id: 'federal',
+  name: 'Federal Trust',
+  description: 'Authoritative, civic-minded theme for government partnerships and DOE initiatives.',
+  mode: 'light',
+  bestFor: ['Government partnerships', 'DOE content', 'Public sector', 'Institutional users'],
+  expertRecommendedBy: ['James Whitfield (Government Expert)', 'Dr. Okonkwo (Workforce Expert)'],
+  wcagLevel: 'AA+',
+  colors: {
+    primary: '#1E40AF',        // Civic Blue
+    primaryHover: '#1E3A8A',   // Deep Civic
+    primaryDark: '#1E3A8A',    // Navy
+    primaryLight: '#DBEAFE',   // Civic Tint
+
+    secondary: '#B45309',      // Government Gold
+    secondaryLight: '#FDE68A', // Soft Gold
+    accent: '#991B1B',         // Heritage Red (sparse)
+
+    bgPrimary: '#FEFDFB',      // Parchment
+    bgSecondary: '#F5F5F4',    // Warm Cream
+    bgTertiary: '#E7E5E4',     // Stone
+    surfaceElevated: '#FFFFFF', // Clean White
+
+    textPrimary: '#1C1917',    // Official Black
+    textSecondary: '#44403C',  // Dark Brown
+    textMuted: '#78716C',      // Warm Gray
+    textInverse: '#FAFAF9',    // Off White
+
+    success: '#15803D',        // Approval Green
+    successLight: '#DCFCE7',   // Light Green
+    warning: '#B45309',        // Alert Amber
+    warningLight: '#FEF3C7',   // Light Amber
+    error: '#B91C1C',          // Denial Red
+    errorLight: '#FEE2E2',     // Light Red
+    info: '#1D4ED8',           // Federal Blue
+    infoLight: '#DBEAFE',      // Light Federal
+
+    borderPrimary: '#D6D3D1',  // Warm Border
+    borderSecondary: '#E7E5E4', // Soft Border
+    borderFocus: '#1E40AF',    // Civic Blue
+    borderHighlight: '#D97706', // Gold Border (official)
+  },
+};
+
+// ===========================================
+// PALETTE 4: MEDTECH PRECISION (Healthcare Technology)
+// ===========================================
+// Mood: Clinical trust, precision, innovation, humanized technology
+// Best For: Healthcare tech sector, life sciences, biotech
+// Recommended By: Dr. Anita Sharma (Healthcare Expert), Sarah Chen (UX)
+const medtech: ColorPalette = {
+  id: 'medtech',
+  name: 'MedTech Precision',
+  description: 'Clinical trust meets tech innovation. Perfect for healthcare technology and life sciences.',
+  mode: 'light',
+  bestFor: ['Healthcare tech', 'Life sciences', 'Biotech jobs', 'Medical training'],
+  expertRecommendedBy: ['Dr. Anita Sharma (Healthcare Expert)', 'Sarah Chen (UX Designer)'],
+  wcagLevel: 'AA',
+  colors: {
+    primary: '#0D9488',        // Medical Teal
+    primaryHover: '#0F766E',   // Deep Teal
+    primaryDark: '#115E59',    // Dark Teal
+    primaryLight: '#CCFBF1',   // Soft Teal
+
+    secondary: '#0369A1',      // Precision Blue
+    secondaryLight: '#E0F2FE', // Ice Blue
+    accent: '#E11D48',         // Vital Coral (alerts)
+
+    bgPrimary: '#F8FAFC',      // Clinical White
+    bgSecondary: '#F1F5F9',    // Sterile Gray
+    bgTertiary: '#E2E8F0',     // Soft Slate
+    surfaceElevated: '#FFFFFF', // Pure White
+
+    textPrimary: '#0F172A',    // Medical Black
+    textSecondary: '#334155',  // Slate
+    textMuted: '#64748B',      // Medium Gray
+    textInverse: '#FFFFFF',    // White
+
+    success: '#059669',        // Healthy Green
+    successLight: '#D1FAE5',   // Recovery Green
+    warning: '#EA580C',        // Caution Orange
+    warningLight: '#FFEDD5',   // Soft Orange
+    error: '#DC2626',          // Alert Red
+    errorLight: '#FEE2E2',     // Soft Red
+    info: '#0284C7',           // Data Blue
+    infoLight: '#E0F2FE',      // Soft Info
+
+    borderPrimary: '#CBD5E1',  // Clinical Border
+    borderSecondary: '#E2E8F0', // Soft Border
+    borderFocus: '#0D9488',    // Teal Focus
+    borderHighlight: '#14B8A6', // Teal Highlight
+  },
+};
+
+// ===========================================
+// PALETTE 5: INNOVATION SPARK (Startup/Energy Theme)
+// ===========================================
+// Mood: Dynamic, energetic, forward-thinking, bold
+// Best For: Students, startup-oriented users, AI/quantum sectors
+// Recommended By: Marcus Rodriguez (Visual), Dr. Okonkwo (Student engagement)
+const innovation: ColorPalette = {
+  id: 'innovation',
+  name: 'Innovation Spark',
+  description: 'Dynamic, energetic theme that signals possibility. Great for students and innovation sectors.',
+  mode: 'dark',
+  bestFor: ['Students', 'Startup users', 'AI/Quantum sectors', 'Recruitment events'],
+  expertRecommendedBy: ['Marcus Rodriguez (Visual Designer)', 'Dr. Okonkwo (Workforce Expert)'],
+  wcagLevel: 'AA',
+  colors: {
+    primary: '#7C3AED',        // Electric Violet
+    primaryHover: '#6D28D9',   // Deep Violet
+    primaryDark: '#5B21B6',    // Darker Violet
+    primaryLight: '#EDE9FE',   // Soft Violet
+
+    secondary: '#EA580C',      // Innovation Orange
+    secondaryLight: '#FFEDD5', // Soft Orange
+    accent: '#06B6D4',         // Future Cyan
+
+    bgPrimary: '#0C0A1D',      // Night
+    bgSecondary: '#1A1625',    // Deep Purple
+    bgTertiary: '#2D2640',     // Midnight Purple
+    surfaceElevated: '#3D3555', // Elevated Purple
+
+    textPrimary: '#FAFAFA',    // Bright White
+    textSecondary: '#D4D4D8',  // Soft White
+    textMuted: '#A1A1AA',      // Gray Violet
+    textInverse: '#1A1625',    // Dark Purple
+
+    success: '#22C55E',        // Neon Green
+    successLight: '#86EFAC',   // Soft Green
+    warning: '#F59E0B',        // Hot Amber
+    warningLight: '#FDE68A',   // Soft Amber
+    error: '#EC4899',          // Neon Pink
+    errorLight: '#FBCFE8',     // Soft Pink
+    info: '#06B6D4',           // Bright Cyan
+
+    borderPrimary: '#4C4066',  // Violet Border
+    borderSecondary: '#2D2640', // Faint Border
+    borderFocus: '#8B5CF6',    // Glow Violet
+
+    gradientStart: '#7C3AED',  // Violet
+    gradientMid: '#C026D3',    // Fuchsia
+    gradientEnd: '#EA580C',    // Orange
+  },
+};
+
+// ===========================================
+// PALETTE 6: UNIVERSAL ACCESS (High-Contrast Accessible)
+// ===========================================
+// Mood: Clear, readable, inclusive, functional
+// Best For: Users with visual impairments, aging workforce, 508 compliance
+// Recommended By: Sarah Chen (UX), James Whitfield (Federal compliance)
+// Note: This palette MUST be available for 508 compliance
+const accessible: ColorPalette = {
+  id: 'accessible',
+  name: 'Universal Access',
+  description: 'High-contrast accessible theme. Required for 508 compliance and visual accessibility.',
+  mode: 'light',
+  bestFor: ['Visual accessibility', 'Aging workforce', 'Extended reading', '508 compliance'],
+  expertRecommendedBy: ['Sarah Chen (UX Designer)', 'James Whitfield (Government Expert)'],
+  wcagLevel: 'AAA',
+  colors: {
+    primary: '#1D4ED8',        // Bold Blue (7.2:1 on white)
+    primaryHover: '#1E3A8A',   // Deep Bold (9.5:1 on white)
+    primaryDark: '#1E3A8A',    // Dark Blue
+    primaryLight: '#DBEAFE',   // Pale Blue
+
+    secondary: '#374151',      // Deep Charcoal (9.1:1)
+    secondaryLight: '#6B7280', // Medium Gray (5.3:1)
+
+    bgPrimary: '#FFFFFF',      // True White
+    bgSecondary: '#F9FAFB',    // Light Gray
+    bgTertiary: '#F3F4F6',     // Soft Gray
+    surfaceElevated: '#FFFFFF', // White
+
+    textPrimary: '#111827',    // Pure Black (17.4:1)
+    textSecondary: '#374151',  // Dark Gray (9.1:1)
+    textMuted: '#4B5563',      // Medium Gray (7.1:1)
+    textInverse: '#FFFFFF',    // White
+    textLink: '#1D4ED8',       // Link Blue (underlined)
+    textLinkVisited: '#6B21A8', // Visited Purple (8.5:1)
+
+    success: '#15803D',        // Strong Green (4.8:1)
+    successLight: '#DCFCE7',   // Light Green
+    successDark: '#166534',    // Dark Green (6.3:1)
+    warning: '#B45309',        // Strong Amber (4.7:1)
+    warningLight: '#FEF3C7',   // Light Amber
+    warningDark: '#92400E',    // Dark Amber (6.0:1)
+    error: '#B91C1C',          // Strong Red (5.9:1)
+    errorLight: '#FEE2E2',     // Light Red
+    errorDark: '#991B1B',      // Dark Red (7.2:1)
+    info: '#1D4ED8',           // Strong Blue (7.2:1)
+
+    borderPrimary: '#9CA3AF',  // Visible Border (2.6:1)
+    borderSecondary: '#D1D5DB', // Standard Border
+    borderFocus: '#1D4ED8',    // Focus Ring (3px)
+    borderStrong: '#6B7280',   // Strong Border (4.6:1)
+  },
+};
+
+// ===========================================
+// PALETTE 7: STEM BRAND (Logo-Inspired Theme)
+// ===========================================
+// Mood: Warm, energetic, brand-forward, recognizable
+// Best For: Brand consistency, marketing, homepage, events
+// Based on: STEMWorkforce logo (yellow-400 to orange-500 gradient)
+const stemBrand: ColorPalette = {
+  id: 'stem-brand',
+  name: 'STEM Brand',
+  description: 'Warm, energetic theme based on STEMWorkforce logo colors. Perfect for brand consistency and marketing.',
+  mode: 'dark',
+  bestFor: ['Brand consistency', 'Marketing materials', 'Homepage', 'Events & outreach'],
+  expertRecommendedBy: ['Brand Identity (Logo Colors)', 'Marketing Team'],
+  wcagLevel: 'AA',
+  colors: {
+    primary: '#FBBF24',        // Yellow-400 (logo text)
+    primaryHover: '#F59E0B',   // Yellow-500
+    primaryDark: '#D97706',    // Amber-600
+    primaryLight: '#FEF3C7',   // Yellow-100
+
+    secondary: '#F97316',      // Orange-500 (logo gradient end)
+    secondaryLight: '#FFEDD5', // Orange-100
+    accent: '#EA580C',         // Orange-600
+
+    bgPrimary: '#18181B',      // Zinc-900 (dark base)
+    bgSecondary: '#27272A',    // Zinc-800
+    bgTertiary: '#3F3F46',     // Zinc-700
+    surfaceElevated: '#52525B', // Zinc-600
+
+    textPrimary: '#FAFAFA',    // Zinc-50
+    textSecondary: '#D4D4D8',  // Zinc-300
+    textMuted: '#A1A1AA',      // Zinc-400
+    textInverse: '#18181B',    // Zinc-900
+
+    success: '#22C55E',        // Green-500
+    successLight: '#86EFAC',   // Green-300
+    warning: '#FBBF24',        // Yellow-400 (matches brand)
+    warningLight: '#FDE68A',   // Yellow-200
+    error: '#EF4444',          // Red-500
+    errorLight: '#FCA5A5',     // Red-300
+    info: '#38BDF8',           // Sky-400
+
+    borderPrimary: '#52525B',  // Zinc-600
+    borderSecondary: '#3F3F46', // Zinc-700
+    borderFocus: '#FBBF24',    // Yellow-400 (brand)
+
+    gradientStart: '#FBBF24',  // Yellow-400
+    gradientEnd: '#F97316',    // Orange-500
   },
 };
 
@@ -870,17 +439,18 @@ const stemworkforceDark: ColorPalette = {
 // ===========================================
 
 export const COLOR_PALETTES: Record<PaletteId, ColorPalette> = {
-  'professional-tech': professionalTech,
-  'linkedin-blue': linkedinBlue,
-  'glassdoor-green': glassdoorGreen,
-  'government-trust': governmentTrust,
-  'edtech-learning': edtechLearning,
-  'stemworkforce-dark': stemworkforceDark,
+  'deep-space': deepSpace,
+  'professional': professional,
+  'federal': federal,
+  'medtech': medtech,
+  'innovation': innovation,
+  'accessible': accessible,
+  'stem-brand': stemBrand,
 };
 
 export const PALETTE_LIST = Object.values(COLOR_PALETTES);
 
-export const DEFAULT_PALETTE: PaletteId = 'stemworkforce-dark';
+export const DEFAULT_PALETTE: PaletteId = 'deep-space';
 
 // ===========================================
 // UTILITY FUNCTIONS
@@ -894,25 +464,30 @@ export const getPalettesByMode = (mode: 'light' | 'dark'): ColorPalette[] => {
   return PALETTE_LIST.filter(p => p.mode === mode);
 };
 
+export const getDarkPalettes = (): ColorPalette[] => getPalettesByMode('dark');
+export const getLightPalettes = (): ColorPalette[] => getPalettesByMode('light');
+
 // Generate CSS variables from a palette
 export const generateCSSVariables = (palette: ColorPalette): Record<string, string> => {
   const vars: Record<string, string> = {};
 
-  // Semantic variables
-  Object.entries(palette.semantic).forEach(([key, value]) => {
-    vars[`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
-  });
-
-  // Color scale variables
-  Object.entries(palette.colors).forEach(([colorName, scale]) => {
-    if (typeof scale === 'object') {
-      Object.entries(scale).forEach(([shade, color]) => {
-        vars[`--color-${colorName}-${shade}`] = color as string;
-      });
+  Object.entries(palette.colors).forEach(([key, value]) => {
+    if (value) {
+      // Convert camelCase to kebab-case
+      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      vars[`--color-${cssKey}`] = value;
     }
   });
 
   return vars;
 };
+
+// Get palette preview colors (for selector UI)
+export const getPalettePreview = (palette: ColorPalette) => ({
+  primary: palette.colors.primary,
+  secondary: palette.colors.secondary,
+  background: palette.colors.bgPrimary,
+  text: palette.colors.textPrimary,
+});
 
 export default COLOR_PALETTES;

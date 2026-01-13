@@ -1,22 +1,153 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
-  Store, ShoppingCart, Star, Users, Package, DollarSign,
-  Plus, Edit, Trash2, Eye, Search, Filter, Download,
+  ShoppingCart, Star, Users, Package, DollarSign,
+  Plus, Edit, Eye, Search, Download,
   TrendingUp, ArrowUpRight, ArrowDownRight, CheckCircle2,
-  XCircle, Clock, MessageSquare, Calendar, Award, BookOpen,
-  FileText, Video, Mic, UserCheck, Settings, Shield, RefreshCw,
-  ChevronRight, Heart, Share2, ExternalLink, Tag
+  XCircle, Clock, MessageSquare, Award, BookOpen,
+  FileText, Video, UserCheck, Settings, Tag
 } from 'lucide-react';
 
 // ===========================================
 // MARKETPLACE - COMPREHENSIVE VERSION
 // ===========================================
 
+interface MarketplaceStats {
+  totalProviders: number;
+  activeProviders: number;
+  totalServices: number;
+  totalPurchases: number;
+  totalRevenue: number;
+  avgRating: number | string;
+  totalReviews: number;
+}
+
+interface MarketplaceProvider {
+  id: string;
+  status: string;
+  provider_type: string;
+  specializations: string[];
+  average_rating: number;
+  total_reviews: number;
+  total_sales: number;
+  total_earnings: number;
+  bio: string;
+  users?: {
+    full_name?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    avatar_url?: string;
+  };
+}
+
+interface MarketplaceService {
+  id: string;
+  service_name: string;
+  description: string;
+  duration_minutes: number;
+  price: number;
+  is_active: boolean;
+  marketplace_categories?: {
+    name: string;
+  };
+}
+
+interface MarketplaceReview {
+  id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  status: string;
+  provider_id: string;
+  marketplace_providers?: {
+    users?: {
+      full_name?: string;
+    };
+  };
+  users?: {
+    full_name?: string;
+  };
+}
+
+interface MarketplacePurchase {
+  id: string;
+  amount: number;
+  status: string;
+  created_at: string;
+  marketplace_services?: {
+    service_name: string;
+  };
+  marketplace_providers?: {
+    users?: {
+      full_name?: string;
+    };
+  };
+  users?: {
+    full_name?: string;
+  };
+}
+
+// Extended interfaces for components with additional fetched fields
+interface ExtendedMarketplaceService extends MarketplaceService {
+  delivery_method?: string;
+  total_purchases?: number;
+  marketplace_providers?: {
+    users?: {
+      first_name?: string;
+      last_name?: string;
+    };
+  };
+}
+
+interface MarketplaceCategory {
+  id: string;
+  category_key: string;
+  name: string;
+  description: string;
+  commission_rate: number;
+  is_active: boolean;
+  display_order?: number;
+  service_count?: number;
+}
+
+interface ExtendedMarketplacePurchase extends MarketplacePurchase {
+  buyer?: {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  };
+}
+
+interface ExtendedMarketplaceReview extends MarketplaceReview {
+  reviewer?: {
+    first_name?: string;
+    last_name?: string;
+  };
+  marketplace_services?: {
+    service_name: string;
+  };
+  review_text?: string;
+}
+
+interface ProviderPayout {
+  id: string;
+  amount: number;
+  status: string;
+  payout_method?: string;
+  created_at: string;
+  marketplace_providers?: {
+    users?: {
+      first_name?: string;
+      last_name?: string;
+    };
+  };
+}
+
 const MarketplaceDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<MarketplaceStats | null>(null);
 
   useEffect(() => {
     fetchMarketplaceStats();
@@ -32,9 +163,9 @@ const MarketplaceDashboard = () => {
         supabase.from('marketplace_reviews').select('rating', { count: 'exact' })
       ]);
 
-      const totalRevenue = purchases.data?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
-      const avgRating = reviews.data?.length > 0 
-        ? (reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length).toFixed(1)
+      const totalRevenue = purchases.data?.reduce((sum: number, p: { amount?: number }) => sum + (p.amount || 0), 0) || 0;
+      const avgRating = reviews.data && reviews.data.length > 0
+        ? (reviews.data.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviews.data.length).toFixed(1)
         : 0;
 
       setStats({
@@ -105,7 +236,7 @@ const MarketplaceDashboard = () => {
 // MARKETPLACE OVERVIEW
 // ===========================================
 
-const MarketplaceOverview = ({ stats, loading }) => {
+const MarketplaceOverview = ({ stats, loading }: { stats: MarketplaceStats | null; loading: boolean }) => {
   const metrics = [
     { label: 'Active Providers', value: stats?.activeProviders || 0, icon: Users, color: 'violet', change: '+8', positive: true },
     { label: 'Total Services', value: stats?.totalServices || 0, icon: Package, color: 'blue', change: '+15', positive: true },
@@ -241,11 +372,11 @@ const MarketplaceOverview = ({ stats, loading }) => {
 // ===========================================
 
 const ProvidersTab = () => {
-  const [providers, setProviders] = useState([]);
+  const [providers, setProviders] = useState<MarketplaceProvider[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
-  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [selectedProvider, setSelectedProvider] = useState<MarketplaceProvider | null>(null);
 
   useEffect(() => {
     fetchProviders();
@@ -267,7 +398,7 @@ const ProvidersTab = () => {
     setLoading(false);
   };
 
-  const handleApprove = async (providerId) => {
+  const handleApprove = async (providerId: string) => {
     await supabase
       .from('marketplace_providers')
       .update({ status: 'active', approved_at: new Date().toISOString() })
@@ -275,7 +406,7 @@ const ProvidersTab = () => {
     fetchProviders();
   };
 
-  const handleSuspend = async (providerId) => {
+  const handleSuspend = async (providerId: string) => {
     await supabase
       .from('marketplace_providers')
       .update({ status: 'suspended' })
@@ -448,7 +579,7 @@ const ProvidersTab = () => {
               <div>
                 <h5 className="font-medium mb-2">Specializations</h5>
                 <div className="flex flex-wrap gap-2">
-                  {selectedProvider.specializations?.map((spec, i) => (
+                  {selectedProvider.specializations?.map((spec: string, i: number) => (
                     <span key={i} className="px-3 py-1 bg-violet-500/20 text-violet-400 rounded-full text-sm">
                       {spec}
                     </span>
@@ -477,7 +608,7 @@ const ProvidersTab = () => {
 // ===========================================
 
 const ServicesTab = () => {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<ExtendedMarketplaceService[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState('all');
 
@@ -501,7 +632,7 @@ const ServicesTab = () => {
     setLoading(false);
   };
 
-  const handleToggleActive = async (serviceId, currentStatus) => {
+  const handleToggleActive = async (serviceId: string, currentStatus: boolean) => {
     await supabase
       .from('marketplace_services')
       .update({ is_active: !currentStatus })
@@ -605,10 +736,10 @@ const ServicesTab = () => {
 // ===========================================
 
 const CategoriesTab = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<MarketplaceCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingCategory, setEditingCategory] = useState(null);
+  const [editingCategory, setEditingCategory] = useState<MarketplaceCategory | null>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -625,7 +756,7 @@ const CategoriesTab = () => {
     setLoading(false);
   };
 
-  const categoryIcons = {
+  const categoryIcons: Record<string, typeof UserCheck> = {
     career_coaching: UserCheck,
     resume_services: FileText,
     interview_prep: Video,
@@ -697,7 +828,13 @@ const CategoriesTab = () => {
   );
 };
 
-const CategoryEditModal = ({ category, onClose, onSave }) => {
+interface CategoryEditModalProps {
+  category: MarketplaceCategory | null;
+  onClose: () => void;
+  onSave: () => void;
+}
+
+const CategoryEditModal = ({ category, onClose, onSave }: CategoryEditModalProps) => {
   const [formData, setFormData] = useState({
     category_key: category?.category_key || '',
     name: category?.name || '',
@@ -706,7 +843,7 @@ const CategoryEditModal = ({ category, onClose, onSave }) => {
     is_active: category?.is_active ?? true,
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (category) {
       await supabase.from('marketplace_categories').update(formData).eq('id', category.id);
@@ -801,7 +938,7 @@ const CategoryEditModal = ({ category, onClose, onSave }) => {
 // ===========================================
 
 const OrdersTab = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<ExtendedMarketplacePurchase[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -915,7 +1052,7 @@ const OrdersTab = () => {
 // ===========================================
 
 const ReviewsTab = () => {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<ExtendedMarketplaceReview[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -938,12 +1075,12 @@ const ReviewsTab = () => {
     setLoading(false);
   };
 
-  const handleApproveReview = async (reviewId) => {
+  const handleApproveReview = async (reviewId: string) => {
     await supabase.from('marketplace_reviews').update({ status: 'approved' }).eq('id', reviewId);
     fetchReviews();
   };
 
-  const handleRejectReview = async (reviewId) => {
+  const handleRejectReview = async (reviewId: string) => {
     await supabase.from('marketplace_reviews').update({ status: 'rejected' }).eq('id', reviewId);
     fetchReviews();
   };
@@ -1034,7 +1171,7 @@ const ReviewsTab = () => {
 // ===========================================
 
 const PayoutsTab = () => {
-  const [payouts, setPayouts] = useState([]);
+  const [payouts, setPayouts] = useState<ProviderPayout[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

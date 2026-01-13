@@ -50,6 +50,7 @@ const InternDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> = 
     { id: 'overview', icon: '📊', label: 'Overview' },
     { id: 'applications', icon: '📝', label: 'My Applications', badge: 12 },
     { id: 'saved', icon: '💾', label: 'Saved Opportunities' },
+    { id: 'challenges', icon: '🏆', label: 'Challenges' },
     { id: 'clearance', icon: '🛡️', label: 'Clearance Center' },
     { id: 'documents', icon: '🔐', label: 'Document Vault' },
     { id: 'messages', icon: '💬', label: 'Messages', badge: 3 },
@@ -272,7 +273,7 @@ const InternDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> = 
                 { title: 'Data Science Intern', company: 'Meta', location: 'Menlo Park, CA', salary: '$45/hr', deadline: '5 days' },
                 { title: 'Software Engineering Intern', company: 'Apple', location: 'Cupertino, CA', salary: '$50/hr', deadline: '2 weeks' },
                 { title: 'ML Research Intern', company: 'DeepMind', location: 'London, UK', salary: '£40/hr', deadline: '1 week' },
-                { title: 'Quantum Computing Intern', company: 'IBM', location: 'Remote', salary: '$42/hr', deadline: '3 days' },
+                { title: 'Quantum Technologies Intern', company: 'IBM', location: 'Remote', salary: '$42/hr', deadline: '3 days' },
                 { title: 'Cybersecurity Intern', company: 'CrowdStrike', location: 'Austin, TX', salary: '$38/hr', deadline: '10 days' },
               ].map((job, i) => (
                 <div key={i} className="p-5 bg-gray-900 rounded-2xl border border-gray-800 hover:border-yellow-500/50 transition-colors">
@@ -582,6 +583,7 @@ const JobSeekerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }>
     { id: 'overview', icon: '📊', label: 'Overview' },
     { id: 'applications', icon: '📝', label: 'Applications', badge: 8 },
     { id: 'saved', icon: '💾', label: 'Saved Jobs' },
+    { id: 'challenges', icon: '🏆', label: 'Challenges' },
     { id: 'interviews', icon: '📅', label: 'Interviews', badge: 2 },
     { id: 'clearance', icon: '🛡️', label: 'Clearance Status' },
     { id: 'resume', icon: '📄', label: 'Resume Builder' },
@@ -687,7 +689,7 @@ const JobSeekerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }>
                   {[
                     { title: 'AI/ML Career Fair', date: 'Jan 15, 2025', type: 'Virtual' },
                     { title: 'Cybersecurity Summit', date: 'Jan 22, 2025', type: 'In-Person' },
-                    { title: 'Quantum Computing Workshop', date: 'Feb 1, 2025', type: 'Hybrid' }
+                    { title: 'Quantum Technologies Workshop', date: 'Feb 1, 2025', type: 'Hybrid' }
                   ].map((event, i) => (
                     <div key={i} className="p-4 bg-gray-800 rounded-xl flex items-center justify-between">
                       <div>
@@ -731,7 +733,7 @@ const JobSeekerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }>
               {[
                 { id: 1, title: 'Senior AI Engineer', company: 'Anthropic', status: 'Interview Scheduled', stage: 4, clearance: 'None', salary: '$180-220K', applied: 'Dec 20, 2024' },
                 { id: 2, title: 'ML Research Scientist', company: 'OpenAI', status: 'Under Review', stage: 2, clearance: 'None', salary: '$200-250K', applied: 'Dec 18, 2024' },
-                { id: 3, title: 'Quantum Computing Engineer', company: 'IBM Quantum', status: 'Phone Screen', stage: 3, clearance: 'Secret', salary: '$150-180K', applied: 'Dec 15, 2024' },
+                { id: 3, title: 'Quantum Technologies Engineer', company: 'IBM Quantum', status: 'Phone Screen', stage: 3, clearance: 'Secret', salary: '$150-180K', applied: 'Dec 15, 2024' },
                 { id: 4, title: 'Cybersecurity Lead', company: 'CrowdStrike', status: 'Application Submitted', stage: 1, clearance: 'TS/SCI', salary: '$170-200K', applied: 'Dec 22, 2024' },
                 { id: 5, title: 'Software Engineer', company: 'SpaceX', status: 'Offer Received', stage: 5, clearance: 'Secret', salary: '$160-190K', applied: 'Nov 28, 2024' },
               ].map(app => (
@@ -1288,6 +1290,8 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
   const [activeTab, setActiveTab] = useState('overview');
   const [showAddProgramModal, setShowAddProgramModal] = useState(false);
   const [showPostOpportunityModal, setShowPostOpportunityModal] = useState(false);
+  const [, setIsSubmittingEduPosting] = useState(false);
+  const [, setLoadingEduJobs] = useState(true);
 
   // Job/Internship Posting State for Education Providers
   const [eduPostingForm, setEduPostingForm] = useState({
@@ -1334,56 +1338,238 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
     postingExpiration: '30',
   });
 
-  // Sample job/internship listings
-  const [eduOpportunities, setEduOpportunities] = useState([
-    { id: 1, title: 'Research Assistant - AI Lab', type: 'internship', location: 'On-campus', salary: '$20/hr', posted: 'Dec 15, 2024', applications: 45, status: 'active' },
-    { id: 2, title: 'Teaching Assistant - Data Science', type: 'job', location: 'Hybrid', salary: '$25/hr', posted: 'Dec 10, 2024', applications: 23, status: 'active' },
-    { id: 3, title: 'Lab Technician - Cybersecurity', type: 'job', location: 'On-campus', salary: '$55,000/yr', posted: 'Dec 5, 2024', applications: 18, status: 'active' },
-  ]);
+  // Job/internship listings - fetched from database
+  const [eduOpportunities, setEduOpportunities] = useState<any[]>([]);
 
-  // Benefits options for edu posting
-  const eduBenefitOptions = [
-    'Health Insurance', 'Dental Insurance', 'Vision Insurance',
-    'Paid Time Off', 'Flexible Hours', 'Remote Work Options',
-    'Professional Development', 'Tuition Assistance', 'Conference Attendance',
-    'Gym Membership', 'Parking', 'Free Meals',
-  ];
+  // Fetch jobs from database on component mount
+  useEffect(() => {
+    const fetchEduJobs = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setLoadingEduJobs(false);
+          return;
+        }
 
-  const toggleEduBenefit = (benefit: string) => {
-    setEduPostingForm(prev => ({
-      ...prev,
-      benefits: prev.benefits.includes(benefit)
-        ? prev.benefits.filter(b => b !== benefit)
-        : [...prev.benefits, benefit]
-    }));
-  };
+        // Get user's organization ID
+        const { data: userDataArray, error: userError } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', session.user.id)
+          .limit(1);
 
-  const handleSubmitEduPosting = () => {
+        const userData = userDataArray?.[0];
+
+        if (userError) {
+          console.error('Error fetching user for edu jobs:', userError);
+          setLoadingEduJobs(false);
+          return;
+        }
+
+        if (!userData?.organization_id) {
+          console.log('No organization found for educator');
+          setLoadingEduJobs(false);
+          return;
+        }
+
+        // Fetch jobs for this organization
+        console.log('Fetching edu jobs for organization:', userData.organization_id);
+        const { data: jobs, error } = await supabase
+          .from('jobs')
+          .select('*')
+          .eq('organization_id', userData.organization_id)
+          .order('created_at', { ascending: false });
+
+        console.log('Edu jobs query result:', { jobs, error, count: jobs?.length });
+
+        if (error) {
+          console.error('Error fetching edu jobs:', error);
+          setLoadingEduJobs(false);
+          return;
+        }
+
+        // Transform jobs to display format
+        const formattedJobs = (jobs || []).map(job => ({
+          id: job.id,
+          title: job.title,
+          type: job.type === 'internship' ? 'internship' : 'job',
+          location: job.location || 'Not specified',
+          salary: job.salary_period === 'hourly'
+            ? `$${job.salary_min}/hr - $${job.salary_max}/hr`
+            : `$${job.salary_min?.toLocaleString() || 0} - $${job.salary_max?.toLocaleString() || 0}`,
+          posted: new Date(job.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          applications: job.applications_count || 0,
+          status: job.status || 'active',
+        }));
+
+        setEduOpportunities(formattedJobs);
+        console.log('Fetched edu jobs:', formattedJobs);
+      } catch (error) {
+        console.error('Error in fetchEduJobs:', error);
+      } finally {
+        setLoadingEduJobs(false);
+      }
+    };
+
+    fetchEduJobs();
+  }, []);
+
+  const handleSubmitEduPosting = async () => {
     if (!eduPostingForm.title || !eduPostingForm.description) {
       alert('Please fill in the required fields');
       return;
     }
-    const newOpp = {
-      id: Date.now(),
-      title: eduPostingForm.title,
-      type: eduPostingForm.postingType,
-      location: eduPostingForm.workLocationType === 'remote' ? 'Remote' : eduPostingForm.workLocationType === 'hybrid' ? 'Hybrid' : 'On-campus',
-      salary: eduPostingForm.salaryType === 'hourly' ? `$${eduPostingForm.salaryMin}/hr` : `$${eduPostingForm.salaryMin}/yr`,
-      posted: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      applications: 0,
-      status: 'active',
-    };
-    setEduOpportunities([newOpp, ...eduOpportunities]);
-    setShowPostOpportunityModal(false);
-    // Reset form
-    setEduPostingForm({
-      ...eduPostingForm,
-      title: '',
-      description: '',
-      responsibilities: '',
-      qualifications: '',
-    });
-    alert(`${eduPostingForm.postingType === 'job' ? 'Job' : 'Internship'} posted successfully!`);
+
+    setIsSubmittingEduPosting(true);
+
+    try {
+      // Get current user's session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('You must be logged in to post a job');
+        setIsSubmittingEduPosting(false);
+        return;
+      }
+
+      // Get user's organization ID
+      const { data: userDataArray, error: userError } = await supabase
+        .from('users')
+        .select('id, organization_id')
+        .eq('id', session.user.id)
+        .limit(1);
+
+      const userData = userDataArray?.[0];
+
+      if (userError || !userData) {
+        console.error('Error fetching user data:', userError);
+        alert(`Could not find your user data. Error: ${userError?.message || 'User record not found'}`);
+        setIsSubmittingEduPosting(false);
+        return;
+      }
+
+      if (!userData.organization_id) {
+        alert('Your account is not linked to an organization. Please contact support.');
+        setIsSubmittingEduPosting(false);
+        return;
+      }
+
+      // Build location string
+      let locationString = '';
+      if (eduPostingForm.workLocationType === 'remote') {
+        locationString = 'Remote';
+        if (eduPostingForm.remoteRestrictions) {
+          locationString += ` (${eduPostingForm.remoteRestrictions})`;
+        }
+      } else if (eduPostingForm.workLocationType === 'hybrid') {
+        locationString = `Hybrid - ${eduPostingForm.workLocationCity}, ${eduPostingForm.workLocationState}`;
+      } else {
+        locationString = eduPostingForm.workLocationCity && eduPostingForm.workLocationState
+          ? `${eduPostingForm.workLocationCity}, ${eduPostingForm.workLocationState}`
+          : 'On-campus';
+      }
+
+      // Calculate expiration date
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + parseInt(eduPostingForm.postingExpiration || '30'));
+
+      // Generate a URL-friendly slug from the title
+      const generateSlug = (title: string) => {
+        return title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          + '-' + Date.now();
+      };
+
+      // Prepare job data matching actual database schema
+      const jobData: Record<string, any> = {
+        organization_id: userData.organization_id,
+        posted_by_id: session.user.id,
+        title: eduPostingForm.title,
+        slug: generateSlug(eduPostingForm.title),
+        description: eduPostingForm.description,
+        location: locationString,
+        industry: 'ai', // Default for academia - could be made configurable
+        type: eduPostingForm.postingType === 'internship' ? 'internship' : 'full_time',
+        expires_at: expiresAt.toISOString(),
+        status: 'active',
+
+        // Optional fields
+        remote: eduPostingForm.workLocationType === 'remote',
+        department: eduPostingForm.department || null,
+        responsibilities: eduPostingForm.responsibilities || null,
+        qualifications: eduPostingForm.qualifications || null,
+        employment_type: eduPostingForm.employmentType,
+        work_arrangement: eduPostingForm.workLocationType === 'onsite' ? 'on-site' :
+                          eduPostingForm.workLocationType === 'hybrid' ? 'hybrid' : 'remote',
+
+        // Compensation
+        salary_min: parseInt(eduPostingForm.salaryMin) || null,
+        salary_max: parseInt(eduPostingForm.salaryMax) || null,
+        salary_period: eduPostingForm.salaryType === 'hourly' ? 'hourly' : 'yearly',
+        show_salary: true,
+
+        // Clearance
+        clearance_level: eduPostingForm.clearanceLevel,
+
+        // Application settings
+        application_deadline: eduPostingForm.applicationDeadline || null,
+        start_date: eduPostingForm.startDate || null,
+        external_url: eduPostingForm.applicationUrl || null,
+
+        // Posting settings
+        featured: eduPostingForm.featuredListing || false,
+      };
+
+      console.log('Submitting edu job to database:', jobData);
+
+      // Insert into database
+      const { data: newJob, error: insertError } = await supabase
+        .from('jobs')
+        .insert(jobData)
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Error inserting edu job:', insertError);
+        alert(`Failed to post job: ${insertError.message}`);
+        setIsSubmittingEduPosting(false);
+        return;
+      }
+
+      console.log('Edu job posted successfully:', newJob);
+
+      // Add to local state for immediate UI update
+      const newOpp = {
+        id: newJob.id,
+        title: newJob.title,
+        type: newJob.type === 'internship' ? 'internship' : 'job',
+        location: newJob.location,
+        salary: newJob.salary_period === 'hourly'
+          ? `$${newJob.salary_min}/hr - $${newJob.salary_max}/hr`
+          : `$${newJob.salary_min?.toLocaleString() || 0} - $${newJob.salary_max?.toLocaleString() || 0}`,
+        posted: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        applications: 0,
+        status: newJob.status || 'active',
+      };
+      setEduOpportunities(prev => [newOpp, ...prev]);
+
+      setShowPostOpportunityModal(false);
+      // Reset form
+      setEduPostingForm({
+        ...eduPostingForm,
+        title: '',
+        description: '',
+        responsibilities: '',
+        qualifications: '',
+      });
+      alert(`${eduPostingForm.postingType === 'job' ? 'Job' : 'Internship'} posted successfully!`);
+    } catch (error) {
+      console.error('Error in handleSubmitEduPosting:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmittingEduPosting(false);
+    }
   };
 
   // Event management state
@@ -1454,7 +1640,7 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
   // ==========================================
   const [showUpgradePlanModal, setShowUpgradePlanModal] = useState(false);
   const [showAddPaymentMethodModal, setShowAddPaymentMethodModal] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [_selectedInvoice, _setSelectedInvoice] = useState<unknown>(null);
 
   // Subscription plans
   const subscriptionPlans = [
@@ -1496,7 +1682,7 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
   });
 
   // Invoices
-  const [invoices, setInvoices] = useState([
+  const [invoices, _setInvoices] = useState([
     { id: 'INV-2024-012', date: 'Dec 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - December 2024', paidDate: 'Dec 1, 2024' },
     { id: 'INV-2024-011', date: 'Nov 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - November 2024', paidDate: 'Nov 1, 2024' },
     { id: 'INV-2024-010', date: 'Oct 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - October 2024', paidDate: 'Oct 1, 2024' },
@@ -1620,6 +1806,7 @@ Thank you for your business!
     { id: 'overview', icon: '📊', label: 'Dashboard' },
     { id: 'programs', icon: '📚', label: 'Programs', badge: 12 },
     { id: 'opportunities', icon: '💼', label: 'Jobs & Internships' },
+    { id: 'challenges', icon: '🏆', label: 'Research Challenges' },
     { id: 'students', icon: '👥', label: 'Students' },
     { id: 'outcomes', icon: '📈', label: 'Outcomes' },
     { id: 'employers', icon: '🏢', label: 'Employer Partners' },
@@ -1704,7 +1891,7 @@ Thank you for your business!
                   {[
                     { name: 'AI/ML Certificate Program', status: 'Active', enrolled: 156 },
                     { name: 'Cybersecurity Bootcamp', status: 'Active', enrolled: 89 },
-                    { name: 'Quantum Computing Fundamentals', status: 'Pending', enrolled: 45 }
+                    { name: 'Quantum Technologies Fundamentals', status: 'Pending', enrolled: 45 }
                   ].map((program, i) => (
                     <div key={i} className="p-4 bg-gray-800 rounded-xl flex items-center justify-between">
                       <div>
@@ -1759,7 +1946,7 @@ Thank you for your business!
               {[
                 { id: 1, name: 'AI/ML Certificate Program', duration: '6 months', enrolled: 156, completed: 89, placement: 94, status: 'Active' },
                 { id: 2, name: 'Cybersecurity Bootcamp', duration: '12 weeks', enrolled: 89, completed: 67, placement: 91, status: 'Active' },
-                { id: 3, name: 'Quantum Computing Fundamentals', duration: '8 weeks', enrolled: 45, completed: 0, placement: 0, status: 'Enrollment' },
+                { id: 3, name: 'Quantum Technologies Fundamentals', duration: '8 weeks', enrolled: 45, completed: 0, placement: 0, status: 'Enrollment' },
                 { id: 4, name: 'Data Engineering Track', duration: '4 months', enrolled: 124, completed: 98, placement: 87, status: 'Active' },
                 { id: 5, name: 'Cloud Architecture Program', duration: '3 months', enrolled: 78, completed: 45, placement: 89, status: 'Active' },
               ].map(program => (
@@ -3382,8 +3569,6 @@ const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> =
   const [activeTab, setActiveTab] = useState('overview');
   const [showPostModal, setShowPostModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [postingType, setPostingType] = useState<'job' | 'internship'>('job');
-  const navigate = useNavigate();
 
   // ==========================================
   // BULK UPLOAD/DOWNLOAD & AI FEATURES STATE
@@ -3397,16 +3582,84 @@ const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> =
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState('');
 
-  // Sample job postings for demo
-  const [jobPostings, setJobPostings] = useState([
-    { id: 1, title: 'Senior AI Engineer', type: 'job', location: 'Remote', salary: '$150,000 - $200,000', posted: 'Dec 20, 2024', applications: 127, status: 'active', aiScore: 92 },
-    { id: 2, title: 'ML Research Intern', type: 'internship', location: 'San Francisco, CA', salary: '$45/hr', posted: 'Dec 18, 2024', applications: 89, status: 'active', aiScore: 88 },
-    { id: 3, title: 'Data Scientist', type: 'job', location: 'Hybrid - NYC', salary: '$130,000 - $160,000', posted: 'Dec 15, 2024', applications: 203, status: 'active', aiScore: 95 },
-    { id: 4, title: 'Cybersecurity Analyst', type: 'job', location: 'Washington, DC', salary: '$120,000 - $150,000', posted: 'Dec 10, 2024', applications: 78, status: 'paused', aiScore: 85 },
-  ]);
+  // Job postings state - will be populated from database
+  const [jobPostings, setJobPostings] = useState<unknown[]>([]);
+  const [, setLoadingJobs] = useState(true);
+
+  // Fetch jobs from database on component mount
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        // Get user's organization ID (use limit(1) to handle potential duplicates)
+        const { data: userDataArray, error: userError } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', session.user.id)
+          .limit(1);
+
+        const userData = userDataArray?.[0];
+
+        if (userError) {
+          console.error('Error fetching user for jobs:', userError);
+          setLoadingJobs(false);
+          return;
+        }
+
+        if (!userData?.organization_id) {
+          console.log('No organization found for user, user data:', userData);
+          setLoadingJobs(false);
+          return;
+        }
+
+        // Fetch jobs for this organization
+        console.log('Fetching jobs for organization:', userData.organization_id);
+        const { data: jobs, error } = await supabase
+          .from('jobs')
+          .select('*')
+          .eq('organization_id', userData.organization_id)
+          .order('created_at', { ascending: false });
+
+        console.log('Jobs query result:', { jobs, error, count: jobs?.length });
+
+        if (error) {
+          console.error('Error fetching jobs:', error);
+          setLoadingJobs(false);
+          return;
+        }
+
+        // Transform jobs to display format
+        const formattedJobs = (jobs || []).map(job => ({
+          id: job.id,
+          title: job.title,
+          type: job.type === 'internship' ? 'internship' : 'job',
+          location: job.location || 'Not specified',
+          salary: job.salary_period === 'hourly'
+            ? `$${job.salary_min}/hr - $${job.salary_max}/hr`
+            : `$${job.salary_min?.toLocaleString() || 0} - $${job.salary_max?.toLocaleString() || 0}`,
+          posted: new Date(job.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          applications: job.view_count || 0, // Using view_count since applications_count may not exist
+          status: job.status || 'active',
+          aiScore: Math.floor(Math.random() * 15) + 85, // Placeholder until AI scoring is implemented
+          clearance: job.clearance || 'None',
+        }));
+
+        setJobPostings(formattedJobs);
+        console.log('Fetched jobs:', formattedJobs);
+      } catch (error) {
+        console.error('Error in fetchJobs:', error);
+      } finally {
+        setLoadingJobs(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   // Sample applications for demo
-  const [applications, setApplications] = useState([
+  const [applications, _setApplications] = useState([
     { id: 1, name: 'Sarah Chen', email: 'sarah.chen@email.com', position: 'Senior AI Engineer', applied: 'Dec 22, 2024', status: 'new', aiScore: 94, aiMatch: 'Excellent', skills: ['Python', 'TensorFlow', 'PyTorch', 'MLOps'] },
     { id: 2, name: 'Michael Johnson', email: 'mjohnson@email.com', position: 'Senior AI Engineer', applied: 'Dec 21, 2024', status: 'reviewed', aiScore: 87, aiMatch: 'Strong', skills: ['Python', 'Keras', 'AWS', 'Docker'] },
     { id: 3, name: 'Emily Rodriguez', email: 'erodriguez@email.com', position: 'Data Scientist', applied: 'Dec 20, 2024', status: 'new', aiScore: 91, aiMatch: 'Excellent', skills: ['R', 'Python', 'SQL', 'Tableau'] },
@@ -3600,8 +3853,11 @@ What We Offer:
     }));
   };
 
-  // Handle form submission
-  const handleSubmitPosting = () => {
+  // State for form submission
+  const [, setIsSubmitting] = useState(false);
+
+  // Handle form submission - saves to Supabase
+  const handleSubmitPosting = async () => {
     if (!postingForm.title) {
       alert('Please enter a job title');
       return;
@@ -3615,66 +3871,232 @@ What We Offer:
       return;
     }
 
-    console.log('Posting submitted:', postingForm);
+    setIsSubmitting(true);
 
-    // Reset form
-    setPostingForm({
-      title: '',
-      postingType: 'job',
-      employmentType: 'full-time',
-      workLocationType: 'onsite',
-      workLocationCity: '',
-      workLocationState: '',
-      workLocationCountry: 'United States',
-      remoteRestrictions: '',
-      hybridDaysOnsite: '',
-      salaryType: 'annual',
-      salaryMin: '',
-      salaryMax: '',
-      salaryNegotiable: false,
-      bonusEligible: false,
-      bonusDescription: '',
-      commissionEligible: false,
-      equityOffered: false,
-      equityDescription: '',
-      benefits: [],
-      benefitsDescription: '',
-      department: '',
-      reportsTo: '',
-      directReports: '',
-      travelRequired: 'none',
-      travelPercentage: '',
-      educationLevel: 'bachelors',
-      yearsExperience: '',
-      requiredSkills: '',
-      preferredSkills: '',
-      certifications: '',
-      clearanceLevel: 'none',
-      clearanceSponsored: false,
-      description: '',
-      responsibilities: '',
-      qualifications: '',
-      niceToHave: '',
-      applicationDeadline: '',
-      startDate: '',
-      applicationInstructions: '',
-      applicationUrl: '',
-      contactEmail: '',
-      internshipPaid: true,
-      internshipStipend: '',
-      internshipDuration: '',
-      internshipHoursPerWeek: '',
-      academicCreditAvailable: false,
-      mentorshipProvided: true,
-      conversionPossible: false,
-      internshipProgram: '',
-      urgentHiring: false,
-      featuredListing: false,
-      postingExpiration: '30',
-    });
+    try {
+      // Get current user's session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('You must be logged in to post a job');
+        setIsSubmitting(false);
+        return;
+      }
 
-    setShowPostModal(false);
-    alert(`${postingForm.postingType === 'job' ? 'Job' : 'Internship'} posted successfully!`);
+      // Get user's organization ID (use limit(1) instead of single() to handle duplicate records)
+      const { data: userDataArray, error: userError } = await supabase
+        .from('users')
+        .select('id, organization_id')
+        .eq('id', session.user.id)
+        .limit(1);
+
+      const userData = userDataArray?.[0];
+
+      if (userError || !userData) {
+        console.error('Error fetching user data:', userError);
+        console.error('Session user ID:', session.user.id);
+        console.error('Session user email:', session.user.email);
+        alert(`Could not find your user data. Error: ${userError?.message || 'User record not found'}. Please check the browser console for details.`);
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!userData.organization_id) {
+        console.error('User has no organization_id');
+        alert('Your account is not linked to an organization. Please contact support or complete your organization profile.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Build location string
+      let locationString = '';
+      if (postingForm.workLocationType === 'remote') {
+        locationString = 'Remote';
+        if (postingForm.remoteRestrictions) {
+          locationString += ` (${postingForm.remoteRestrictions})`;
+        }
+      } else if (postingForm.workLocationType === 'hybrid') {
+        locationString = `Hybrid - ${postingForm.workLocationCity}, ${postingForm.workLocationState}`;
+      } else {
+        locationString = `${postingForm.workLocationCity}, ${postingForm.workLocationState}`;
+      }
+
+      // Calculate expiration date
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + parseInt(postingForm.postingExpiration));
+
+      // Parse skills into arrays
+      const requiredSkillsArray = postingForm.requiredSkills
+        ? postingForm.requiredSkills.split(',').map(s => s.trim()).filter(s => s)
+        : [];
+      const preferredSkillsArray = postingForm.preferredSkills
+        ? postingForm.preferredSkills.split(',').map(s => s.trim()).filter(s => s)
+        : [];
+      const certificationsArray = postingForm.certifications
+        ? postingForm.certifications.split(',').map(s => s.trim()).filter(s => s)
+        : [];
+
+      // Generate a URL-friendly slug from the title
+      const generateSlug = (title: string) => {
+        return title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          + '-' + Date.now();
+      };
+
+      // Prepare job data matching actual database schema
+      const jobData: Record<string, any> = {
+        // Required fields
+        organization_id: userData.organization_id,
+        posted_by_id: session.user.id,
+        title: postingForm.title,
+        slug: generateSlug(postingForm.title),
+        description: postingForm.description,
+        location: locationString,
+        industry: 'ai', // Valid values: semiconductor, nuclear, ai, quantum, cybersecurity, aerospace, biotech, robotics, clean_energy, manufacturing, healthcare
+        type: postingForm.postingType === 'internship' ? 'internship' : 'full_time',
+        expires_at: expiresAt.toISOString(),
+
+        // Optional fields
+        remote: postingForm.workLocationType === 'remote',
+        department: postingForm.department || null,
+        responsibilities: postingForm.responsibilities || null,
+        qualifications: postingForm.qualifications || null,
+        employment_type: postingForm.employmentType,
+        work_arrangement: postingForm.workLocationType === 'onsite' ? 'on-site' :
+                          postingForm.workLocationType === 'hybrid' ? 'hybrid' : 'remote',
+        travel_required: postingForm.travelRequired,
+
+        // Compensation
+        salary_min: parseInt(postingForm.salaryMin) || null,
+        salary_max: parseInt(postingForm.salaryMax) || null,
+        salary_period: postingForm.salaryType === 'hourly' ? 'hourly' : 'yearly',
+        show_salary: true,
+        bonus_eligible: postingForm.bonusEligible,
+        equity_offered: postingForm.equityOffered,
+
+        // Clearance
+        clearance_level: postingForm.clearanceLevel,
+        visa_sponsorship: postingForm.clearanceSponsored,
+
+        // Education & Skills
+        education_required: postingForm.educationLevel,
+        required_skills: requiredSkillsArray.length > 0 ? requiredSkillsArray : null,
+        preferred_skills: preferredSkillsArray.length > 0 ? preferredSkillsArray : null,
+        certifications_required: certificationsArray.length > 0 ? certificationsArray : null,
+
+        // Application settings
+        application_deadline: postingForm.applicationDeadline || null,
+        start_date: postingForm.startDate || null,
+        external_url: postingForm.applicationUrl || null,
+
+        // Posting settings
+        featured: postingForm.featuredListing || false,
+
+        // Set status to active so it shows immediately
+        status: 'active',
+      };
+
+      console.log('Submitting job to database:', jobData);
+
+      // Insert into database
+      const { data: newJob, error: insertError } = await supabase
+        .from('jobs')
+        .insert(jobData)
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Error inserting job:', insertError);
+        alert(`Failed to post job: ${insertError.message}`);
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.log('Job posted successfully:', newJob);
+
+      // Add to local state for immediate UI update
+      const newPosting = {
+        id: newJob.id,
+        title: newJob.title,
+        type: newJob.type === 'internship' ? 'internship' : 'job',
+        location: newJob.location,
+        salary: newJob.salary_period === 'hourly'
+          ? `$${newJob.salary_min}/hr - $${newJob.salary_max}/hr`
+          : `$${newJob.salary_min?.toLocaleString() || 0} - $${newJob.salary_max?.toLocaleString() || 0}`,
+        posted: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        applications: 0,
+        status: newJob.status || 'active',
+        aiScore: Math.floor(Math.random() * 15) + 85,
+        clearance: newJob.clearance || 'None',
+      };
+      console.log('Adding new posting to list:', newPosting);
+      setJobPostings(prev => [newPosting, ...prev]);
+
+      // Reset form
+      setPostingForm({
+        title: '',
+        postingType: 'job',
+        employmentType: 'full-time',
+        workLocationType: 'onsite',
+        workLocationCity: '',
+        workLocationState: '',
+        workLocationCountry: 'United States',
+        remoteRestrictions: '',
+        hybridDaysOnsite: '',
+        salaryType: 'annual',
+        salaryMin: '',
+        salaryMax: '',
+        salaryNegotiable: false,
+        bonusEligible: false,
+        bonusDescription: '',
+        commissionEligible: false,
+        equityOffered: false,
+        equityDescription: '',
+        benefits: [],
+        benefitsDescription: '',
+        department: '',
+        reportsTo: '',
+        directReports: '',
+        travelRequired: 'none',
+        travelPercentage: '',
+        educationLevel: 'bachelors',
+        yearsExperience: '',
+        requiredSkills: '',
+        preferredSkills: '',
+        certifications: '',
+        clearanceLevel: 'none',
+        clearanceSponsored: false,
+        description: '',
+        responsibilities: '',
+        qualifications: '',
+        niceToHave: '',
+        applicationDeadline: '',
+        startDate: '',
+        applicationInstructions: '',
+        applicationUrl: '',
+        contactEmail: '',
+        internshipPaid: true,
+        internshipStipend: '',
+        internshipDuration: '',
+        internshipHoursPerWeek: '',
+        academicCreditAvailable: false,
+        mentorshipProvided: true,
+        conversionPossible: false,
+        internshipProgram: '',
+        urgentHiring: false,
+        featuredListing: false,
+        postingExpiration: '30',
+      });
+
+      setShowPostModal(false);
+      alert(`${postingForm.postingType === 'job' ? 'Job' : 'Internship'} posted successfully!`);
+    } catch (error) {
+      console.error('Unexpected error posting job:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Billing context
@@ -3683,8 +4105,8 @@ What We Offer:
     currentFeatures,
     canAccessFeature,
     canPostJob,
-    getJobPostingsRemaining,
-    canSponsorEvent,
+    getJobPostingsRemaining: _getJobPostingsRemaining,
+    canSponsorEvent: _canSponsorEvent,
     subscribeToPlan,
     cancelSubscription,
     resumeSubscription,
@@ -3726,6 +4148,7 @@ What We Offer:
     { id: 'postings', icon: '📋', label: 'Job Postings', badge: 8 },
     { id: 'applicants', icon: '👥', label: 'Applicants', badge: 156 },
     { id: 'pipeline', icon: '🔄', label: 'Hiring Pipeline' },
+    { id: 'challenges', icon: '🏆', label: 'Innovation Challenges' },
     { id: 'compliance', icon: '⚖️', label: 'Compliance' },
     { id: 'events', icon: '📅', label: 'Events & Sponsorship', premium: !canAccessFeature('eventSponsorship') },
     { id: 'analytics', icon: '📈', label: 'Analytics', premium: !canAccessFeature('advancedAnalytics') },
@@ -4287,7 +4710,7 @@ What We Offer:
                 <h2 className="text-lg font-semibold text-white mb-4">Available Opportunities</h2>
                 <div className="space-y-3">
                   {[
-                    { name: 'Quantum Computing Workshop', date: 'Apr 20, 2025', spots: 3, price: '$5,000' },
+                    { name: 'Quantum Technologies Workshop', date: 'Apr 20, 2025', spots: 3, price: '$5,000' },
                     { name: 'National Lab Open House', date: 'May 15, 2025', spots: 5, price: '$2,500' },
                     { name: 'STEM Internship Fair', date: 'Jun 1, 2025', spots: 10, price: '$3,000' },
                   ].map((event, i) => (

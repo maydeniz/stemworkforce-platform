@@ -1,21 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   CreditCard, DollarSign, TrendingUp, Users, Package, Receipt,
   Calendar, CheckCircle2, XCircle, AlertCircle, Download,
-  ChevronRight, ArrowUpRight, ArrowDownRight, RefreshCw,
-  Plus, Edit, Trash2, Eye, Filter, Search, Clock, Zap,
-  Building2, User, GraduationCap, Shield, Star, Crown
+  ArrowUpRight, ArrowDownRight, RefreshCw,
+  Plus, Edit, Eye, Search, Zap,
+  Building2, User, GraduationCap, Shield, Star
 } from 'lucide-react';
 
 // ===========================================
 // BILLING & SUBSCRIPTIONS - COMPREHENSIVE
 // ===========================================
 
+interface BillingStats {
+  totalSubscriptions: number;
+  activeSubscriptions: number;
+  mrr: number;
+  arr: number;
+  totalInvoices: number;
+  paidInvoices: number;
+  plans: SubscriptionPlan[];
+}
+
+interface Subscription {
+  id: string;
+  subscriber_id?: string;
+  subscriber_type?: string;
+  status: string;
+  current_period_end?: string;
+  subscription_plans?: { name: string; price_monthly: number; target_type?: string } | null;
+}
+
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description?: string;
+  target_type?: string;
+  stakeholder_type?: string;
+  price_monthly: number;
+  price_annual?: number;
+  features?: Record<string, any>;
+  limits?: { max_jobs?: number; max_users?: number };
+  is_popular?: boolean;
+  is_active?: boolean;
+  stripe_product_id?: string;
+}
+
+interface Invoice {
+  id: string;
+  invoice_number?: string;
+  subscription_id?: string;
+  amount: number;
+  status: string;
+  due_date?: string;
+  created_at?: string;
+}
+
+interface Addon {
+  id: string;
+  name: string;
+  description?: string;
+  price?: number;
+  billing_type?: string;
+  is_active?: boolean;
+}
+
 const BillingDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<BillingStats | null>(null);
 
   useEffect(() => {
     fetchBillingStats();
@@ -101,7 +154,7 @@ const BillingDashboard = () => {
 // BILLING OVERVIEW
 // ===========================================
 
-const BillingOverview = ({ stats, loading }) => {
+const BillingOverview = ({ stats, loading }: { stats: BillingStats | null; loading: boolean }) => {
   const metrics = [
     { label: 'Monthly Recurring Revenue', value: stats?.mrr || 0, format: 'currency', change: '+18%', positive: true, icon: DollarSign, color: 'emerald' },
     { label: 'Annual Recurring Revenue', value: stats?.arr || 0, format: 'currency', change: '+24%', positive: true, icon: TrendingUp, color: 'blue' },
@@ -230,7 +283,7 @@ const BillingOverview = ({ stats, loading }) => {
 // ===========================================
 
 const SubscriptionsTab = () => {
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -258,7 +311,7 @@ const SubscriptionsTab = () => {
     setLoading(false);
   };
 
-  const handleCancelSubscription = async (subId) => {
+  const handleCancelSubscription = async (subId: string) => {
     if (!confirm('Are you sure you want to cancel this subscription?')) return;
     
     await supabase
@@ -374,10 +427,10 @@ const SubscriptionsTab = () => {
 // ===========================================
 
 const PlansTab = () => {
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingPlan, setEditingPlan] = useState(null);
+  const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
 
   useEffect(() => {
     fetchPlans();
@@ -390,19 +443,19 @@ const PlansTab = () => {
       .select('*')
       .order('target_type', { ascending: true })
       .order('display_order', { ascending: true });
-    
+
     if (!error) setPlans(data || []);
     setLoading(false);
   };
 
-  const plansByType = plans.reduce((acc, plan) => {
+  const plansByType = plans.reduce((acc: Record<string, SubscriptionPlan[]>, plan: SubscriptionPlan) => {
     const type = plan.target_type || plan.stakeholder_type || 'other';
     if (!acc[type]) acc[type] = [];
     acc[type].push(plan);
     return acc;
   }, {});
 
-  const typeIcons = {
+  const typeIcons: Record<string, any> = {
     employer: Building2,
     training_provider: GraduationCap,
     job_seeker: User,
@@ -410,7 +463,7 @@ const PlansTab = () => {
     event_organizer: Calendar,
   };
 
-  const typeColors = {
+  const typeColors: Record<string, string> = {
     employer: 'emerald',
     training_provider: 'blue',
     job_seeker: 'violet',
@@ -434,7 +487,7 @@ const PlansTab = () => {
       {loading ? (
         <p className="text-center text-slate-400 py-8">Loading plans...</p>
       ) : (
-        Object.entries(plansByType).map(([type, typePlans]) => {
+        Object.entries(plansByType).map(([type, typePlans]: [string, SubscriptionPlan[]]) => {
           const Icon = typeIcons[type] || Package;
           const color = typeColors[type] || 'slate';
           
@@ -480,13 +533,13 @@ const PlansTab = () => {
                       {plan.price_monthly > 0 && (
                         <span className="text-slate-400">/month</span>
                       )}
-                      {plan.price_annual > 0 && (
+                      {(plan.price_annual ?? 0) > 0 && (
                         <p className="text-sm text-slate-500">${plan.price_annual}/year (save 17%)</p>
                       )}
                     </div>
                     
                     <div className="space-y-2 mb-4">
-                      {plan.features && Object.entries(plan.features).slice(0, 5).map(([key, value]) => (
+                      {plan.features && Object.entries(plan.features).slice(0, 5).map(([key]) => (
                         <div key={key} className="flex items-center gap-2 text-sm">
                           <CheckCircle2 size={14} className="text-emerald-400" />
                           <span className="capitalize">{key.replace('_', ' ')}</span>
@@ -531,21 +584,21 @@ const PlansTab = () => {
 // PLAN EDIT MODAL
 // ===========================================
 
-const PlanEditModal = ({ plan, onClose, onSave }) => {
+const PlanEditModal = ({ plan, onClose, onSave }: { plan: SubscriptionPlan | null; onClose: () => void; onSave: () => void }) => {
   const [formData, setFormData] = useState({
-    plan_key: plan?.plan_key || '',
+    plan_key: '',
     name: plan?.name || '',
     description: plan?.description || '',
     target_type: plan?.target_type || plan?.stakeholder_type || 'employer',
     price_monthly: plan?.price_monthly || 0,
     price_annual: plan?.price_annual || 0,
-    is_active: plan?.is_active ?? true,
-    stripe_product_id: plan?.stripe_product_id || '',
-    stripe_price_id_monthly: plan?.stripe_price_id_monthly || '',
-    stripe_price_id_annual: plan?.stripe_price_id_annual || '',
+    is_active: true,
+    stripe_product_id: '',
+    stripe_price_id_monthly: '',
+    stripe_price_id_annual: '',
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (plan) {
@@ -704,7 +757,7 @@ const PlanEditModal = ({ plan, onClose, onSave }) => {
 // ===========================================
 
 const InvoicesTab = () => {
-  const [invoices, setInvoices] = useState([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -767,7 +820,7 @@ const InvoicesTab = () => {
                     </span>
                   </td>
                   <td className="px-4 py-4 text-sm text-slate-400">
-                    {new Date(invoice.created_at).toLocaleDateString()}
+                    {invoice.created_at ? new Date(invoice.created_at).toLocaleDateString() : '-'}
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-end gap-2">
@@ -794,7 +847,7 @@ const InvoicesTab = () => {
 // ===========================================
 
 const AddonsTab = () => {
-  const [addons, setAddons] = useState([]);
+  const [addons, setAddons] = useState<Addon[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -879,14 +932,14 @@ const StripeSettingsTab = () => {
   const checkStripeConnection = async () => {
     try {
       // Call a secure endpoint to check connection status
-      const { data, error } = await supabase.functions.invoke('check-stripe-status');
+      const { data } = await supabase.functions.invoke('check-stripe-status');
       if (data?.connected) {
         setConnectionStatus('connected');
         setSettings(s => ({ ...s, stripe_connected: true }));
       } else {
         setConnectionStatus('not_configured');
       }
-    } catch (error) {
+    } catch (err) {
       setConnectionStatus('error');
     }
   };

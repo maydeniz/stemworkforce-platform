@@ -13,15 +13,15 @@ const eventCategories = [
   { id: 'community', name: 'Community & Outreach', icon: '🌟', color: '#14b8a6' },
 ];
 
-// Industries
+// Industries (matching Jobs page canonical list)
 const industries = [
-  { id: 'all', name: 'All Industries', icon: '🏭' },
+  { id: 'all', name: 'All Industries', icon: '🌐' },
   { id: 'semiconductor', name: 'Semiconductor', icon: '💎' },
   { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
-  { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
-  { id: 'ai', name: 'Artificial Intelligence', icon: '🤖' },
+  { id: 'ai', name: 'AI & Machine Learning', icon: '🤖' },
+  { id: 'quantum', name: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cyber', name: 'Cybersecurity', icon: '🛡️' },
-  { id: 'quantum', name: 'Quantum Computing', icon: '⚛️' },
+  { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
   { id: 'biotech', name: 'Biotechnology', icon: '🧬' },
   { id: 'healthcare', name: 'Healthcare & Medical Technology', icon: '🏥' },
   { id: 'robotics', name: 'Robotics & Automation', icon: '🦾' },
@@ -33,7 +33,7 @@ const industries = [
 const audienceTypes = [
   { id: 'job-seekers', name: 'Job Seekers', icon: '👤', color: '#3b82f6' },
   { id: 'employers', name: 'Employers', icon: '🏢', color: '#10b981' },
-  { id: 'educators', name: 'Educators & Training Providers', icon: '🎓', color: '#8b5cf6' },
+  { id: 'education-partners', name: 'Education Partners', icon: '🎓', color: '#8b5cf6' },
   { id: 'students', name: 'Students', icon: '📚', color: '#f59e0b' },
   { id: 'government', name: 'Government & Policy Makers', icon: '🏛️', color: '#64748b' },
   { id: 'veterans', name: 'Veterans', icon: '🎖️', color: '#059669' },
@@ -251,7 +251,7 @@ const sampleEvents = [
   },
   {
     id: 10,
-    title: 'Quantum Computing Career Webinar Series',
+    title: 'Quantum Technologies Career Webinar Series',
     subtitle: 'Pathways into the Quantum Workforce',
     category: 'webinar',
     industries: ['quantum'],

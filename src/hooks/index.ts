@@ -425,3 +425,9 @@ export function useFocusTrap(ref: React.RefObject<HTMLElement>, isActive: boolea
     };
   }, [ref, isActive]);
 }
+
+// Re-export student data hooks
+export * from './useStudentData';
+export * from './useAdminData';
+export * from './useMarketplaceData';
+export * from './useConsultationModal';

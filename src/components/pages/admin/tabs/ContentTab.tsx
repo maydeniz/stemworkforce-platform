@@ -390,8 +390,8 @@ const ContentTab: React.FC = () => {
     {
       id: '12',
       page_key: 'industries/quantum',
-      title: 'Quantum Computing Industry',
-      content: '<h1>Quantum Computing</h1><p>The future of computing...</p>',
+      title: 'Quantum Technologies Industry',
+      content: '<h1>Quantum Technologies</h1><p>The future of computing...</p>',
       meta_description: 'Quantum computing careers, research opportunities, and industry developments.',
       status: 'published',
       published_at: '2025-01-01T00:00:00Z',

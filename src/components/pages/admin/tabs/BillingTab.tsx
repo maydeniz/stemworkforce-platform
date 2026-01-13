@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  DollarSign, TrendingUp, TrendingDown, CreditCard, Receipt, FileText,
+  DollarSign, TrendingUp, CreditCard, Receipt, FileText,
   PieChart, BarChart3, Calendar, Users, Building2, Megaphone, Store,
-  Wallet, Download, Plus, Search, Filter, RefreshCw, ChevronRight,
-  ArrowUpRight, ArrowDownRight, CheckCircle2, Clock, AlertTriangle,
-  XCircle, Eye, Edit, Send, Trash2, MoreVertical, CalendarDays,
-  Landmark, GraduationCap, Briefcase, Heart, Shield, Server, Mail,
-  Zap, Bot, Percent, Calculator, FileWarning, Hourglass, UserCheck,
-  UserMinus, PiggyBank, Banknote, CircleDollarSign, Scale, ChevronDown,
-  X, Save, Upload, ExternalLink, Settings, Bell, Target, Activity
+  Wallet, Download, Plus, Search,
+  ArrowUpRight, ArrowDownRight, CheckCircle2, AlertTriangle,
+  XCircle, Eye, Edit, Send, CalendarDays,
+  Landmark, GraduationCap, Briefcase, Heart, Shield, Server,
+  Zap, Percent, Calculator, FileWarning, Hourglass, UserCheck,
+  UserMinus,
+  X, Save, Upload, Settings, Bell, Target
 } from 'lucide-react';
 
 // ===========================================
@@ -290,7 +290,7 @@ const EXPENSE_CATEGORIES: ExpenseCategory[] = [
 const SAMPLE_INVOICES: Invoice[] = [
   { id: '1', number: 'INV-2025-0342', customer: 'Lockheed Martin', customerType: 'employer', amount: 2999, status: 'paid', dueDate: '2025-01-15', paidDate: '2025-01-12', source: 'Enterprise Plan' },
   { id: '2', number: 'INV-2025-0341', customer: 'Sandia National Labs', customerType: 'employer', amount: 1999, status: 'paid', dueDate: '2025-01-10', paidDate: '2025-01-08', source: 'Professional Plan' },
-  { id: '3', number: 'INV-2025-0340', customer: 'MIT', customerType: 'education', amount: 999, status: 'pending', dueDate: '2025-01-20', source: 'Institution Plan' },
+  { id: '3', number: 'INV-2025-0340', customer: 'MIT', customerType: 'education', amount: 999, status: 'sent', dueDate: '2025-01-20', source: 'Institution Plan' },
   { id: '4', number: 'INV-2025-0339', customer: 'Northrop Grumman', customerType: 'employer', amount: 2999, status: 'overdue', dueDate: '2025-01-05', source: 'Enterprise Plan' },
   { id: '5', number: 'INV-2025-0338', customer: 'NVIDIA', customerType: 'employer', amount: 2999, status: 'paid', dueDate: '2025-01-01', paidDate: '2024-12-28', source: 'Enterprise Plan' },
   { id: '6', number: 'INV-2025-0337', customer: 'STEM Career Fair 2025', customerType: 'event', amount: 12500, status: 'partial', dueDate: '2025-01-25', source: 'Event Sponsorship' },
@@ -329,7 +329,7 @@ const SAMPLE_GRANTS: Grant[] = [
     id: '3',
     grantNumber: 'DOL-WDQI-2024-018',
     funder: 'Department of Labor',
-    title: 'Workforce Data Quality Initiative - Quantum Computing Sector',
+    title: 'Workforce Data Quality Initiative - Quantum Technologies Sector',
     totalAmount: 500000,
     spent: 125000,
     remaining: 375000,
@@ -1083,10 +1083,8 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
 
 const BillingTab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState('overview');
-  const [dateRange, setDateRange] = useState('current_month');
   const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [, setShowInvoiceModal] = useState(false);
 
   // Calculate totals
   const totalRevenue = REVENUE_STREAMS.reduce((sum, stream) => sum + stream.amount, 0);

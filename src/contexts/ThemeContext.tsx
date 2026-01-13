@@ -1,6 +1,7 @@
 // ===========================================
-// Theme Context - Light/Dark Mode + Color Palette Support
+// Theme Context - Color Palette Management
 // ===========================================
+// Supports 6 expert-designed color palettes with admin switching
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
@@ -11,100 +12,109 @@ import {
   DEFAULT_PALETTE,
   getPalette,
   generateCSSVariables,
+  getPalettePreview,
 } from '@/config/colorPalettes';
 
-type Theme = 'dark' | 'light';
-
 interface ThemeContextType {
-  // Theme (dark/light)
-  theme: Theme;
-  toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
-  isDark: boolean;
-  isLight: boolean;
-  // Color Palette
+  // Current palette
   paletteId: PaletteId;
   palette: ColorPalette;
   setPalette: (id: PaletteId) => void;
+
+  // Theme mode (derived from palette)
+  isDark: boolean;
+  isLight: boolean;
+  mode: 'light' | 'dark';
+
+  // Available palettes
   availablePalettes: ColorPalette[];
+  darkPalettes: ColorPalette[];
+  lightPalettes: ColorPalette[];
+
+  // Utility functions
+  getPalettePreviewColors: (palette: ColorPalette) => ReturnType<typeof getPalettePreview>;
+  resetToDefault: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
+const STORAGE_KEY = 'stemworkforce-palette';
+
 interface ThemeProviderProps {
   children: React.ReactNode;
+  defaultPalette?: PaletteId;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  // Initialize theme from localStorage or system preference
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('stemworkforce-theme') as Theme;
-      if (stored === 'light' || stored === 'dark') {
-        return stored;
-      }
-      // Check system preference
-      if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'light';
-      }
-    }
-    return 'dark'; // Default to dark
-  });
-
-  // Initialize palette from localStorage
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
+  defaultPalette = DEFAULT_PALETTE
+}) => {
+  // Initialize palette from localStorage or default
   const [paletteId, setPaletteIdState] = useState<PaletteId>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('stemworkforce-palette') as PaletteId;
+      const stored = localStorage.getItem(STORAGE_KEY) as PaletteId;
       if (stored && COLOR_PALETTES[stored]) {
         return stored;
       }
     }
-    return DEFAULT_PALETTE;
+    return defaultPalette;
   });
 
   // Get current palette object
   const palette = getPalette(paletteId);
+  const mode = palette.mode;
+  const isDark = mode === 'dark';
+  const isLight = mode === 'light';
 
-  // Apply theme classes to document
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'light') {
-      root.classList.add('light-mode');
-      root.classList.remove('dark-mode');
-    } else {
-      root.classList.add('dark-mode');
-      root.classList.remove('light-mode');
-    }
-    localStorage.setItem('stemworkforce-theme', theme);
-  }, [theme]);
+  // Filter palettes by mode
+  const darkPalettes = PALETTE_LIST.filter(p => p.mode === 'dark');
+  const lightPalettes = PALETTE_LIST.filter(p => p.mode === 'light');
 
-  // Apply palette CSS variables to document
+  // Apply palette CSS variables and mode class to document
   useEffect(() => {
     const root = document.documentElement;
     const cssVars = generateCSSVariables(palette);
 
-    // Apply all CSS variables
+    // Apply all CSS variables with transition
+    root.style.setProperty('--theme-transition', 'all 200ms ease-in-out');
+
     Object.entries(cssVars).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
 
+    // Update mode classes
+    if (isDark) {
+      root.classList.add('dark-mode');
+      root.classList.remove('light-mode');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.add('light-mode');
+      root.classList.remove('dark-mode');
+      root.style.colorScheme = 'light';
+    }
+
+    // Add palette-specific class for additional styling hooks
+    PALETTE_LIST.forEach(p => root.classList.remove(`palette-${p.id}`));
+    root.classList.add(`palette-${paletteId}`);
+
     // Store palette preference
-    localStorage.setItem('stemworkforce-palette', paletteId);
+    localStorage.setItem(STORAGE_KEY, paletteId);
 
-    // Also update theme based on palette mode (optional auto-sync)
-    // Uncomment if you want palette to auto-set theme mode:
-    // if (palette.mode !== theme) {
-    //   setThemeState(palette.mode);
-    // }
-  }, [palette, paletteId]);
+    // Remove transition after applied
+    setTimeout(() => {
+      root.style.removeProperty('--theme-transition');
+    }, 200);
+  }, [palette, paletteId, isDark]);
 
-  // Listen for system preference changes
+  // Listen for system preference changes (only if no preference stored)
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
     const handleChange = (e: MediaQueryListEvent) => {
-      const stored = localStorage.getItem('stemworkforce-theme');
+      const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) {
-        setThemeState(e.matches ? 'light' : 'dark');
+        // Auto-switch to appropriate default based on system preference
+        setPaletteIdState(e.matches ? 'deep-space' : 'professional');
       }
     };
 
@@ -112,31 +122,33 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  }, []);
-
-  const setTheme = useCallback((newTheme: Theme) => {
-    setThemeState(newTheme);
-  }, []);
-
   const setPalette = useCallback((id: PaletteId) => {
-    setPaletteIdState(id);
-    // Optionally sync theme with palette mode
-    const newPalette = getPalette(id);
-    setThemeState(newPalette.mode);
+    if (COLOR_PALETTES[id]) {
+      setPaletteIdState(id);
+    }
+  }, []);
+
+  const resetToDefault = useCallback(() => {
+    setPaletteIdState(defaultPalette);
+    localStorage.removeItem(STORAGE_KEY);
+  }, [defaultPalette]);
+
+  const getPalettePreviewColors = useCallback((p: ColorPalette) => {
+    return getPalettePreview(p);
   }, []);
 
   const value: ThemeContextType = {
-    theme,
-    toggleTheme,
-    setTheme,
-    isDark: theme === 'dark',
-    isLight: theme === 'light',
     paletteId,
     palette,
     setPalette,
+    isDark,
+    isLight,
+    mode,
     availablePalettes: PALETTE_LIST,
+    darkPalettes,
+    lightPalettes,
+    getPalettePreviewColors,
+    resetToDefault,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -149,6 +161,12 @@ export const useTheme = (): ThemeContextType => {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+};
+
+// Utility hook for common color access
+export const useColors = () => {
+  const { palette } = useTheme();
+  return palette.colors;
 };
 
 export default ThemeProvider;

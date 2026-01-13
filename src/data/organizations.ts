@@ -11,6 +11,7 @@ export interface Organization {
   shortName?: string;
   location?: string;
   classification?: string; // R1, R2, Community College, etc.
+  allowedDomains?: string[]; // Email domains allowed for this organization
   subunits?: SubUnit[];
 }
 
@@ -31,6 +32,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'ANL',
     type: 'national_lab',
     location: 'Lemont, IL',
+    allowedDomains: ['anl.gov'],
     subunits: [
       { id: 'anl-pse', name: 'Physical Sciences & Engineering', type: 'division' },
       { id: 'anl-es', name: 'Energy Sciences', type: 'division' },
@@ -46,6 +48,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'BNL',
     type: 'national_lab',
     location: 'Upton, NY',
+    allowedDomains: ['bnl.gov'],
     subunits: [
       { id: 'bnl-cfn', name: 'Center for Functional Nanomaterials', type: 'division' },
       { id: 'bnl-nsls', name: 'National Synchrotron Light Source II', type: 'division' },
@@ -61,6 +64,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'Fermilab',
     type: 'national_lab',
     location: 'Batavia, IL',
+    allowedDomains: ['fnal.gov'],
     subunits: [
       { id: 'fnal-ppd', name: 'Particle Physics Division', type: 'division' },
       { id: 'fnal-ad', name: 'Accelerator Division', type: 'division' },
@@ -75,6 +79,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'INL',
     type: 'national_lab',
     location: 'Idaho Falls, ID',
+    allowedDomains: ['inl.gov'],
     subunits: [
       { id: 'inl-ns', name: 'Nuclear Science & Technology', type: 'division' },
       { id: 'inl-es', name: 'Energy & Environment Science & Technology', type: 'division' },
@@ -88,6 +93,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'Berkeley Lab',
     type: 'national_lab',
     location: 'Berkeley, CA',
+    allowedDomains: ['lbl.gov', 'lbnl.gov'],
     subunits: [
       { id: 'lbnl-als', name: 'Advanced Light Source', type: 'division' },
       { id: 'lbnl-jgi', name: 'Joint Genome Institute', type: 'division' },
@@ -104,6 +110,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'LLNL',
     type: 'national_lab',
     location: 'Livermore, CA',
+    allowedDomains: ['llnl.gov'],
     subunits: [
       { id: 'llnl-nif', name: 'National Ignition Facility', type: 'division' },
       { id: 'llnl-wci', name: 'Weapons & Complex Integration', type: 'division' },
@@ -119,6 +126,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'LANL',
     type: 'national_lab',
     location: 'Los Alamos, NM',
+    allowedDomains: ['lanl.gov'],
     subunits: [
       { id: 'lanl-w', name: 'Weapons Programs', type: 'division' },
       { id: 'lanl-st', name: 'Science & Technology', type: 'division' },
@@ -133,6 +141,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'NREL',
     type: 'national_lab',
     location: 'Golden, CO',
+    allowedDomains: ['nrel.gov'],
     subunits: [
       { id: 'nrel-pv', name: 'Photovoltaic Research', type: 'division' },
       { id: 'nrel-wind', name: 'Wind Energy', type: 'division' },
@@ -148,6 +157,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'ORNL',
     type: 'national_lab',
     location: 'Oak Ridge, TN',
+    allowedDomains: ['ornl.gov'],
     subunits: [
       { id: 'ornl-sns', name: 'Spallation Neutron Source', type: 'division' },
       { id: 'ornl-olcf', name: 'Oak Ridge Leadership Computing Facility', type: 'division' },
@@ -163,6 +173,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'PNNL',
     type: 'national_lab',
     location: 'Richland, WA',
+    allowedDomains: ['pnnl.gov'],
     subunits: [
       { id: 'pnnl-emsl', name: 'Environmental Molecular Sciences Laboratory', type: 'division' },
       { id: 'pnnl-es', name: 'Earth & Biological Sciences', type: 'division' },
@@ -177,6 +188,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'PPPL',
     type: 'national_lab',
     location: 'Princeton, NJ',
+    allowedDomains: ['pppl.gov'],
     subunits: [
       { id: 'pppl-theory', name: 'Theory Department', type: 'division' },
       { id: 'pppl-nstx', name: 'NSTX-U Program', type: 'division' },
@@ -189,6 +201,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'SLAC',
     type: 'national_lab',
     location: 'Menlo Park, CA',
+    allowedDomains: ['slac.stanford.edu'],
     subunits: [
       { id: 'slac-lcls', name: 'Linac Coherent Light Source', type: 'division' },
       { id: 'slac-ssrl', name: 'Stanford Synchrotron Radiation Lightsource', type: 'division' },
@@ -202,6 +215,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'Sandia',
     type: 'national_lab',
     location: 'Albuquerque, NM',
+    allowedDomains: ['sandia.gov'],
     subunits: [
       { id: 'snl-ns', name: 'Nuclear Security', type: 'division' },
       { id: 'snl-def', name: 'Defense Systems', type: 'division' },
@@ -216,6 +230,7 @@ export const nationalLabs: Organization[] = [
     shortName: 'Jefferson Lab',
     type: 'national_lab',
     location: 'Newport News, VA',
+    allowedDomains: ['jlab.org'],
     subunits: [
       { id: 'tjnaf-phys', name: 'Physics Division', type: 'division' },
       { id: 'tjnaf-acc', name: 'Accelerator Division', type: 'division' },
