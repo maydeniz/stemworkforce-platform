@@ -6,6 +6,14 @@
 // Based on expert career counselor recommendations
 // ===========================================
 
+// Static Tailwind color map for program type cards
+const internFinderColors: Record<string, { hoverBorder: string; bg: string; text: string }> = {
+  blue: { hoverBorder: 'hover:border-blue-500/50', bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { hoverBorder: 'hover:border-purple-500/50', bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  emerald: { hoverBorder: 'hover:border-emerald-500/50', bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  yellow: { hoverBorder: 'hover:border-yellow-500/50', bg: 'bg-yellow-500/20', text: 'text-yellow-400' },
+};
+
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -883,8 +891,8 @@ const InternshipFinderPage: React.FC = () => {
                 { icon: <Beaker className="w-6 h-6" />, title: 'National Labs', desc: 'Sandia, Oak Ridge, Argonne', color: 'emerald' },
                 { icon: <Building2 className="w-6 h-6" />, title: 'Corporate Programs', desc: 'Intel, TSMC, Lockheed Martin', color: 'yellow' },
               ].map((type, idx) => (
-                <div key={idx} className={`p-6 bg-gray-900 border border-gray-700 rounded-xl hover:border-${type.color}-500/50 transition-colors`}>
-                  <div className={`w-12 h-12 bg-${type.color}-500/20 rounded-xl flex items-center justify-center mb-4 text-${type.color}-400`}>
+                <div key={idx} className={`p-6 bg-gray-900 border border-gray-700 rounded-xl ${internFinderColors[type.color]?.hoverBorder || 'hover:border-slate-500/50'} transition-colors`}>
+                  <div className={`w-12 h-12 ${internFinderColors[type.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center mb-4 ${internFinderColors[type.color]?.text || 'text-slate-400'}`}>
                     {type.icon}
                   </div>
                   <h3 className="text-lg font-bold text-white mb-1">{type.title}</h3>

@@ -6,6 +6,18 @@
 // industry credentials - starting in high school
 // ===========================================
 
+// Static Tailwind color map for pathway cards
+const pathwayColors: Record<string, { hoverBorder: string; bg: string; text: string; bgLight: string; borderLight: string }> = {
+  blue: { hoverBorder: 'hover:border-blue-500/50', bg: 'bg-blue-500/20', text: 'text-blue-400', bgLight: 'bg-blue-500/10', borderLight: 'border-blue-500/20' },
+  yellow: { hoverBorder: 'hover:border-yellow-500/50', bg: 'bg-yellow-500/20', text: 'text-yellow-400', bgLight: 'bg-yellow-500/10', borderLight: 'border-yellow-500/20' },
+  rose: { hoverBorder: 'hover:border-rose-500/50', bg: 'bg-rose-500/20', text: 'text-rose-400', bgLight: 'bg-rose-500/10', borderLight: 'border-rose-500/20' },
+  amber: { hoverBorder: 'hover:border-amber-500/50', bg: 'bg-amber-500/20', text: 'text-amber-400', bgLight: 'bg-amber-500/10', borderLight: 'border-amber-500/20' },
+  purple: { hoverBorder: 'hover:border-purple-500/50', bg: 'bg-purple-500/20', text: 'text-purple-400', bgLight: 'bg-purple-500/10', borderLight: 'border-purple-500/20' },
+  emerald: { hoverBorder: 'hover:border-emerald-500/50', bg: 'bg-emerald-500/20', text: 'text-emerald-400', bgLight: 'bg-emerald-500/10', borderLight: 'border-emerald-500/20' },
+  teal: { hoverBorder: 'hover:border-teal-500/50', bg: 'bg-teal-500/20', text: 'text-teal-400', bgLight: 'bg-teal-500/10', borderLight: 'border-teal-500/20' },
+  green: { hoverBorder: 'hover:border-green-500/50', bg: 'bg-green-500/20', text: 'text-green-400', bgLight: 'bg-green-500/10', borderLight: 'border-green-500/20' },
+};
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -245,12 +257,12 @@ const STATE_PROGRAMS: StateProgram[] = [
 const PathwayCard: React.FC<{ pathway: ApprenticeshipPathway; onClick: () => void }> = ({ pathway, onClick }) => {
   return (
     <div
-      className={`bg-gray-900 border border-gray-700 rounded-xl overflow-hidden hover:border-${pathway.color}-500/50 transition-all cursor-pointer group`}
+      className={`bg-gray-900 border border-gray-700 rounded-xl overflow-hidden ${pathwayColors[pathway.color]?.hoverBorder || 'hover:border-slate-500/50'} transition-all cursor-pointer group`}
       onClick={onClick}
     >
       <div className="p-6">
         <div className="flex items-start justify-between mb-4">
-          <div className={`w-12 h-12 bg-${pathway.color}-500/20 rounded-xl flex items-center justify-center text-${pathway.color}-400`}>
+          <div className={`w-12 h-12 ${pathwayColors[pathway.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center ${pathwayColors[pathway.color]?.text || 'text-slate-400'}`}>
             {pathway.icon}
           </div>
           {pathway.featured && (
@@ -276,9 +288,9 @@ const PathwayCard: React.FC<{ pathway: ApprenticeshipPathway; onClick: () => voi
           </div>
         </div>
       </div>
-      <div className={`px-6 py-3 bg-${pathway.color}-500/10 border-t border-${pathway.color}-500/20 flex items-center justify-between`}>
+      <div className={`px-6 py-3 ${pathwayColors[pathway.color]?.bgLight || 'bg-slate-500/10'} border-t ${pathwayColors[pathway.color]?.borderLight || 'border-slate-500/20'} flex items-center justify-between`}>
         <span className="text-sm text-gray-400">{pathway.careerOutlook}</span>
-        <ChevronRight className={`w-4 h-4 text-${pathway.color}-400 group-hover:translate-x-1 transition-transform`} />
+        <ChevronRight className={`w-4 h-4 ${pathwayColors[pathway.color]?.text || 'text-slate-400'} group-hover:translate-x-1 transition-transform`} />
       </div>
     </div>
   );
@@ -455,7 +467,7 @@ const ApprenticeshipPathwaysPage: React.FC = () => {
                   <div className="p-6 border-b border-gray-700">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-4">
-                        <div className={`w-14 h-14 bg-${selectedPathway.color}-500/20 rounded-xl flex items-center justify-center text-${selectedPathway.color}-400`}>
+                        <div className={`w-14 h-14 ${pathwayColors[selectedPathway.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center ${pathwayColors[selectedPathway.color]?.text || 'text-slate-400'}`}>
                           {selectedPathway.icon}
                         </div>
                         <div>

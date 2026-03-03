@@ -5,6 +5,19 @@
 // Based on DOL ETA performance requirements
 // ===========================================
 
+// Static Tailwind color maps
+const wioaStatusColors: Record<string, { bg: string; text: string }> = {
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+};
+const wioaProgramColors: Record<string, { bg: string; text: string; solid: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400', solid: 'bg-blue-500' },
+  violet: { bg: 'bg-violet-500/20', text: 'text-violet-400', solid: 'bg-violet-500' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400', solid: 'bg-amber-500' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', solid: 'bg-emerald-500' },
+};
+
 import React, { useState } from 'react';
 import {
   BarChart3, TrendingUp, TrendingDown, Users, DollarSign, Award,
@@ -336,13 +349,13 @@ const WIOADashboard: React.FC<WIOADashboardProps> = ({
                       {formatValue(indicator.actual, indicator.isPercentage, indicator.isCurrency)}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className={`font-medium text-${statusColor}-400`}>{percentOfGoal}%</span>
+                      <span className={`font-medium ${wioaStatusColors[statusColor]?.text || 'text-slate-400'}`}>{percentOfGoal}%</span>
                     </td>
                     <td className="px-4 py-4 text-center text-gray-400">
                       {formatValue(indicator.priorYear, indicator.isPercentage, indicator.isCurrency)}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <div className={`flex items-center justify-center gap-1 text-${isPositive ? 'emerald' : 'red'}-400`}>
+                      <div className={`flex items-center justify-center gap-1 ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                         {isPositive ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                         <span className="text-sm">
                           {isPositive ? '+' : ''}{indicator.isPercentage ? yearOverYearChange.toFixed(1) + ' pts' : (indicator.isCurrency ? '$' + yearOverYearChange.toLocaleString() : yearOverYearChange.toLocaleString())}
@@ -350,7 +363,7 @@ const WIOADashboard: React.FC<WIOADashboardProps> = ({
                       </div>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-${statusColor}-500/20 text-${statusColor}-400`}>
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${wioaStatusColors[statusColor]?.bg || 'bg-slate-500/20'} ${wioaStatusColors[statusColor]?.text || 'text-slate-400'}`}>
                         {status === 'exceeds' && <CheckCircle className="w-3.5 h-3.5" />}
                         {status === 'meets' && <Target className="w-3.5 h-3.5" />}
                         {status === 'below' && <AlertTriangle className="w-3.5 h-3.5" />}
@@ -375,8 +388,8 @@ const WIOADashboard: React.FC<WIOADashboardProps> = ({
               const performance = 95 + Math.random() * 15; // Sample data
               return (
                 <div key={program.id} className="flex items-center gap-4">
-                  <div className={`p-2 bg-${program.color}-500/20 rounded-lg`}>
-                    <program.icon className={`w-5 h-5 text-${program.color}-400`} />
+                  <div className={`p-2 ${wioaProgramColors[program.color]?.bg || 'bg-slate-500/20'} rounded-lg`}>
+                    <program.icon className={`w-5 h-5 ${wioaProgramColors[program.color]?.text || 'text-slate-400'}`} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
@@ -387,7 +400,7 @@ const WIOADashboard: React.FC<WIOADashboardProps> = ({
                     </div>
                     <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div
-                        className={`h-full bg-${program.color}-500 rounded-full transition-all`}
+                        className={`h-full ${wioaProgramColors[program.color]?.solid || 'bg-slate-500'} rounded-full transition-all`}
                         style={{ width: `${Math.min(performance, 120)}%` }}
                       />
                     </div>

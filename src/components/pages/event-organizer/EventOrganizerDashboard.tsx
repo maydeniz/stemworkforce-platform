@@ -3,6 +3,14 @@
 // TechConnect Events - STEM Career Fairs, Workshops, Hackathons
 // ===========================================
 
+// Static Tailwind color map
+const eventOrgColors: Record<string, { text: string }> = {
+  orange: { text: 'text-orange-400' },
+  teal: { text: 'text-teal-400' },
+  blue: { text: 'text-blue-400' },
+  emerald: { text: 'text-emerald-400' },
+};
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -1046,7 +1054,7 @@ const AttendeesTab: React.FC = () => {
         ].map((stat) => (
           <div key={stat.label} className="bg-gray-900 border border-gray-800 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-1">
-              <stat.icon className={`w-4 h-4 text-${stat.color}-400`} />
+              <stat.icon className={`w-4 h-4 ${eventOrgColors[stat.color]?.text || 'text-slate-400'}`} />
               <span className="text-xs text-gray-500">{stat.label}</span>
             </div>
             <div className="text-xl font-bold text-white">{stat.value}</div>

@@ -7,6 +7,17 @@
 // Designed in consultation with state workforce development
 // professionals and UX best practices from leading agencies
 
+// Static Tailwind color map
+const swfColors: Record<string, { bg: string; text: string; solid: string; bgLight: string; border: string }> = {
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', solid: 'bg-emerald-500', bgLight: 'bg-emerald-500/20', border: 'border-emerald-500/30' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400', solid: 'bg-blue-500', bgLight: 'bg-blue-500/20', border: 'border-blue-500/30' },
+  violet: { bg: 'bg-violet-500/20', text: 'text-violet-400', solid: 'bg-violet-500', bgLight: 'bg-violet-500/20', border: 'border-violet-500/30' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400', solid: 'bg-amber-500', bgLight: 'bg-amber-500/20', border: 'border-amber-500/30' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', solid: 'bg-cyan-500', bgLight: 'bg-cyan-500/20', border: 'border-cyan-500/30' },
+  rose: { bg: 'bg-rose-500/20', text: 'text-rose-400', solid: 'bg-rose-500', bgLight: 'bg-rose-500/20', border: 'border-rose-500/30' },
+  orange: { bg: 'bg-orange-500/20', text: 'text-orange-400', solid: 'bg-orange-500', bgLight: 'bg-orange-500/20', border: 'border-orange-500/30' },
+};
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -524,7 +535,7 @@ const StateWorkforcePortalPage: React.FC = () => {
                   <div key={i} className="bg-slate-800/50 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-slate-400">{indicator.name}</span>
-                      <span className={`text-xs px-1.5 py-0.5 rounded bg-${indicator.color}-500/20 text-${indicator.color}-400`}>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${swfColors[indicator.color]?.bg || 'bg-slate-500/20'} ${swfColors[indicator.color]?.text || 'text-slate-400'}`}>
                         {indicator.trend === 'up' ? '↑' : '↓'}
                       </span>
                     </div>
@@ -532,7 +543,7 @@ const StateWorkforcePortalPage: React.FC = () => {
                     <div className="text-xs text-slate-500 mt-1">Target: {indicator.target}</div>
                     <div className="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
                       <div
-                        className={`h-full bg-${indicator.color}-500 rounded-full`}
+                        className={`h-full ${swfColors[indicator.color]?.solid || 'bg-slate-500'} rounded-full`}
                         style={{ width: indicator.current }}
                       />
                     </div>
@@ -600,7 +611,7 @@ const StateWorkforcePortalPage: React.FC = () => {
                 onClick={() => setActiveCapability(i)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   activeCapability === i
-                    ? `bg-${cap.color}-500/20 text-${cap.color}-400 border border-${cap.color}-500/30`
+                    ? `${swfColors[cap.color]?.bg || 'bg-slate-500/20'} ${swfColors[cap.color]?.text || 'text-slate-400'} border ${swfColors[cap.color]?.border || 'border-slate-500/30'}`
                     : 'bg-slate-800/50 text-slate-400 border border-slate-700 hover:border-slate-600'
                 }`}
               >
@@ -617,8 +628,8 @@ const StateWorkforcePortalPage: React.FC = () => {
                 const Cap = PLATFORM_CAPABILITIES[activeCapability];
                 return (
                   <>
-                    <div className={`p-3 bg-${Cap.color}-500/20 rounded-xl`}>
-                      <Cap.icon className={`w-6 h-6 text-${Cap.color}-400`} />
+                    <div className={`p-3 ${swfColors[Cap.color]?.bg || 'bg-slate-500/20'} rounded-xl`}>
+                      <Cap.icon className={`w-6 h-6 ${swfColors[Cap.color]?.text || 'text-slate-400'}`} />
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold">{Cap.category}</h3>
@@ -631,7 +642,7 @@ const StateWorkforcePortalPage: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-4">
               {PLATFORM_CAPABILITIES[activeCapability].features.map((feature, i) => (
                 <div key={i} className="flex items-start gap-3 p-4 bg-slate-800/50 rounded-xl">
-                  <CheckCircle className={`w-5 h-5 text-${PLATFORM_CAPABILITIES[activeCapability].color}-400 flex-shrink-0 mt-0.5`} />
+                  <CheckCircle className={`w-5 h-5 ${swfColors[PLATFORM_CAPABILITIES[activeCapability].color]?.text || 'text-slate-400'} flex-shrink-0 mt-0.5`} />
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{feature.name}</span>
@@ -660,12 +671,12 @@ const StateWorkforcePortalPage: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {INDUSTRY_SECTORS.map((sector, i) => (
               <div key={i} className="bg-slate-800/50 rounded-xl p-5 border border-slate-700 text-center hover:border-slate-600 transition-colors">
-                <div className={`w-12 h-12 mx-auto mb-3 bg-${sector.color}-500/20 rounded-xl flex items-center justify-center`}>
-                  <sector.icon className={`w-6 h-6 text-${sector.color}-400`} />
+                <div className={`w-12 h-12 mx-auto mb-3 ${swfColors[sector.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center`}>
+                  <sector.icon className={`w-6 h-6 ${swfColors[sector.color]?.text || 'text-slate-400'}`} />
                 </div>
                 <div className="font-medium text-sm mb-2">{sector.name}</div>
                 <div className="text-xs text-slate-400">{sector.jobs} jobs</div>
-                <div className={`text-xs text-${sector.color}-400 mt-1`}>{sector.growth}</div>
+                <div className={`text-xs ${swfColors[sector.color]?.text || 'text-slate-400'} mt-1`}>{sector.growth}</div>
               </div>
             ))}
           </div>
@@ -717,12 +728,12 @@ const StateWorkforcePortalPage: React.FC = () => {
                   { step: 6, title: 'Follow-Up', desc: 'Q2, Q4 outcomes, wage records', icon: BarChart3, color: 'rose' }
                 ].map((phase, i) => (
                   <div key={i} className="flex items-start gap-4">
-                    <div className={`w-10 h-10 bg-${phase.color}-500/20 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <phase.icon className={`w-5 h-5 text-${phase.color}-400`} />
+                    <div className={`w-10 h-10 ${swfColors[phase.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                      <phase.icon className={`w-5 h-5 ${swfColors[phase.color]?.text || 'text-slate-400'}`} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-1.5 py-0.5 bg-${phase.color}-500/20 text-${phase.color}-400 rounded`}>
+                        <span className={`text-xs px-1.5 py-0.5 ${swfColors[phase.color]?.bg || 'bg-slate-500/20'} ${swfColors[phase.color]?.text || 'text-slate-400'} rounded`}>
                           Step {phase.step}
                         </span>
                         <span className="font-medium">{phase.title}</span>

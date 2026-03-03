@@ -41,15 +41,15 @@ interface TalentPipelineTabProps {
 // CONSTANTS
 // ===========================================
 
-const STAGES: { value: CandidateStage; label: string; color: string }[] = [
-  { value: 'new', label: 'New', color: 'bg-gray-500' },
-  { value: 'reviewed', label: 'Reviewed', color: 'bg-blue-500' },
-  { value: 'screened', label: 'Screened', color: 'bg-cyan-500' },
-  { value: 'interviewing', label: 'Interviewing', color: 'bg-purple-500' },
-  { value: 'offered', label: 'Offered', color: 'bg-amber-500' },
-  { value: 'hired', label: 'Hired', color: 'bg-emerald-500' },
-  { value: 'rejected', label: 'Rejected', color: 'bg-red-500' },
-  { value: 'withdrawn', label: 'Withdrawn', color: 'bg-gray-600' }
+const STAGES: { value: CandidateStage; label: string; color: string; badgeClass: string }[] = [
+  { value: 'new', label: 'New', color: 'bg-gray-500', badgeClass: 'bg-gray-500/20 text-gray-400' },
+  { value: 'reviewed', label: 'Reviewed', color: 'bg-blue-500', badgeClass: 'bg-blue-500/20 text-blue-400' },
+  { value: 'screened', label: 'Screened', color: 'bg-cyan-500', badgeClass: 'bg-cyan-500/20 text-cyan-400' },
+  { value: 'interviewing', label: 'Interviewing', color: 'bg-purple-500', badgeClass: 'bg-purple-500/20 text-purple-400' },
+  { value: 'offered', label: 'Offered', color: 'bg-amber-500', badgeClass: 'bg-amber-500/20 text-amber-400' },
+  { value: 'hired', label: 'Hired', color: 'bg-emerald-500', badgeClass: 'bg-emerald-500/20 text-emerald-400' },
+  { value: 'rejected', label: 'Rejected', color: 'bg-red-500', badgeClass: 'bg-red-500/20 text-red-400' },
+  { value: 'withdrawn', label: 'Withdrawn', color: 'bg-gray-600', badgeClass: 'bg-gray-600/20 text-gray-400' }
 ];
 
 const SOURCES: { value: CandidateSource; label: string }[] = [
@@ -324,8 +324,7 @@ const TalentPipelineTab: React.FC<TalentPipelineTabProps> = ({ partnerId, tier: 
 
               <div className="flex items-center justify-between pt-3 border-t border-gray-800">
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 ${stageInfo.color}/20 text-${stageInfo.color.replace('bg-', '')} rounded text-xs`}
-                    style={{ backgroundColor: `${stageInfo.color.replace('bg-', '')}20` }}
+                  <span className={`px-2 py-1 ${stageInfo.badgeClass} rounded text-xs`}
                   >
                     {stageInfo.label}
                   </span>

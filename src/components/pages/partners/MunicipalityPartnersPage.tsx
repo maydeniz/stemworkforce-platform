@@ -4,6 +4,16 @@
 // Internships, Apprenticeships, Talent Pipeline
 // ===========================================
 
+// Static Tailwind color map
+const muniPageColors: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  green: { bg: 'bg-green-500/20', text: 'text-green-400' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400' },
+  rose: { bg: 'bg-rose-500/20', text: 'text-rose-400' },
+};
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -497,8 +507,8 @@ export default function MunicipalityPartnersPage() {
                 transition={{ delay: index * 0.05 }}
                 className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-teal-500/30 transition-colors"
               >
-                <div className={`w-10 h-10 rounded-lg bg-${program.color}-500/20 flex items-center justify-center mb-4`}>
-                  <program.icon className={`w-5 h-5 text-${program.color}-400`} />
+                <div className={`w-10 h-10 rounded-lg ${muniPageColors[program.color]?.bg || 'bg-slate-500/20'} flex items-center justify-center mb-4`}>
+                  <program.icon className={`w-5 h-5 ${muniPageColors[program.color]?.text || 'text-slate-400'}`} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{program.name}</h3>
                 <p className="text-gray-400 text-sm mb-4">{program.description}</p>

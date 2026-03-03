@@ -213,7 +213,7 @@ const DesignConcept1: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 ].map(item => (
                   <div key={item.role} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
                     <span className="text-gray-300">{item.role}</span>
-                    <span className={`text-${item.color}-400 font-semibold`}>{item.salary}</span>
+                    <span className={`${item.color === 'emerald' ? 'text-emerald-400' : item.color === 'blue' ? 'text-blue-400' : 'text-purple-400'} font-semibold`}>{item.salary}</span>
                   </div>
                 ))}
               </div>

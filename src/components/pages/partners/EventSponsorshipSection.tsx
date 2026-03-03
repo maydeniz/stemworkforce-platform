@@ -204,41 +204,46 @@ const UPCOMING_EVENTS = [
 // ===========================================
 // COLOR MAPPINGS
 // ===========================================
-const COLOR_CLASSES: Record<string, { gradient: string; bg: string; border: string; text: string; button: string }> = {
+const COLOR_CLASSES: Record<string, { gradient: string; bg: string; border: string; text: string; button: string; ring: string }> = {
   amber: {
     gradient: 'from-amber-500 to-orange-500',
     bg: 'bg-amber-500/10',
     border: 'border-amber-500/30',
     text: 'text-amber-400',
-    button: 'bg-amber-500 hover:bg-amber-400'
+    button: 'bg-amber-500 hover:bg-amber-400',
+    ring: 'ring-amber-500/50'
   },
   blue: {
     gradient: 'from-blue-500 to-indigo-500',
     bg: 'bg-blue-500/10',
     border: 'border-blue-500/30',
     text: 'text-blue-400',
-    button: 'bg-blue-500 hover:bg-blue-400'
+    button: 'bg-blue-500 hover:bg-blue-400',
+    ring: 'ring-blue-500/50'
   },
   emerald: {
     gradient: 'from-emerald-500 to-green-500',
     bg: 'bg-emerald-500/10',
     border: 'border-emerald-500/30',
     text: 'text-emerald-400',
-    button: 'bg-emerald-500 hover:bg-emerald-400'
+    button: 'bg-emerald-500 hover:bg-emerald-400',
+    ring: 'ring-emerald-500/50'
   },
   pink: {
     gradient: 'from-pink-500 to-rose-500',
     bg: 'bg-pink-500/10',
     border: 'border-pink-500/30',
     text: 'text-pink-400',
-    button: 'bg-pink-500 hover:bg-pink-400'
+    button: 'bg-pink-500 hover:bg-pink-400',
+    ring: 'ring-pink-500/50'
   },
   indigo: {
     gradient: 'from-indigo-500 to-purple-500',
     bg: 'bg-indigo-500/10',
     border: 'border-indigo-500/30',
     text: 'text-indigo-400',
-    button: 'bg-indigo-500 hover:bg-indigo-400'
+    button: 'bg-indigo-500 hover:bg-indigo-400',
+    ring: 'ring-indigo-500/50'
   }
 };
 
@@ -312,7 +317,7 @@ const EventSponsorshipSection: React.FC<EventSponsorshipSectionProps> = ({ partn
                 <div
                   key={idx}
                   className={`relative bg-gray-800 rounded-2xl p-6 border ${
-                    tier.highlight ? `${colors.border} ring-2 ring-${primaryColor}-500/50` : 'border-gray-700'
+                    tier.highlight ? `${colors.border} ring-2 ${colors.ring}` : 'border-gray-700'
                   }`}
                 >
                   {tier.highlight && (

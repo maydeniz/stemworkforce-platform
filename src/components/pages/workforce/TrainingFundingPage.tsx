@@ -1,4 +1,13 @@
 // @ts-nocheck
+
+// Static Tailwind color map
+const fundingBorderColors: Record<string, string> = {
+  emerald: 'border-emerald-500',
+  blue: 'border-blue-500',
+  purple: 'border-purple-500',
+  amber: 'border-amber-500',
+};
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -322,7 +331,7 @@ export default function TrainingFundingPage() {
                 <div
                   key={source.id}
                   className={`bg-slate-900 border rounded-xl overflow-hidden transition ${
-                    isExpanded ? `border-${source.color}-500` : 'border-slate-800'
+                    isExpanded ? (fundingBorderColors[source.color] || 'border-slate-500') : 'border-slate-800'
                   }`}
                 >
                   <button
