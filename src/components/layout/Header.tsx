@@ -372,13 +372,31 @@ const MegaMenu: React.FC<{
   menu: typeof TALENT_MENU;
   onClose: () => void;
 }> = ({ menu, onClose }) => {
+  const menuRef = useRef<HTMLDivElement>(null);
   // Determine grid columns based on number of sections
   const sectionCount = menu.sections.length;
   const gridCols = sectionCount === 4 ? 'grid-cols-4' : 'grid-cols-3';
   const menuWidth = sectionCount === 4 ? 'w-[1000px]' : 'w-[800px]';
 
+  // Clamp menu position so it doesn't overflow the viewport
+  useEffect(() => {
+    const el = menuRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const parentRect = el.parentElement?.getBoundingClientRect();
+    if (rect.left < 8) {
+      el.style.transform = 'none';
+      el.style.left = `-${(parentRect?.left ?? 0) - 8}px`;
+    } else if (rect.right > window.innerWidth - 8) {
+      el.style.transform = 'none';
+      el.style.left = 'auto';
+      el.style.right = `-${window.innerWidth - 8 - (parentRect?.right ?? 0)}px`;
+    }
+  }, []);
+
   return (
     <div
+      ref={menuRef}
       className={`absolute left-1/2 -translate-x-1/2 mt-2 ${menuWidth} bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden animate-scale-in`}
       onMouseLeave={onClose}
     >
@@ -442,8 +460,26 @@ const MegaMenu: React.FC<{
 const DropdownMenu: React.FC<{
   menu: typeof RESOURCES_MENU;
   onClose: () => void;
-}> = ({ menu, onClose }) => (
+}> = ({ menu, onClose }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = dropdownRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const parentRect = el.parentElement?.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 8) {
+      el.style.right = `-${window.innerWidth - 8 - (parentRect?.right ?? 0)}px`;
+    }
+    if (rect.left < 8) {
+      el.style.right = 'auto';
+      el.style.left = `-${(parentRect?.left ?? 0) - 8}px`;
+    }
+  }, []);
+
+  return (
   <div
+    ref={dropdownRef}
     className="absolute right-0 mt-2 w-[400px] bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-scale-in"
     onMouseLeave={onClose}
   >
@@ -475,7 +511,8 @@ const DropdownMenu: React.FC<{
       ))}
     </div>
   </div>
-);
+  );
+};
 
 // ===========================================
 // MOBILE MENU COMPONENT

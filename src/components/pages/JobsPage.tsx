@@ -100,14 +100,6 @@ const organizationTypes = [
   { id: 'nonprofit', name: 'Non-Profit', icon: '💚', color: 'teal' },
 ];
 
-// Work arrangements
-const workArrangements = [
-  { id: 'all', name: 'All Types' },
-  { id: 'onsite', name: 'On-Site' },
-  { id: 'remote', name: 'Remote' },
-  { id: 'hybrid', name: 'Hybrid' },
-];
-
 // Clearance requirements
 const clearanceOptions = [
   { id: 'none', name: 'No Clearance' },
@@ -279,6 +271,98 @@ const realJobsData = [
   { id: 613, type: 'internship', title: 'IonQ Quantum Intern', company: 'IonQ', industry: 'quantum', orgType: 'industry', location: 'College Park, MD', workType: 'onsite', salary: '$32/hour', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '1 week ago', applicants: 234, description: 'Work on trapped ion quantum computing systems. Hardware or software tracks.', skills: ['Physics', 'Python', 'Quantum Technologies', 'Optics'], logo: '⚛️', featured: false, duration: '10 weeks', source: 'IonQ Careers' },
   { id: 614, type: 'internship', title: 'Blue Origin Propulsion Intern', company: 'Blue Origin', industry: 'aerospace', orgType: 'industry', location: 'Kent, WA', workType: 'onsite', salary: '$33/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '4 days ago', applicants: 456, description: 'Support BE-4 engine development for New Glenn rocket.', skills: ['Thermodynamics', 'MATLAB', 'CFD', 'Propulsion'], logo: '🚀', featured: false, duration: '12 weeks', source: 'Blue Origin Careers' },
   { id: 615, type: 'internship', title: 'Anthropic Research Fellow', company: 'Anthropic', industry: 'ai', orgType: 'industry', location: 'San Francisco, CA', workType: 'onsite', salary: '$65/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 789, description: '6-month research fellowship program on AI safety and alignment.', skills: ['Python', 'ML', 'Research', 'Mathematics', 'AI Safety'], logo: '🤖', featured: true, duration: '24 weeks', source: 'Business Insider' },
+
+  // === ACADEMIA JOBS ===
+  { id: 700, type: 'job', title: 'Semiconductor Research Scientist', company: 'Stanford University', industry: 'semiconductor', orgType: 'academia', location: 'Stanford, CA', workType: 'onsite', salary: '$110,000 - $145,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '5 days ago', applicants: 89, description: 'Conduct research on next-generation semiconductor materials and device architectures in the Department of Electrical Engineering.', skills: ['CMOS Design', 'Cleanroom Fabrication', 'TCAD', 'Python', 'Material Characterization'], logo: '💎', featured: true, source: 'Stanford Careers' },
+  { id: 701, type: 'job', title: 'IC Design Researcher', company: 'MIT', industry: 'semiconductor', orgType: 'academia', location: 'Cambridge, MA', workType: 'onsite', salary: '$105,000 - $140,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '1 week ago', applicants: 67, description: 'Research advanced integrated circuit design methodologies at the Microsystems Technology Laboratory.', skills: ['Verilog', 'Cadence', 'VLSI', 'SPICE Simulation', 'Python'], logo: '💎', featured: false, source: 'MIT Careers' },
+  { id: 702, type: 'job', title: 'Nuclear Engineering Professor', company: 'MIT', industry: 'nuclear', orgType: 'academia', location: 'Cambridge, MA', workType: 'onsite', salary: '$140,000 - $195,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '2 weeks ago', applicants: 34, description: 'Tenure-track faculty position in the Department of Nuclear Science and Engineering. Research focus on advanced reactor concepts.', skills: ['Reactor Physics', 'Monte Carlo Methods', 'MCNP', 'Teaching', 'Grant Writing'], logo: '☢️', featured: true, source: 'MIT Careers' },
+  { id: 703, type: 'job', title: 'Reactor Design Researcher', company: 'Georgia Tech Research Institute', industry: 'nuclear', orgType: 'academia', location: 'Atlanta, GA', workType: 'onsite', salary: '$95,000 - $130,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 42, description: 'Support advanced nuclear reactor design and simulation research at GTRI. Collaborate with DOE-funded programs.', skills: ['RELAP', 'Thermal Hydraulics', 'SERPENT', 'MATLAB', 'Python'], logo: '☢️', featured: false, source: 'GTRI Careers' },
+  { id: 704, type: 'job', title: 'ML Research Scientist', company: 'Stanford University', industry: 'ai', orgType: 'academia', location: 'Stanford, CA', workType: 'hybrid', salary: '$130,000 - $175,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 234, description: 'Join the Stanford AI Lab (SAIL) to conduct cutting-edge research in machine learning and deep learning.', skills: ['PyTorch', 'TensorFlow', 'Python', 'Research Publications', 'Statistics'], logo: '🤖', featured: true, source: 'Stanford Careers' },
+  { id: 705, type: 'job', title: 'NLP Professor', company: 'Carnegie Mellon University', industry: 'ai', orgType: 'academia', location: 'Pittsburgh, PA', workType: 'onsite', salary: '$150,000 - $210,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '1 week ago', applicants: 56, description: 'Tenure-track faculty position in the Language Technologies Institute. Focus on large language models and NLP.', skills: ['NLP', 'Deep Learning', 'Python', 'Teaching', 'Grant Writing'], logo: '🤖', featured: false, source: 'CMU Careers' },
+  { id: 706, type: 'job', title: 'AI Research Fellow', company: 'UC Berkeley', industry: 'ai', orgType: 'academia', location: 'Berkeley, CA', workType: 'hybrid', salary: '$90,000 - $120,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '6 days ago', applicants: 312, description: 'Postdoctoral research fellowship at Berkeley AI Research (BAIR). Work on foundational AI safety and alignment research.', skills: ['Python', 'JAX', 'ML Theory', 'Research', 'Mathematics'], logo: '🤖', featured: false, source: 'UC Berkeley Careers' },
+  { id: 707, type: 'job', title: 'Quantum Computing Researcher', company: 'Caltech', industry: 'quantum', orgType: 'academia', location: 'Pasadena, CA', workType: 'onsite', salary: '$115,000 - $155,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '1 week ago', applicants: 45, description: 'Research position at the Institute for Quantum Information Science. Focus on superconducting qubit architectures.', skills: ['Quantum Mechanics', 'Cryogenics', 'Python', 'Qiskit', 'Microwave Engineering'], logo: '⚛️', featured: false, source: 'Caltech Careers' },
+  { id: 708, type: 'job', title: 'Quantum Information Scientist', company: 'University of Michigan', industry: 'quantum', orgType: 'academia', location: 'Ann Arbor, MI', workType: 'onsite', salary: '$100,000 - $135,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '2 weeks ago', applicants: 38, description: 'Join the quantum information group to research quantum error correction and fault-tolerant quantum computing.', skills: ['Quantum Error Correction', 'Python', 'Linear Algebra', 'Cirq', 'Physics'], logo: '⚛️', featured: false, source: 'UMich Careers' },
+  { id: 709, type: 'job', title: 'Cybersecurity Research Engineer', company: 'Johns Hopkins APL', industry: 'cybersecurity', orgType: 'academia', location: 'Laurel, MD', workType: 'onsite', salary: '$105,000 - $150,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 78, description: 'Develop advanced cybersecurity tools and techniques for national security applications at APL.', skills: ['Penetration Testing', 'Reverse Engineering', 'Python', 'Network Security', 'C++'], logo: '🛡️', featured: false, source: 'JHU APL Careers' },
+  { id: 710, type: 'job', title: 'Security Researcher', company: 'Georgia Tech Research Institute', industry: 'cybersecurity', orgType: 'academia', location: 'Atlanta, GA', workType: 'hybrid', salary: '$95,000 - $130,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 56, description: 'Research novel cybersecurity defense mechanisms and threat detection systems at GTRI.', skills: ['Malware Analysis', 'Python', 'Machine Learning', 'IDS/IPS', 'Threat Intelligence'], logo: '🛡️', featured: false, source: 'GTRI Careers' },
+  { id: 711, type: 'job', title: 'Aerospace Research Scientist', company: 'UT Austin', industry: 'aerospace', orgType: 'academia', location: 'Austin, TX', workType: 'onsite', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 65, description: 'Conduct research in orbital mechanics and spacecraft guidance at the Center for Space Research.', skills: ['Orbital Mechanics', 'MATLAB', 'Python', 'Astrodynamics', 'C++'], logo: '🚀', featured: false, source: 'UT Austin Careers' },
+  { id: 712, type: 'job', title: 'Space Systems Engineer', company: 'MIT Lincoln Laboratory', industry: 'aerospace', orgType: 'academia', location: 'Lexington, MA', workType: 'onsite', salary: '$120,000 - $165,000', clearance: 'top_secret', citizenship: 'us_citizen', experience: 'mid', posted: '4 days ago', applicants: 87, description: 'Design and develop advanced space-based sensor and communication systems for national defense.', skills: ['Systems Engineering', 'RF Design', 'MATLAB', 'Signal Processing', 'Python'], logo: '🚀', featured: false, source: 'MIT Lincoln Lab Careers' },
+  { id: 713, type: 'job', title: 'Computational Biology Researcher', company: 'Stanford University', industry: 'biotech', orgType: 'academia', location: 'Stanford, CA', workType: 'hybrid', salary: '$95,000 - $130,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '1 week ago', applicants: 112, description: 'Apply computational methods to genomics and drug discovery in the Department of Bioengineering.', skills: ['Bioinformatics', 'Python', 'R', 'Genomics', 'Machine Learning'], logo: '🧬', featured: false, source: 'Stanford Careers' },
+  { id: 714, type: 'job', title: 'Synthetic Biology Postdoc', company: 'MIT', industry: 'biotech', orgType: 'academia', location: 'Cambridge, MA', workType: 'onsite', salary: '$70,000 - $85,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '6 days ago', applicants: 78, description: 'Postdoctoral position in the Synthetic Biology Center. Engineer biological systems for therapeutic applications.', skills: ['CRISPR', 'Molecular Biology', 'Python', 'Flow Cytometry', 'Gene Circuits'], logo: '🧬', featured: false, source: 'MIT Careers' },
+  { id: 715, type: 'job', title: 'Biomedical Engineering Professor', company: 'Johns Hopkins APL', industry: 'healthcare', orgType: 'academia', location: 'Baltimore, MD', workType: 'onsite', salary: '$135,000 - $190,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'senior', posted: '2 weeks ago', applicants: 45, description: 'Tenure-track faculty in biomedical engineering with focus on neural interfaces and prosthetics.', skills: ['Neural Engineering', 'Signal Processing', 'MATLAB', 'Grant Writing', 'Teaching'], logo: '🏥', featured: false, source: 'JHU Careers' },
+  { id: 716, type: 'job', title: 'Medical Imaging Researcher', company: 'Stanford University', industry: 'healthcare', orgType: 'academia', location: 'Stanford, CA', workType: 'onsite', salary: '$105,000 - $140,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '5 days ago', applicants: 67, description: 'Develop AI-powered medical imaging algorithms at the Stanford Center for Artificial Intelligence in Medicine.', skills: ['Deep Learning', 'Medical Imaging', 'Python', 'DICOM', 'PyTorch'], logo: '🏥', featured: false, source: 'Stanford Careers' },
+  { id: 717, type: 'job', title: 'Robotics Research Scientist', company: 'Carnegie Mellon University', industry: 'robotics', orgType: 'academia', location: 'Pittsburgh, PA', workType: 'onsite', salary: '$110,000 - $150,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '3 days ago', applicants: 98, description: 'Research autonomous robot perception and manipulation at the Robotics Institute.', skills: ['ROS', 'C++', 'Python', 'Computer Vision', 'Motion Planning'], logo: '🦾', featured: false, source: 'CMU RI Careers' },
+  { id: 718, type: 'job', title: 'Autonomous Systems Researcher', company: 'MIT', industry: 'robotics', orgType: 'academia', location: 'Cambridge, MA', workType: 'onsite', salary: '$105,000 - $145,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '1 week ago', applicants: 76, description: 'Research autonomous decision-making systems at CSAIL. Focus on safe autonomous navigation.', skills: ['ROS2', 'Python', 'Reinforcement Learning', 'C++', 'SLAM'], logo: '🦾', featured: false, source: 'MIT Careers' },
+  { id: 719, type: 'job', title: 'Solar Energy Researcher', company: 'Stanford University', industry: 'clean_energy', orgType: 'academia', location: 'Stanford, CA', workType: 'onsite', salary: '$95,000 - $130,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '4 days ago', applicants: 54, description: 'Research next-generation perovskite solar cells at the Precourt Institute for Energy.', skills: ['Photovoltaics', 'Materials Science', 'Python', 'Characterization', 'Thin Films'], logo: '⚡', featured: false, source: 'Stanford Careers' },
+  { id: 720, type: 'job', title: 'Battery Technology Postdoc', company: 'MIT', industry: 'clean_energy', orgType: 'academia', location: 'Cambridge, MA', workType: 'onsite', salary: '$72,000 - $88,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 89, description: 'Postdoctoral research on solid-state batteries and energy storage at the MIT Energy Initiative.', skills: ['Electrochemistry', 'Materials Science', 'Python', 'Battery Testing', 'XRD'], logo: '⚡', featured: false, source: 'MIT Careers' },
+  { id: 721, type: 'job', title: 'Additive Manufacturing Researcher', company: 'Purdue University', industry: 'manufacturing', orgType: 'academia', location: 'West Lafayette, IN', workType: 'onsite', salary: '$90,000 - $125,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '6 days ago', applicants: 43, description: 'Research metal additive manufacturing processes and quality control at the Purdue Engineering Research Center.', skills: ['3D Printing', 'Metallurgy', 'CAD', 'Python', 'DOE Methods'], logo: '🏭', featured: false, source: 'Purdue Careers' },
+  { id: 722, type: 'job', title: 'Smart Manufacturing Scientist', company: 'Georgia Tech Research Institute', industry: 'manufacturing', orgType: 'academia', location: 'Atlanta, GA', workType: 'hybrid', salary: '$95,000 - $130,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 37, description: 'Develop Industry 4.0 solutions including digital twins and IoT-enabled manufacturing systems.', skills: ['Digital Twins', 'IoT', 'Python', 'PLC Programming', 'Data Analytics'], logo: '🏭', featured: false, source: 'GTRI Careers' },
+  // Academia Internships
+  { id: 723, type: 'internship', title: 'Radar Systems Research Intern', company: 'MIT Lincoln Laboratory', industry: 'aerospace', orgType: 'academia', location: 'Lexington, MA', workType: 'onsite', salary: '$32/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '5 days ago', applicants: 234, description: 'Summer research internship working on advanced radar and sensor systems for national security.', skills: ['MATLAB', 'Signal Processing', 'Python', 'RF Engineering'], logo: '🚀', featured: false, duration: '12 weeks', source: 'MIT Lincoln Lab' },
+  { id: 724, type: 'internship', title: 'AI Research Intern', company: 'Stanford University', industry: 'ai', orgType: 'academia', location: 'Stanford, CA', workType: 'onsite', salary: '$28/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 456, description: 'Summer research internship at Stanford AI Lab working on foundation models and multimodal learning.', skills: ['Python', 'PyTorch', 'ML', 'Research'], logo: '🤖', featured: false, duration: '10 weeks', source: 'Stanford Careers' },
+  { id: 725, type: 'internship', title: 'Robotics Research Intern', company: 'Carnegie Mellon University', industry: 'robotics', orgType: 'academia', location: 'Pittsburgh, PA', workType: 'onsite', salary: '$26/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '4 days ago', applicants: 189, description: 'Summer internship at the Robotics Institute. Work on perception, planning, or manipulation projects.', skills: ['ROS', 'Python', 'C++', 'Computer Vision'], logo: '🦾', featured: false, duration: '10 weeks', source: 'CMU RI' },
+  { id: 726, type: 'internship', title: 'Quantum Computing Research Intern', company: 'Caltech', industry: 'quantum', orgType: 'academia', location: 'Pasadena, CA', workType: 'onsite', salary: '$27/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '1 week ago', applicants: 112, description: 'Summer research at the Institute for Quantum Information Science. Experimental or theoretical tracks.', skills: ['Quantum Mechanics', 'Python', 'Linear Algebra', 'Physics'], logo: '⚛️', featured: false, duration: '10 weeks', source: 'Caltech SURF' },
+  { id: 727, type: 'internship', title: 'Biotech Research Intern', company: 'UC Berkeley', industry: 'biotech', orgType: 'academia', location: 'Berkeley, CA', workType: 'onsite', salary: '$25/hour', clearance: 'none', citizenship: 'visa_sponsor', experience: 'entry', posted: '6 days ago', applicants: 145, description: 'Summer research internship in the Innovative Genomics Institute. CRISPR and gene editing focus.', skills: ['Molecular Biology', 'Python', 'Lab Techniques', 'Bioinformatics'], logo: '🧬', featured: false, duration: '10 weeks', source: 'UC Berkeley Careers' },
+
+  // === NONPROFIT JOBS ===
+  { id: 728, type: 'job', title: 'Senior Systems Engineer', company: 'MITRE Corporation', industry: 'cybersecurity', orgType: 'nonprofit', location: 'McLean, VA', workType: 'hybrid', salary: '$125,000 - $170,000', clearance: 'top_secret', citizenship: 'us_citizen', experience: 'senior', posted: '3 days ago', applicants: 134, description: 'Lead systems engineering for federal cybersecurity programs. Support DHS and DoD cyber initiatives.', skills: ['Systems Engineering', 'NIST Frameworks', 'Risk Assessment', 'Python', 'Cloud Security'], logo: '🛡️', featured: true, source: 'MITRE Careers' },
+  { id: 729, type: 'job', title: 'AI Policy Researcher', company: 'RAND Corporation', industry: 'ai', orgType: 'nonprofit', location: 'Santa Monica, CA', workType: 'hybrid', salary: '$95,000 - $140,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '1 week ago', applicants: 89, description: 'Research AI policy implications for national security and defense. Publish peer-reviewed analyses.', skills: ['Policy Analysis', 'Python', 'Machine Learning', 'Technical Writing', 'Statistics'], logo: '🤖', featured: false, source: 'RAND Careers' },
+  { id: 730, type: 'job', title: 'Space Systems Analyst', company: 'Aerospace Corporation', industry: 'aerospace', orgType: 'nonprofit', location: 'El Segundo, CA', workType: 'onsite', salary: '$110,000 - $155,000', clearance: 'ts_sci', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 78, description: 'Provide technical analysis for national security space programs. Support satellite system acquisition.', skills: ['Orbital Mechanics', 'Systems Analysis', 'MATLAB', 'Python', 'Space Systems'], logo: '🚀', featured: false, source: 'Aerospace Corp Careers' },
+  { id: 731, type: 'job', title: 'Nuclear Policy Analyst', company: 'RAND Corporation', industry: 'nuclear', orgType: 'nonprofit', location: 'Arlington, VA', workType: 'hybrid', salary: '$100,000 - $145,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '2 weeks ago', applicants: 34, description: 'Analyze nuclear energy and nonproliferation policy. Support government decision-making with rigorous research.', skills: ['Nuclear Policy', 'Quantitative Analysis', 'Python', 'Technical Writing', 'Game Theory'], logo: '☢️', featured: false, source: 'RAND Careers' },
+  { id: 732, type: 'job', title: 'Cybersecurity Analyst', company: 'MITRE Corporation', industry: 'cybersecurity', orgType: 'nonprofit', location: 'Bedford, MA', workType: 'hybrid', salary: '$95,000 - $135,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '4 days ago', applicants: 156, description: 'Develop ATT&CK framework enhancements. Analyze adversary tactics, techniques, and procedures.', skills: ['MITRE ATT&CK', 'Threat Analysis', 'Python', 'Network Security', 'SIEM'], logo: '🛡️', featured: false, source: 'MITRE Careers' },
+  { id: 733, type: 'job', title: 'Robotics Engineer', company: 'Charles Stark Draper Laboratory', industry: 'robotics', orgType: 'nonprofit', location: 'Cambridge, MA', workType: 'onsite', salary: '$105,000 - $150,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '1 week ago', applicants: 67, description: 'Design autonomous navigation and guidance systems for defense and space applications.', skills: ['ROS', 'C++', 'Python', 'GNC Systems', 'Embedded Systems'], logo: '🦾', featured: false, source: 'Draper Careers' },
+  { id: 734, type: 'job', title: 'Materials Scientist', company: 'Battelle Memorial Institute', industry: 'manufacturing', orgType: 'nonprofit', location: 'Columbus, OH', workType: 'onsite', salary: '$90,000 - $125,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '6 days ago', applicants: 45, description: 'Research advanced materials for defense and energy applications. Characterize novel alloys and composites.', skills: ['Materials Characterization', 'SEM/TEM', 'Python', 'Metallurgy', 'DOE Methods'], logo: '🏭', featured: false, source: 'Battelle Careers' },
+  { id: 735, type: 'job', title: 'Energy Policy Researcher', company: 'RAND Corporation', industry: 'clean_energy', orgType: 'nonprofit', location: 'Pittsburgh, PA', workType: 'hybrid', salary: '$90,000 - $130,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 56, description: 'Research clean energy transition policies and grid modernization strategies for government clients.', skills: ['Energy Policy', 'Data Analysis', 'Python', 'Economic Modeling', 'Technical Writing'], logo: '⚡', featured: false, source: 'RAND Careers' },
+  { id: 736, type: 'job', title: 'Biodefense Analyst', company: 'Battelle Memorial Institute', industry: 'biotech', orgType: 'nonprofit', location: 'Columbus, OH', workType: 'onsite', salary: '$95,000 - $135,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 38, description: 'Support biological threat assessment and countermeasure development for federal biodefense programs.', skills: ['Microbiology', 'Biosafety', 'Data Analysis', 'Python', 'Risk Assessment'], logo: '🧬', featured: false, source: 'Battelle Careers' },
+  { id: 737, type: 'job', title: 'Health Systems Engineer', company: 'MITRE Corporation', industry: 'healthcare', orgType: 'nonprofit', location: 'McLean, VA', workType: 'hybrid', salary: '$105,000 - $145,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'mid', posted: '3 days ago', applicants: 67, description: 'Apply systems engineering to healthcare IT modernization for VA and CMS programs.', skills: ['HL7 FHIR', 'Systems Engineering', 'Python', 'Healthcare IT', 'Data Analytics'], logo: '🏥', featured: false, source: 'MITRE Careers' },
+  { id: 738, type: 'job', title: 'STEM Curriculum Developer', company: 'Code.org', industry: 'ai', orgType: 'nonprofit', location: 'Seattle, WA', workType: 'remote', salary: '$85,000 - $115,000', clearance: 'none', citizenship: 'any', experience: 'mid', posted: '1 week ago', applicants: 234, description: 'Develop K-12 AI and computer science curriculum. Create interactive lessons on machine learning fundamentals.', skills: ['Curriculum Design', 'JavaScript', 'Python', 'Pedagogy', 'AI/ML Basics'], logo: '🤖', featured: true, source: 'Code.org Careers' },
+  { id: 739, type: 'job', title: 'Semiconductor Test Engineer', company: 'SRI International', industry: 'semiconductor', orgType: 'nonprofit', location: 'Menlo Park, CA', workType: 'onsite', salary: '$100,000 - $140,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 52, description: 'Develop test methodologies for advanced semiconductor devices. Support DARPA-funded microelectronics programs.', skills: ['ATE Programming', 'Semiconductor Physics', 'Python', 'LabVIEW', 'Test Engineering'], logo: '💎', featured: false, source: 'SRI Careers' },
+  { id: 740, type: 'job', title: 'Quantum Technology Analyst', company: 'Institute for Defense Analyses', industry: 'quantum', orgType: 'nonprofit', location: 'Alexandria, VA', workType: 'onsite', salary: '$110,000 - $155,000', clearance: 'ts_sci', citizenship: 'us_citizen', experience: 'senior', posted: '2 weeks ago', applicants: 28, description: 'Assess quantum computing and quantum sensing technologies for defense applications. Brief senior DoD leadership.', skills: ['Quantum Computing', 'Technical Analysis', 'Python', 'Briefing Skills', 'Physics'], logo: '⚛️', featured: false, source: 'IDA Careers' },
+  { id: 741, type: 'job', title: 'Mechanical Systems Engineer', company: 'Southwest Research Institute', industry: 'manufacturing', orgType: 'nonprofit', location: 'San Antonio, TX', workType: 'onsite', salary: '$90,000 - $125,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 43, description: 'Design and test mechanical systems for automotive, defense, and energy sector clients.', skills: ['SolidWorks', 'FEA', 'MATLAB', 'Testing', 'GD&T'], logo: '🏭', featured: false, source: 'SwRI Careers' },
+  { id: 742, type: 'job', title: 'Education Technology Specialist', company: 'Khan Academy', industry: 'ai', orgType: 'nonprofit', location: 'Mountain View, CA', workType: 'remote', salary: '$95,000 - $130,000', clearance: 'none', citizenship: 'any', experience: 'mid', posted: '6 days ago', applicants: 189, description: 'Build AI-powered tutoring features using LLMs. Help make world-class education accessible to everyone.', skills: ['Python', 'JavaScript', 'React', 'LLM APIs', 'EdTech'], logo: '🤖', featured: false, source: 'Khan Academy Careers' },
+  // Nonprofit Internships
+  { id: 743, type: 'internship', title: 'Cybersecurity Research Intern', company: 'MITRE Corporation', industry: 'cybersecurity', orgType: 'nonprofit', location: 'McLean, VA', workType: 'hybrid', salary: '$28/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '5 days ago', applicants: 267, description: 'Summer internship supporting ATT&CK framework research and cyber threat analysis.', skills: ['Python', 'Network Security', 'Linux', 'Cybersecurity Fundamentals'], logo: '🛡️', featured: false, duration: '12 weeks', source: 'MITRE Careers' },
+  { id: 744, type: 'internship', title: 'Policy Research Intern', company: 'RAND Corporation', industry: 'ai', orgType: 'nonprofit', location: 'Santa Monica, CA', workType: 'hybrid', salary: '$24/hour', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '1 week ago', applicants: 145, description: 'Support AI and technology policy research. Assist senior researchers with data analysis and writing.', skills: ['Data Analysis', 'Python', 'Technical Writing', 'Research Methods'], logo: '🤖', featured: false, duration: '10 weeks', source: 'RAND Careers' },
+  { id: 745, type: 'internship', title: 'Aerospace Engineering Intern', company: 'Aerospace Corporation', industry: 'aerospace', orgType: 'nonprofit', location: 'El Segundo, CA', workType: 'onsite', salary: '$30/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '4 days ago', applicants: 198, description: 'Summer internship in space systems engineering. Support satellite program technical evaluations.', skills: ['MATLAB', 'Python', 'Systems Engineering', 'Aerospace Fundamentals'], logo: '🚀', featured: false, duration: '12 weeks', source: 'Aerospace Corp' },
+
+  // === NATIONAL LABS JOBS ===
+  { id: 746, type: 'job', title: 'AI/ML Scientist', company: 'Argonne National Laboratory', industry: 'ai', orgType: 'national_lab', location: 'Lemont, IL', workType: 'hybrid', salary: '$115,000 - $155,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 87, description: 'Develop AI/ML models for scientific discovery on Aurora exascale supercomputer. Apply deep learning to materials science and climate.', skills: ['Python', 'PyTorch', 'HPC', 'Scientific Computing', 'Deep Learning'], logo: '🤖', featured: true, source: 'Argonne Careers' },
+  { id: 747, type: 'job', title: 'Particle Accelerator Engineer', company: 'Fermi National Accelerator Laboratory', industry: 'nuclear', orgType: 'national_lab', location: 'Batavia, IL', workType: 'onsite', salary: '$105,000 - $145,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 34, description: 'Design and maintain superconducting RF cavities for the PIP-II accelerator upgrade project.', skills: ['Accelerator Physics', 'RF Engineering', 'Cryogenics', 'MATLAB', 'CAD'], logo: '☢️', featured: false, source: 'Fermilab Careers' },
+  { id: 748, type: 'job', title: 'Climate Modeling Scientist', company: 'Pacific Northwest National Laboratory', industry: 'clean_energy', orgType: 'national_lab', location: 'Richland, WA', workType: 'hybrid', salary: '$110,000 - $150,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '5 days ago', applicants: 56, description: 'Develop high-resolution Earth system models. Contribute to DOE climate research initiatives.', skills: ['Climate Modeling', 'Python', 'Fortran', 'HPC', 'Data Analysis'], logo: '⚡', featured: false, source: 'PNNL Careers' },
+  { id: 749, type: 'job', title: 'Quantum Computing Researcher', company: 'Lawrence Berkeley National Laboratory', industry: 'quantum', orgType: 'national_lab', location: 'Berkeley, CA', workType: 'onsite', salary: '$120,000 - $160,000', clearance: 'none', citizenship: 'us_person', experience: 'senior', posted: '3 days ago', applicants: 45, description: 'Lead quantum computing research at the Advanced Quantum Testbed. Develop quantum algorithms for scientific applications.', skills: ['Quantum Algorithms', 'Python', 'Qiskit', 'Superconducting Qubits', 'Physics'], logo: '⚛️', featured: true, source: 'LBNL Careers' },
+  { id: 750, type: 'job', title: 'Cybersecurity Engineer', company: 'Lawrence Livermore National Laboratory', industry: 'cybersecurity', orgType: 'national_lab', location: 'Livermore, CA', workType: 'onsite', salary: '$115,000 - $160,000', clearance: 'q_clearance', citizenship: 'us_citizen', experience: 'mid', posted: '1 week ago', applicants: 78, description: 'Protect classified computing infrastructure and develop advanced cyber defense tools for national security.', skills: ['Network Security', 'Python', 'Penetration Testing', 'SIEM', 'Linux'], logo: '🛡️', featured: false, source: 'LLNL Careers' },
+  { id: 751, type: 'job', title: 'Astrophysics Researcher', company: 'SLAC National Accelerator Laboratory', industry: 'aerospace', orgType: 'national_lab', location: 'Menlo Park, CA', workType: 'onsite', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'visa_sponsor', experience: 'mid', posted: '6 days ago', applicants: 67, description: 'Conduct astrophysics research using data from the Vera C. Rubin Observatory. Dark energy and dark matter studies.', skills: ['Astrophysics', 'Python', 'Data Analysis', 'Statistics', 'C++'], logo: '🚀', featured: false, source: 'SLAC Careers' },
+  { id: 752, type: 'job', title: 'Bioinformatics Scientist', company: 'Brookhaven National Laboratory', industry: 'biotech', orgType: 'national_lab', location: 'Upton, NY', workType: 'hybrid', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 43, description: 'Apply computational biology methods to structural biology research using NSLS-II synchrotron data.', skills: ['Bioinformatics', 'Python', 'Structural Biology', 'HPC', 'Machine Learning'], logo: '🧬', featured: false, source: 'BNL Careers' },
+  { id: 753, type: 'job', title: 'Semiconductor Materials Scientist', company: 'Argonne National Laboratory', industry: 'semiconductor', orgType: 'national_lab', location: 'Lemont, IL', workType: 'onsite', salary: '$105,000 - $145,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 38, description: 'Research next-generation semiconductor materials using Advanced Photon Source X-ray characterization.', skills: ['X-ray Diffraction', 'Materials Science', 'Python', 'Thin Film Deposition', 'Characterization'], logo: '💎', featured: false, source: 'Argonne Careers' },
+  { id: 754, type: 'job', title: 'Robotics Engineer', company: 'NASA Jet Propulsion Laboratory', industry: 'robotics', orgType: 'national_lab', location: 'Pasadena, CA', workType: 'onsite', salary: '$120,000 - $165,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'mid', posted: '3 days ago', applicants: 234, description: 'Design autonomous robotic systems for planetary exploration missions. Support Mars Sample Return program.', skills: ['ROS', 'C++', 'Python', 'Autonomous Navigation', 'Embedded Systems'], logo: '🦾', featured: true, source: 'JPL Careers' },
+  { id: 755, type: 'job', title: 'Advanced Manufacturing Engineer', company: 'Pacific Northwest National Laboratory', industry: 'manufacturing', orgType: 'national_lab', location: 'Richland, WA', workType: 'onsite', salary: '$95,000 - $135,000', clearance: 'eligible', citizenship: 'us_person', experience: 'mid', posted: '5 days ago', applicants: 32, description: 'Develop advanced manufacturing processes for energy and defense applications. Focus on friction stir welding and additive manufacturing.', skills: ['Additive Manufacturing', 'CAD', 'Materials Testing', 'Python', 'Process Engineering'], logo: '🏭', featured: false, source: 'PNNL Careers' },
+  { id: 756, type: 'job', title: 'Medical Physics Researcher', company: 'Argonne National Laboratory', industry: 'healthcare', orgType: 'national_lab', location: 'Lemont, IL', workType: 'onsite', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '1 week ago', applicants: 29, description: 'Develop advanced proton therapy techniques and medical imaging methods using synchrotron radiation.', skills: ['Medical Physics', 'Radiation Therapy', 'Python', 'GEANT4', 'Data Analysis'], logo: '🏥', featured: false, source: 'Argonne Careers' },
+  { id: 757, type: 'job', title: 'Nuclear Fusion Scientist', company: 'Lawrence Livermore National Laboratory', industry: 'nuclear', orgType: 'national_lab', location: 'Livermore, CA', workType: 'onsite', salary: '$125,000 - $175,000', clearance: 'q_clearance', citizenship: 'us_citizen', experience: 'senior', posted: '2 weeks ago', applicants: 56, description: 'Advance inertial confinement fusion research at the National Ignition Facility. Analyze experimental data from fusion shots.', skills: ['Plasma Physics', 'Python', 'HPC', 'Laser Systems', 'Data Analysis'], logo: '☢️', featured: false, source: 'LLNL Careers' },
+  { id: 758, type: 'job', title: 'Grid Modernization Engineer', company: 'Pacific Northwest National Laboratory', industry: 'clean_energy', orgType: 'national_lab', location: 'Richland, WA', workType: 'hybrid', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'us_person', experience: 'mid', posted: '4 days ago', applicants: 47, description: 'Research smart grid technologies and develop tools for grid resilience and renewable energy integration.', skills: ['Power Systems', 'Python', 'MATLAB', 'GridLAB-D', 'Data Analytics'], logo: '⚡', featured: false, source: 'PNNL Careers' },
+  // National Labs Internships
+  { id: 759, type: 'internship', title: 'Science Undergraduate Laboratory Intern', company: 'Argonne National Laboratory', industry: 'ai', orgType: 'national_lab', location: 'Lemont, IL', workType: 'onsite', salary: '$650/week', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '1 week ago', applicants: 345, description: 'DOE SULI program internship. Apply AI/ML to scientific research at a world-class national laboratory.', skills: ['Python', 'Data Science', 'Machine Learning', 'Scientific Computing'], logo: '🤖', featured: false, duration: '10 weeks', source: 'DOE SULI' },
+  { id: 760, type: 'internship', title: 'Quantum Information Intern', company: 'Fermi National Accelerator Laboratory', industry: 'quantum', orgType: 'national_lab', location: 'Batavia, IL', workType: 'onsite', salary: '$625/week', clearance: 'none', citizenship: 'us_person', experience: 'entry', posted: '5 days ago', applicants: 123, description: 'Summer internship in Fermilabs quantum science division. Work on quantum networking and sensing experiments.', skills: ['Quantum Mechanics', 'Python', 'Optics', 'Lab Skills'], logo: '⚛️', featured: false, duration: '10 weeks', source: 'Fermilab Internships' },
+  { id: 761, type: 'internship', title: 'Planetary Robotics Intern', company: 'NASA Jet Propulsion Laboratory', industry: 'robotics', orgType: 'national_lab', location: 'Pasadena, CA', workType: 'onsite', salary: '$30/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '3 days ago', applicants: 567, description: 'Summer internship in JPLs robotics section. Help develop autonomous systems for future planetary missions.', skills: ['ROS', 'Python', 'C++', 'Robotics Fundamentals'], logo: '🦾', featured: false, duration: '10 weeks', source: 'JPL Internships' },
+
+  // === FEDERAL JOBS ===
+  { id: 762, type: 'job', title: 'AI Research Program Manager', company: 'DARPA', industry: 'ai', orgType: 'federal', location: 'Arlington, VA', workType: 'onsite', salary: '$145,000 - $195,000', clearance: 'top_secret', citizenship: 'us_citizen', experience: 'senior', posted: '2 days ago', applicants: 67, description: 'Manage AI research programs that push the boundaries of machine learning for national security. Define multi-year research agendas.', skills: ['Program Management', 'AI/ML', 'Python', 'Strategic Planning', 'Technical Leadership'], logo: '🤖', featured: true, source: 'USAJobs' },
+  { id: 763, type: 'job', title: 'Semiconductor Policy Analyst', company: 'Department of Energy', industry: 'semiconductor', orgType: 'federal', location: 'Washington, DC', workType: 'hybrid', salary: '$105,000 - $140,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '1 week ago', applicants: 45, description: 'Analyze semiconductor supply chain policy and support CHIPS Act implementation. Coordinate with industry and academia.', skills: ['Policy Analysis', 'Semiconductor Industry', 'Technical Writing', 'Data Analysis', 'Stakeholder Engagement'], logo: '💎', featured: false, source: 'USAJobs' },
+  { id: 764, type: 'job', title: 'Nuclear Regulatory Inspector', company: 'Nuclear Regulatory Commission', industry: 'nuclear', orgType: 'federal', location: 'Rockville, MD', workType: 'onsite', salary: '$95,000 - $135,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 56, description: 'Inspect nuclear power plants and ensure regulatory compliance. Evaluate safety systems and emergency procedures.', skills: ['Nuclear Safety', 'Reactor Operations', 'Regulatory Compliance', 'Technical Writing', 'Inspections'], logo: '☢️', featured: false, source: 'USAJobs' },
+  { id: 765, type: 'job', title: 'Quantum Research Scientist', company: 'NIST', industry: 'quantum', orgType: 'federal', location: 'Gaithersburg, MD', workType: 'onsite', salary: '$120,000 - $165,000', clearance: 'none', citizenship: 'us_citizen', experience: 'senior', posted: '3 days ago', applicants: 38, description: 'Conduct quantum computing and quantum measurement research. Develop quantum standards and benchmarks for industry adoption.', skills: ['Quantum Computing', 'Python', 'Metrology', 'Physics', 'Research Publications'], logo: '⚛️', featured: true, source: 'USAJobs' },
+  { id: 766, type: 'job', title: 'Cybersecurity Analyst', company: 'DHS Science & Technology', industry: 'cybersecurity', orgType: 'federal', location: 'Washington, DC', workType: 'hybrid', salary: '$100,000 - $145,000', clearance: 'top_secret', citizenship: 'us_citizen', experience: 'mid', posted: '4 days ago', applicants: 123, description: 'Analyze cyber threats to critical infrastructure. Develop cybersecurity tools and strategies for federal agencies.', skills: ['Threat Intelligence', 'Python', 'Network Security', 'Incident Response', 'NIST CSF'], logo: '🛡️', featured: false, source: 'USAJobs' },
+  { id: 767, type: 'job', title: 'Aerospace Engineer', company: 'NASA Headquarters', industry: 'aerospace', orgType: 'federal', location: 'Washington, DC', workType: 'hybrid', salary: '$115,000 - $160,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'senior', posted: '1 week ago', applicants: 89, description: 'Support Artemis program engineering oversight. Coordinate technical requirements across NASA centers.', skills: ['Systems Engineering', 'Project Management', 'MATLAB', 'Requirements Analysis', 'Technical Review'], logo: '🚀', featured: false, source: 'USAJobs' },
+  { id: 768, type: 'job', title: 'Biomedical Research Scientist', company: 'National Institutes of Health', industry: 'biotech', orgType: 'federal', location: 'Bethesda, MD', workType: 'hybrid', salary: '$110,000 - $155,000', clearance: 'none', citizenship: 'us_citizen', experience: 'senior', posted: '3 days ago', applicants: 78, description: 'Lead biomedical research at NIAID. Investigate emerging infectious diseases and develop therapeutic strategies.', skills: ['Immunology', 'Molecular Biology', 'Python', 'Clinical Research', 'Grant Management'], logo: '🧬', featured: false, source: 'USAJobs' },
+  { id: 769, type: 'job', title: 'Health Data Scientist', company: 'National Institutes of Health', industry: 'healthcare', orgType: 'federal', location: 'Bethesda, MD', workType: 'hybrid', salary: '$105,000 - $145,000', clearance: 'none', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 112, description: 'Apply data science and ML to cancer research data at the National Cancer Institute. Analyze clinical trial outcomes.', skills: ['Python', 'R', 'Machine Learning', 'Biostatistics', 'Clinical Data'], logo: '🏥', featured: false, source: 'USAJobs' },
+  { id: 770, type: 'job', title: 'Clean Energy Program Manager', company: 'Department of Energy', industry: 'clean_energy', orgType: 'federal', location: 'Washington, DC', workType: 'hybrid', salary: '$125,000 - $170,000', clearance: 'eligible', citizenship: 'us_citizen', experience: 'senior', posted: '1 week ago', applicants: 56, description: 'Manage DOE clean energy R&D portfolio. Oversee multi-million dollar grants for solar, wind, and storage technologies.', skills: ['Program Management', 'Clean Energy', 'Budget Management', 'Stakeholder Engagement', 'Technical Review'], logo: '⚡', featured: false, source: 'USAJobs' },
+  { id: 771, type: 'job', title: 'Robotics Research Engineer', company: 'Army Research Laboratory', industry: 'robotics', orgType: 'federal', location: 'Adelphi, MD', workType: 'onsite', salary: '$100,000 - $140,000', clearance: 'secret', citizenship: 'us_citizen', experience: 'mid', posted: '4 days ago', applicants: 65, description: 'Develop autonomous ground robot systems for military applications. Research human-robot teaming and swarm behavior.', skills: ['ROS', 'C++', 'Python', 'Autonomous Systems', 'Computer Vision'], logo: '🦾', featured: false, source: 'USAJobs' },
+  { id: 772, type: 'job', title: 'Manufacturing Technology Specialist', company: 'NIST', industry: 'manufacturing', orgType: 'federal', location: 'Gaithersburg, MD', workType: 'onsite', salary: '$95,000 - $135,000', clearance: 'none', citizenship: 'us_citizen', experience: 'mid', posted: '6 days ago', applicants: 34, description: 'Develop manufacturing standards and measurement science for smart manufacturing and advanced materials.', skills: ['Manufacturing Processes', 'Metrology', 'Python', 'Quality Systems', 'Standards Development'], logo: '🏭', featured: false, source: 'USAJobs' },
+  { id: 773, type: 'job', title: 'Climate Data Scientist', company: 'NOAA', industry: 'ai', orgType: 'federal', location: 'Silver Spring, MD', workType: 'hybrid', salary: '$100,000 - $140,000', clearance: 'none', citizenship: 'us_citizen', experience: 'mid', posted: '3 days ago', applicants: 89, description: 'Apply AI/ML to climate and weather prediction models. Develop data-driven forecasting tools for NWS.', skills: ['Python', 'Machine Learning', 'Climate Science', 'HPC', 'Data Visualization'], logo: '🤖', featured: false, source: 'USAJobs' },
+  { id: 774, type: 'job', title: 'Bioinformatics Program Director', company: 'National Institutes of Health', industry: 'biotech', orgType: 'federal', location: 'Bethesda, MD', workType: 'hybrid', salary: '$135,000 - $185,000', clearance: 'none', citizenship: 'us_citizen', experience: 'executive', posted: '2 weeks ago', applicants: 23, description: 'Direct NIH bioinformatics research programs. Oversee All of Us precision medicine computational initiatives.', skills: ['Bioinformatics', 'Program Management', 'Genomics', 'Strategic Planning', 'Budget Oversight'], logo: '🧬', featured: false, source: 'USAJobs' },
+  { id: 775, type: 'job', title: 'Nuclear Safeguards Engineer', company: 'Department of Energy', industry: 'nuclear', orgType: 'federal', location: 'Germantown, MD', workType: 'onsite', salary: '$110,000 - $150,000', clearance: 'q_clearance', citizenship: 'us_citizen', experience: 'mid', posted: '1 week ago', applicants: 28, description: 'Support nuclear material safeguards and nonproliferation programs. Ensure compliance with IAEA standards.', skills: ['Nuclear Safeguards', 'Radiation Detection', 'Nonproliferation', 'Data Analysis', 'Technical Writing'], logo: '☢️', featured: false, source: 'USAJobs' },
+  { id: 776, type: 'job', title: 'FDA Medical Device Reviewer', company: 'Food and Drug Administration', industry: 'healthcare', orgType: 'federal', location: 'Silver Spring, MD', workType: 'hybrid', salary: '$95,000 - $135,000', clearance: 'none', citizenship: 'us_citizen', experience: 'mid', posted: '5 days ago', applicants: 67, description: 'Review AI/ML-enabled medical device submissions. Evaluate safety and efficacy of digital health technologies.', skills: ['Medical Devices', 'Regulatory Science', 'AI/ML Evaluation', 'Technical Writing', 'Risk Analysis'], logo: '🏥', featured: false, source: 'USAJobs' },
+  // Federal Internships
+  { id: 777, type: 'internship', title: 'DARPA Innovation Fellow', company: 'DARPA', industry: 'ai', orgType: 'federal', location: 'Arlington, VA', workType: 'onsite', salary: '$35/hour', clearance: 'eligible', citizenship: 'us_citizen', experience: 'entry', posted: '4 days ago', applicants: 234, description: 'Prestigious fellowship supporting breakthrough AI research programs. Work directly with program managers.', skills: ['Python', 'AI/ML', 'Research', 'Technical Writing'], logo: '🤖', featured: true, duration: '12 weeks', source: 'USAJobs' },
+  { id: 778, type: 'internship', title: 'NIST SURF Research Intern', company: 'NIST', industry: 'quantum', orgType: 'federal', location: 'Gaithersburg, MD', workType: 'onsite', salary: '$22/hour', clearance: 'none', citizenship: 'us_citizen', experience: 'entry', posted: '1 week ago', applicants: 178, description: 'Summer Undergraduate Research Fellowship in quantum science or measurement science at NIST.', skills: ['Physics', 'Python', 'Lab Skills', 'Data Analysis'], logo: '⚛️', featured: false, duration: '11 weeks', source: 'NIST SURF' },
+  { id: 779, type: 'internship', title: 'DOE Scholars Intern', company: 'Department of Energy', industry: 'clean_energy', orgType: 'federal', location: 'Washington, DC', workType: 'hybrid', salary: '$20/hour', clearance: 'none', citizenship: 'us_citizen', experience: 'entry', posted: '6 days ago', applicants: 289, description: 'DOE Scholars program internship supporting clean energy research and policy. Rotational assignments available.', skills: ['Data Analysis', 'Python', 'Energy Policy', 'Technical Writing'], logo: '⚡', featured: false, duration: '10 weeks', source: 'DOE Scholars' },
 ];
 
 // Quick Apply Modal Component
@@ -412,6 +496,8 @@ const JobsPage: React.FC = () => {
   const [citizenship, setCitizenship] = useState('all');
   const [experienceLevel, setExperienceLevel] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [savedJobs, setSavedJobs] = useState<(number | string)[]>([]);
   const [applyingTo, setApplyingTo] = useState<JobData | null>(null);
@@ -559,6 +645,8 @@ const JobsPage: React.FC = () => {
   }, [searchParams]);
 
   const toggleOrgType = (orgType: string) => {
+    setSelectedCompany('all');
+    setSelectedLocation('all');
     if (orgType === 'all') {
       setSelectedOrgTypes(['all']);
     } else {
@@ -574,15 +662,48 @@ const JobsPage: React.FC = () => {
     return [...realJobsData, ...databaseJobs, ...federatedJobs];
   }, [databaseJobs, federatedJobs]);
 
-  const filteredOpportunities = useMemo(() => {
+  // Pre-filter by type + industry + orgType to derive dynamic dropdown options
+  const preFilteredOpportunities = useMemo(() => {
     return allOpportunities.filter(opp => {
       if (opp.type !== opportunityType) return false;
       if (selectedIndustry !== 'all' && opp.industry !== selectedIndustry) return false;
       if (!selectedOrgTypes.includes('all') && !selectedOrgTypes.includes(opp.orgType)) return false;
+      return true;
+    });
+  }, [allOpportunities, opportunityType, selectedIndustry, selectedOrgTypes]);
+
+  // Dynamic company options from pre-filtered results
+  const availableCompanies = useMemo(() => {
+    const counts: Record<string, number> = {};
+    preFilteredOpportunities.forEach(opp => {
+      counts[opp.company] = (counts[opp.company] || 0) + 1;
+    });
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([name, count]) => ({ name, count }));
+  }, [preFilteredOpportunities]);
+
+  // Dynamic location options from pre-filtered results
+  const availableLocations = useMemo(() => {
+    const counts: Record<string, number> = {};
+    preFilteredOpportunities.forEach(opp => {
+      counts[opp.location] = (counts[opp.location] || 0) + 1;
+    });
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([name, count]) => ({ name, count }));
+  }, [preFilteredOpportunities]);
+
+  const filteredOpportunities = useMemo(() => {
+    return preFilteredOpportunities.filter(opp => {
       if (workType !== 'all' && opp.workType !== workType) return false;
       if (clearance !== 'all' && opp.clearance !== clearance) return false;
       if (citizenship !== 'all' && opp.citizenship !== citizenship) return false;
       if (experienceLevel !== 'all' && opp.experience !== experienceLevel) return false;
+      if (selectedCompany !== 'all' && opp.company !== selectedCompany) return false;
+      if (selectedLocation !== 'all' && opp.location !== selectedLocation) return false;
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const skills = opp.skills || [];
@@ -590,7 +711,7 @@ const JobsPage: React.FC = () => {
       }
       return true;
     });
-  }, [allOpportunities, opportunityType, selectedIndustry, selectedOrgTypes, workType, clearance, citizenship, experienceLevel, searchQuery]);
+  }, [preFilteredOpportunities, workType, clearance, citizenship, experienceLevel, selectedCompany, selectedLocation, searchQuery]);
 
   const handleSaveJob = (jobId: number | string) => {
     if (savedJobs.includes(jobId)) {
@@ -645,7 +766,7 @@ const JobsPage: React.FC = () => {
           <h3 className="text-sm font-semibold text-gray-400 mb-3">SELECT INDUSTRY SECTOR</h3>
           <div className="flex flex-wrap gap-2">
             {industries.map(industry => (
-              <button key={industry.id} onClick={() => setSelectedIndustry(industry.id)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${selectedIndustry === industry.id ? 'bg-yellow-500 text-gray-900' : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'}`}>
+              <button key={industry.id} onClick={() => { setSelectedIndustry(industry.id); setSelectedCompany('all'); setSelectedLocation('all'); }} className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${selectedIndustry === industry.id ? 'bg-yellow-500 text-gray-900' : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'}`}>
                 <span>{industry.icon}</span>{industry.name}
               </button>
             ))}
@@ -664,52 +785,115 @@ const JobsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Search and Filter Bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1 relative">
-            <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="🔍 Search by title, company, or skills..." className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500" />
-          </div>
-          <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-colors ${showFilters ? 'bg-yellow-500 text-gray-900' : 'bg-gray-800 text-white border border-gray-700'}`}>
-            ⚙️ Advanced Filters {showFilters ? '▲' : '▼'}
-          </button>
-        </div>
+        {/* Inline Sub-Filter Bar */}
+        <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-4 mb-6">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Search */}
+            <div className="flex-1 min-w-[200px]">
+              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="🔍 Search by title, company, or skills..." className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-yellow-500" />
+            </div>
 
-        {/* Advanced Filters Panel */}
-        {showFilters && (
-          <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6 mb-6 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Company Dropdown */}
+            <select value={selectedCompany} onChange={(e) => setSelectedCompany(e.target.value)} className="px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white min-w-[160px]">
+              <option value="all">All Companies</option>
+              {availableCompanies.map(c => (<option key={c.name} value={c.name}>{c.name} ({c.count})</option>))}
+            </select>
+
+            {/* Location Dropdown */}
+            <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className="px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white min-w-[160px]">
+              <option value="all">All Locations</option>
+              {availableLocations.map(l => (<option key={l.name} value={l.name}>{l.name} ({l.count})</option>))}
+            </select>
+
+            {/* Work Type Pills */}
+            <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+              {['onsite', 'hybrid', 'remote'].map(wt => (
+                <button key={wt} onClick={() => setWorkType(workType === wt ? 'all' : wt)} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${workType === wt ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+                  {wt === 'onsite' ? '🏢 On-Site' : wt === 'hybrid' ? '🔄 Hybrid' : '🏠 Remote'}
+                </button>
+              ))}
+            </div>
+
+            {/* Experience Dropdown */}
+            <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white min-w-[130px]">
+              {experienceLevels.map(e => (<option key={e.id} value={e.id}>{e.name}</option>))}
+            </select>
+
+            {/* More Filters Toggle */}
+            <button onClick={() => setShowFilters(!showFilters)} className={`px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors ${showFilters ? 'bg-yellow-500 text-gray-900' : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'}`}>
+              ⚙️ More {showFilters ? '▲' : '▼'}
+            </button>
+          </div>
+
+          {/* Expanded: Clearance + Citizenship */}
+          {showFilters && (
+            <div className="mt-4 pt-4 border-t border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Work Arrangement</label>
-                <select value={workType} onChange={(e) => setWorkType(e.target.value)} className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white">
-                  {workArrangements.map(w => (<option key={w.id} value={w.id}>{w.name}</option>))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Security Clearance</label>
-                <select value={clearance} onChange={(e) => setClearance(e.target.value)} className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Security Clearance</label>
+                <select value={clearance} onChange={(e) => setClearance(e.target.value)} className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white">
                   <option value="all">Any Clearance</option>
                   {clearanceOptions.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Citizenship Requirement</label>
-                <select value={citizenship} onChange={(e) => setCitizenship(e.target.value)} className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Citizenship Requirement</label>
+                <select value={citizenship} onChange={(e) => setCitizenship(e.target.value)} className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white">
                   <option value="all">Any Status</option>
                   {citizenshipOptions.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Experience Level</label>
-                <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white">
-                  {experienceLevels.map(e => (<option key={e.id} value={e.id}>{e.name}</option>))}
-                </select>
-              </div>
             </div>
-            <div className="mt-4 flex justify-end">
-              <button onClick={() => { setWorkType('all'); setClearance('all'); setCitizenship('all'); setExperienceLevel('all'); }} className="text-yellow-500 hover:text-yellow-400 text-sm font-medium">Clear All Filters</button>
+          )}
+
+          {/* Active Filter Chips + Clear All */}
+          {(selectedCompany !== 'all' || selectedLocation !== 'all' || workType !== 'all' || experienceLevel !== 'all' || clearance !== 'all' || citizenship !== 'all' || searchQuery) && (
+            <div className="mt-3 pt-3 border-t border-gray-800 flex flex-wrap items-center gap-2">
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">
+                  Search: &quot;{searchQuery}&quot;
+                  <button onClick={() => setSearchQuery('')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {selectedCompany !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">
+                  {selectedCompany}
+                  <button onClick={() => setSelectedCompany('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {selectedLocation !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">
+                  {selectedLocation}
+                  <button onClick={() => setSelectedLocation('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {workType !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                  {workType === 'onsite' ? 'On-Site' : workType === 'hybrid' ? 'Hybrid' : 'Remote'}
+                  <button onClick={() => setWorkType('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {experienceLevel !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-500/20 text-orange-400 text-xs rounded-full">
+                  {experienceLevels.find(e => e.id === experienceLevel)?.name}
+                  <button onClick={() => setExperienceLevel('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {clearance !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">
+                  {clearanceOptions.find(c => c.id === clearance)?.name}
+                  <button onClick={() => setClearance('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              {citizenship !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full">
+                  {citizenshipOptions.find(c => c.id === citizenship)?.name}
+                  <button onClick={() => setCitizenship('all')} className="hover:text-white">✕</button>
+                </span>
+              )}
+              <button onClick={() => { setSearchQuery(''); setSelectedCompany('all'); setSelectedLocation('all'); setWorkType('all'); setExperienceLevel('all'); setClearance('all'); setCitizenship('all'); }} className="text-yellow-500 hover:text-yellow-400 text-xs font-medium ml-auto">Clear All</button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Results Count */}
         <div className="flex items-center justify-between mb-6">
