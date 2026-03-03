@@ -1,5 +1,0 @@
-# Netlify redirects file
-# https://docs.netlify.com/routing/redirects/
-
-# SPA fallback - handle all routes with index.html
-/*    /index.html   200
