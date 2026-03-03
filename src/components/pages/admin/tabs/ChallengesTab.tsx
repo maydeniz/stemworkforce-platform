@@ -792,7 +792,7 @@ const ChallengeSettingsSection = ({ tc }: { tc: ReturnType<typeof getThemeClasse
           </label>
           <label className="flex items-center gap-3">
             <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500" />
-            <span className={`text-sm ${tc.textPrimary}`}>Require sponsor verification for prize >$10,000</span>
+            <span className={`text-sm ${tc.textPrimary}`}>Require sponsor verification for prize &gt;$10,000</span>
           </label>
         </div>
       </div>

@@ -1,0 +1,16 @@
+{
+  "name": "STEMWorkforce",
+  "short_name": "STEMWorkforce",
+  "description": "Building America's Technology Future - Connect with opportunities across emerging technology sectors",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
