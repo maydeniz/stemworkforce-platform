@@ -375,7 +375,7 @@ const MegaMenu: React.FC<{
   const menuRef = useRef<HTMLDivElement>(null);
   // Determine grid columns based on number of sections
   const sectionCount = menu.sections.length;
-  const gridCols = sectionCount === 4 ? 'grid-cols-2 xl:grid-cols-4' : 'grid-cols-2 xl:grid-cols-3';
+  const gridCols = sectionCount === 4 ? 'grid-cols-4' : 'grid-cols-3';
 
   // Clamp menu position so it doesn't overflow the viewport
   useEffect(() => {
@@ -393,8 +393,7 @@ const MegaMenu: React.FC<{
   return (
     <div
       ref={menuRef}
-      className="absolute left-0 mt-2 w-[min(800px,calc(100vw-1rem))] bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden animate-scale-in"
-      style={sectionCount === 4 ? { width: 'min(1000px, calc(100vw - 1rem))' } : undefined}
+      className={`absolute left-0 mt-2 ${sectionCount === 4 ? 'w-[1000px]' : 'w-[800px]'} bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden animate-scale-in`}
       onMouseLeave={onClose}
     >
       {/* Header */}
