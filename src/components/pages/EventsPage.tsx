@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Event categories with icons and colors
 const eventCategories = [
@@ -384,18 +383,17 @@ export default function EventsPage() {
   const [selectedRegion, setSelectedRegion] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid');
-  const [showFilters, setShowFilters] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<typeof sampleEvents[number] | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [userType, setUserType] = useState(null);
+  const [userType, setUserType] = useState<string | null>(null);
   
   // New event submission form state
   const [newEvent, setNewEvent] = useState({
     title: '',
     subtitle: '',
     category: 'job-fair',
-    industries: [],
-    audiences: [],
+    industries: [] as string[],
+    audiences: [] as string[],
     format: 'in-person',
     date: '',
     endDate: '',
@@ -417,12 +415,12 @@ export default function EventsPage() {
   });
 
   // Handle form input changes
-  const handleEventInputChange = (field, value) => {
+  const handleEventInputChange = (field: string, value: string | boolean) => {
     setNewEvent(prev => ({ ...prev, [field]: value }));
   };
 
   // Toggle industry selection for new event
-  const toggleEventIndustry = (industryId) => {
+  const toggleEventIndustry = (industryId: string) => {
     setNewEvent(prev => ({
       ...prev,
       industries: prev.industries.includes(industryId)
@@ -432,7 +430,7 @@ export default function EventsPage() {
   };
 
   // Toggle audience selection for new event
-  const toggleEventAudience = (audienceId) => {
+  const toggleEventAudience = (audienceId: string) => {
     setNewEvent(prev => ({
       ...prev,
       audiences: prev.audiences.includes(audienceId)
@@ -458,8 +456,8 @@ export default function EventsPage() {
       title: '',
       subtitle: '',
       category: 'job-fair',
-      industries: [],
-      audiences: [],
+      industries: [] as string[],
+      audiences: [] as string[],
       format: 'in-person',
       date: '',
       endDate: '',
@@ -508,18 +506,12 @@ export default function EventsPage() {
   // Get featured events
   const featuredEvents = events.filter(e => e.featured);
 
-  // Get upcoming events (next 7 days)
   const today = new Date();
-  const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const upcomingEvents = events.filter(e => {
-    const eventDate = new Date(e.date);
-    return eventDate >= today && eventDate <= nextWeek;
-  });
 
   // Format date
-  const formatDate = (dateStr, endDateStr) => {
+  const formatDate = (dateStr: string, endDateStr?: string) => {
     const date = new Date(dateStr);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
     if (endDateStr) {
       const endDate = new Date(endDateStr);
       return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', options)}`;
@@ -528,9 +520,9 @@ export default function EventsPage() {
   };
 
   // Get days until event
-  const getDaysUntil = (dateStr) => {
+  const getDaysUntil = (dateStr: string) => {
     const eventDate = new Date(dateStr);
-    const diffTime = eventDate - today;
+    const diffTime = eventDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Tomorrow';
@@ -569,7 +561,7 @@ export default function EventsPage() {
       transition: 'transform 0.2s, box-shadow 0.2s',
       cursor: 'pointer',
     },
-    tag: (color) => ({
+    tag: (color: string) => ({
       display: 'inline-flex',
       alignItems: 'center',
       gap: 4,
@@ -614,7 +606,7 @@ export default function EventsPage() {
       outline: 'none',
     },
     modal: {
-      position: 'fixed',
+      position: 'fixed' as const,
       top: 0,
       left: 0,
       right: 0,
@@ -632,9 +624,9 @@ export default function EventsPage() {
   const nextFeaturedEvent = featuredEvents.find(e => new Date(e.date) >= today);
 
   // Calculate countdown for the next featured event
-  const getCountdown = (dateStr) => {
+  const getCountdown = (dateStr: string) => {
     const eventDate = new Date(dateStr);
-    const diff = eventDate - today;
+    const diff = eventDate.getTime() - today.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     return { days, hours };

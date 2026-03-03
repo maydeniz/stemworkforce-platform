@@ -1,3 +1,13 @@
+// Static color class maps for Tailwind JIT compatibility
+const dashColors: Record<string, { iconBg: string; iconText: string; bar: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400', bar: 'bg-emerald-500' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400', bar: 'bg-blue-500' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400', bar: 'bg-violet-500' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400', bar: 'bg-amber-500' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400', bar: 'bg-cyan-500' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400', bar: 'bg-slate-500' },
+};
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -253,8 +263,8 @@ const MarketplaceOverview = ({ stats, loading }: { stats: MarketplaceStats | nul
         {metrics.map((metric, i) => (
           <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2.5 rounded-lg bg-${metric.color}-500/20`}>
-                <metric.icon size={20} className={`text-${metric.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${dashColors[metric.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <metric.icon size={20} className={dashColors[metric.color]?.iconText || 'text-slate-400'} />
               </div>
               <span className={`flex items-center gap-1 text-sm ${metric.positive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {metric.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
@@ -292,7 +302,7 @@ const MarketplaceOverview = ({ stats, loading }: { stats: MarketplaceStats | nul
                 </div>
                 <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                   <div
-                    className={`h-full bg-${item.color}-500 rounded-full`}
+                    className={`h-full ${dashColors[item.color]?.bar || 'bg-slate-500'} rounded-full`}
                     style={{ width: `${item.percent}%` }}
                   />
                 </div>

@@ -543,16 +543,16 @@ const CareerLaunchHubPage: React.FC = () => {
             ].map((stage, idx) => (
               <div
                 key={idx}
-                className={`bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-${stage.color}-500/50 transition-all`}
+                className={`bg-gray-900 border border-gray-800 rounded-xl p-6 ${stage.color === 'blue' ? 'hover:border-blue-500/50' : stage.color === 'purple' ? 'hover:border-purple-500/50' : stage.color === 'yellow' ? 'hover:border-yellow-500/50' : 'hover:border-green-500/50'} transition-all`}
               >
-                <div className={`text-${stage.color}-400 text-sm font-medium mb-2`}>
+                <div className={`text-sm font-medium mb-2 ${stage.color === 'blue' ? 'text-blue-400' : stage.color === 'purple' ? 'text-purple-400' : stage.color === 'yellow' ? 'text-yellow-400' : 'text-green-400'}`}>
                   {stage.year} Year
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">{stage.title}</h3>
                 <ul className="space-y-2">
                   {stage.items.map((item, itemIdx) => (
                     <li key={itemIdx} className="flex items-center gap-2 text-sm text-gray-400">
-                      <CheckCircle className={`w-4 h-4 text-${stage.color}-400`} />
+                      <CheckCircle className={`w-4 h-4 ${stage.color === 'blue' ? 'text-blue-400' : stage.color === 'purple' ? 'text-purple-400' : stage.color === 'yellow' ? 'text-yellow-400' : 'text-green-400'}`} />
                       {item}
                     </li>
                   ))}

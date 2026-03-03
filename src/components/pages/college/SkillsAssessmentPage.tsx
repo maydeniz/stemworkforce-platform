@@ -3,6 +3,21 @@
 // Interactive skill assessments with real quizzes
 // ===========================================
 
+// Static color class maps for Tailwind JIT compatibility
+const skillColors: Record<string, { iconBg: string; iconText: string; bar: string; badge: string; textColor: string }> = {
+  blue: { iconBg: 'bg-blue-500/10', iconText: 'text-blue-400', bar: 'bg-blue-500', badge: 'bg-blue-500/10 text-blue-400', textColor: 'text-blue-400' },
+  green: { iconBg: 'bg-green-500/10', iconText: 'text-green-400', bar: 'bg-green-500', badge: 'bg-green-500/10 text-green-400', textColor: 'text-green-400' },
+  orange: { iconBg: 'bg-orange-500/10', iconText: 'text-orange-400', bar: 'bg-orange-500', badge: 'bg-orange-500/10 text-orange-400', textColor: 'text-orange-400' },
+  purple: { iconBg: 'bg-purple-500/10', iconText: 'text-purple-400', bar: 'bg-purple-500', badge: 'bg-purple-500/10 text-purple-400', textColor: 'text-purple-400' },
+  red: { iconBg: 'bg-red-500/10', iconText: 'text-red-400', bar: 'bg-red-500', badge: 'bg-red-500/10 text-red-400', textColor: 'text-red-400' },
+  teal: { iconBg: 'bg-teal-500/10', iconText: 'text-teal-400', bar: 'bg-teal-500', badge: 'bg-teal-500/10 text-teal-400', textColor: 'text-teal-400' },
+  indigo: { iconBg: 'bg-indigo-500/10', iconText: 'text-indigo-400', bar: 'bg-indigo-500', badge: 'bg-indigo-500/10 text-indigo-400', textColor: 'text-indigo-400' },
+  cyan: { iconBg: 'bg-cyan-500/10', iconText: 'text-cyan-400', bar: 'bg-cyan-500', badge: 'bg-cyan-500/10 text-cyan-400', textColor: 'text-cyan-400' },
+  yellow: { iconBg: 'bg-yellow-500/10', iconText: 'text-yellow-400', bar: 'bg-yellow-500', badge: 'bg-yellow-500/10 text-yellow-400', textColor: 'text-yellow-400' },
+  emerald: { iconBg: 'bg-emerald-500/10', iconText: 'text-emerald-400', bar: 'bg-emerald-500', badge: 'bg-emerald-500/10 text-emerald-400', textColor: 'text-emerald-400' },
+  slate: { iconBg: 'bg-slate-500/10', iconText: 'text-slate-400', bar: 'bg-slate-500', badge: 'bg-slate-500/10 text-slate-400', textColor: 'text-slate-400' },
+};
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -971,11 +986,11 @@ const SkillsAssessmentPage: React.FC = () => {
                     className="bg-gray-900/50 rounded-xl border border-gray-800 p-6 hover:border-gray-700 transition-all"
                   >
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-xl bg-${assessment.color}-500/10 flex items-center justify-center`}>
-                        <assessment.icon className={`w-6 h-6 text-${assessment.color}-400`} />
+                      <div className={`w-12 h-12 rounded-xl ${skillColors[assessment.color]?.iconBg || 'bg-slate-500/10'} flex items-center justify-center`}>
+                        <assessment.icon className={`w-6 h-6 ${skillColors[assessment.color]?.iconText || 'text-slate-400'}`} />
                       </div>
                       {result && (
-                        <div className={`px-3 py-1 rounded-full text-sm font-medium bg-${skillLevel?.color}-500/10 text-${skillLevel?.color}-400`}>
+                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${skillColors[skillLevel?.color || 'slate']?.badge || 'bg-slate-500/10 text-slate-400'}`}>
                           {skillLevel?.label}
                         </div>
                       )}
@@ -997,11 +1012,11 @@ const SkillsAssessmentPage: React.FC = () => {
                       <div className="mb-4">
                         <div className="flex justify-between text-sm mb-1">
                           <span className="text-gray-400">Your Score</span>
-                          <span className={`text-${skillLevel?.color}-400 font-medium`}>{result.score}%</span>
+                          <span className={`${skillColors[skillLevel?.color || 'slate']?.textColor || 'text-slate-400'} font-medium`}>{result.score}%</span>
                         </div>
                         <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                           <div
-                            className={`h-full bg-${skillLevel?.color}-500 rounded-full transition-all`}
+                            className={`h-full ${skillColors[skillLevel?.color || 'slate']?.bar || 'bg-slate-500'} rounded-full transition-all`}
                             style={{ width: `${result.score}%` }}
                           />
                         </div>
@@ -1168,17 +1183,17 @@ const SkillsAssessmentPage: React.FC = () => {
                 <>
                   {/* Score Card */}
                   <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-8 text-center mb-8">
-                    <div className={`w-24 h-24 mx-auto rounded-full bg-${skillLevel?.color}-500/10 flex items-center justify-center mb-6`}>
-                      <Award className={`w-12 h-12 text-${skillLevel?.color}-400`} />
+                    <div className={`w-24 h-24 mx-auto rounded-full ${skillColors[skillLevel?.color || 'slate']?.iconBg || 'bg-slate-500/10'} flex items-center justify-center mb-6`}>
+                      <Award className={`w-12 h-12 ${skillColors[skillLevel?.color || 'slate']?.textColor || 'text-slate-400'}`} />
                     </div>
 
                     <h2 className="text-3xl font-bold text-white mb-2">Assessment Complete!</h2>
                     <p className="text-gray-400 mb-6">{currentAssessment.name}</p>
 
-                    <div className={`text-6xl font-bold text-${skillLevel?.color}-400 mb-2`}>
+                    <div className={`text-6xl font-bold ${skillColors[skillLevel?.color || 'slate']?.textColor || 'text-slate-400'} mb-2`}>
                       {result?.score}%
                     </div>
-                    <div className={`text-xl text-${skillLevel?.color}-400 mb-4`}>
+                    <div className={`text-xl ${skillColors[skillLevel?.color || 'slate']?.textColor || 'text-slate-400'} mb-4`}>
                       {skillLevel?.label} Level
                     </div>
 
@@ -1271,7 +1286,7 @@ const SkillsAssessmentPage: React.FC = () => {
                   return (
                     <div key={result.assessmentId} className="bg-gray-900/50 rounded-xl border border-gray-800 p-6">
                       <div className="flex items-center gap-3 mb-4">
-                        <assessment.icon className={`w-6 h-6 text-${assessment.color}-400`} />
+                        <assessment.icon className={`w-6 h-6 ${skillColors[assessment.color]?.iconText || 'text-slate-400'}`} />
                         <div>
                           <h4 className="text-white font-medium">Improve your {assessment.name}</h4>
                           <span className="text-sm text-gray-500">Current: {result.score}%</span>

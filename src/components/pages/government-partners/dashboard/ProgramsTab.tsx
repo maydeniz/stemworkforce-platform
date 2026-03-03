@@ -162,6 +162,21 @@ const complianceStatusConfig: Record<string, { label: string; color: string }> =
   non_compliant: { label: 'Non-Compliant', color: 'red' }
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400' },
+  sky: { bg: 'bg-sky-500/20', text: 'text-sky-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  indigo: { bg: 'bg-indigo-500/20', text: 'text-indigo-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  gray: { bg: 'bg-gray-500/20', text: 'text-gray-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+};
+
 // ===========================================
 // COMPONENT
 // ===========================================
@@ -459,17 +474,17 @@ export const ProgramsTab: React.FC<ProgramsTabProps> = ({ partnerId, tier: _tier
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${typeConfig.color}-500/20 text-${typeConfig.color}-400`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[typeConfig.color]?.bg || 'bg-slate-500/20'} ${twColor[typeConfig.color]?.text || 'text-slate-400'}`}>
                       {typeConfig.label}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${complianceConf.color}-500/20 text-${complianceConf.color}-400`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[complianceConf.color]?.bg || 'bg-slate-500/20'} ${twColor[complianceConf.color]?.text || 'text-slate-400'}`}>
                       {complianceConf.label}
                     </span>
                   </div>
                   <h3 className="text-white font-semibold line-clamp-2">{program.name}</h3>
                 </div>
-                <div className={`w-8 h-8 rounded-lg bg-${statusConf.color}-500/20 flex items-center justify-center`}>
-                  <StatusIcon className={`w-4 h-4 text-${statusConf.color}-400`} />
+                <div className={`w-8 h-8 rounded-lg ${twColor[statusConf.color]?.bg || 'bg-slate-500/20'} flex items-center justify-center`}>
+                  <StatusIcon className={`w-4 h-4 ${twColor[statusConf.color]?.text || 'text-slate-400'}`} />
                 </div>
               </div>
 
@@ -565,10 +580,10 @@ export const ProgramsTab: React.FC<ProgramsTabProps> = ({ partnerId, tier: _tier
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`px-2 py-0.5 rounded text-xs bg-${programTypeLabels[selectedProgram.programType]?.color || 'slate'}-500/20 text-${programTypeLabels[selectedProgram.programType]?.color || 'slate'}-400`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${twColor[programTypeLabels[selectedProgram.programType]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[programTypeLabels[selectedProgram.programType]?.color || 'slate']?.text || 'text-slate-400'}`}>
                         {programTypeLabels[selectedProgram.programType]?.label || selectedProgram.programType}
                       </span>
-                      <span className={`px-2 py-0.5 rounded text-xs bg-${complianceStatusConfig[selectedProgram.complianceStatus]?.color || 'slate'}-500/20 text-${complianceStatusConfig[selectedProgram.complianceStatus]?.color || 'slate'}-400`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${twColor[complianceStatusConfig[selectedProgram.complianceStatus]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[complianceStatusConfig[selectedProgram.complianceStatus]?.color || 'slate']?.text || 'text-slate-400'}`}>
                         {complianceStatusConfig[selectedProgram.complianceStatus]?.label || selectedProgram.complianceStatus}
                       </span>
                     </div>

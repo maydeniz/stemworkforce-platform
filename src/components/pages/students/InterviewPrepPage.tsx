@@ -277,6 +277,14 @@ const InterviewPrepPage: React.FC = () => {
 
 // ===========================================
 // Interview Dashboard
+// Static Tailwind color map
+const interviewColors: Record<string, { hoverBorder: string; bgLight: string }> = {
+  pink: { hoverBorder: 'hover:border-pink-500/30', bgLight: 'bg-pink-500/10' },
+  violet: { hoverBorder: 'hover:border-violet-500/30', bgLight: 'bg-violet-500/10' },
+  blue: { hoverBorder: 'hover:border-blue-500/30', bgLight: 'bg-blue-500/10' },
+  red: { hoverBorder: 'hover:border-red-500/30', bgLight: 'bg-red-500/10' },
+};
+
 // ===========================================
 const InterviewDashboard: React.FC<{
   sessions: InterviewSession[];
@@ -296,9 +304,9 @@ const InterviewDashboard: React.FC<{
           <button
             key={option.type}
             onClick={onStartNew}
-            className={`p-5 rounded-xl bg-gray-900/50 border border-white/5 hover:border-${option.color}-500/30 transition-all text-left group`}
+            className={`p-5 rounded-xl bg-gray-900/50 border border-white/5 ${interviewColors[option.color]?.hoverBorder || 'hover:border-slate-500/30'} transition-all text-left group`}
           >
-            <div className={`w-12 h-12 rounded-xl bg-${option.color}-500/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
+            <div className={`w-12 h-12 rounded-xl ${interviewColors[option.color]?.bgLight || 'bg-slate-500/10'} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
               {option.icon}
             </div>
             <h3 className="font-semibold text-white mb-1">{option.title}</h3>

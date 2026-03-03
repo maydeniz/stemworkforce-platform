@@ -164,6 +164,20 @@ const TAB_CONFIG: { id: DashboardTab; label: string; icon: React.ElementType }[]
 ];
 
 // ===========================================
+// STATIC TAILWIND COLOR MAP
+// ===========================================
+
+const muniColors: Record<string, { bg: string; text: string }> = {
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+};
+
+// ===========================================
 // COMPONENT
 // ===========================================
 
@@ -441,8 +455,8 @@ function OverviewTab({ metrics, partner }: OverviewTabProps) {
             className="bg-slate-900 border border-slate-800 rounded-xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 bg-${stat.color}-500/20 rounded-lg flex items-center justify-center`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div className={`w-10 h-10 ${muniColors[stat.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                <stat.icon className={`w-5 h-5 ${muniColors[stat.color]?.text || 'text-slate-400'}`} />
               </div>
               <div className={`flex items-center gap-1 text-sm ${stat.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                 {stat.change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
@@ -619,8 +633,8 @@ function OverviewTab({ metrics, partner }: OverviewTabProps) {
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 bg-${item.color}-500/20 rounded-lg flex items-center justify-center`}>
-                      <item.icon className={`w-4 h-4 text-${item.color}-400`} />
+                    <div className={`w-8 h-8 ${muniColors[item.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                      <item.icon className={`w-4 h-4 ${muniColors[item.color]?.text || 'text-slate-400'}`} />
                     </div>
                     <span className="text-gray-400 text-sm">{item.label}</span>
                   </div>

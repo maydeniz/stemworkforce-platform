@@ -333,7 +333,7 @@ const GovernmentCareersPage: React.FC = () => {
                     key={idx}
                     className="bg-gray-900 border border-gray-800 rounded-xl p-6 text-center hover:border-indigo-500/50 transition-all"
                   >
-                    <div className={`p-4 bg-${item.color}-500/20 text-${item.color}-400 rounded-full inline-block mb-4`}>
+                    <div className={`p-4 rounded-full inline-block mb-4 ${item.color === 'indigo' ? 'bg-indigo-500/20 text-indigo-400' : item.color === 'blue' ? 'bg-blue-500/20 text-blue-400' : item.color === 'green' ? 'bg-green-500/20 text-green-400' : 'bg-purple-500/20 text-purple-400'}`}>
                       {item.icon}
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>

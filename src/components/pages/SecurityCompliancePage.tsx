@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield, Lock, Eye, Server, Database, Key, CheckCircle,
+  Shield, Lock, Eye, Server, Database, CheckCircle,
   FileText, Download, ExternalLink, Award, Building2,
-  Globe, Clock, AlertTriangle, Cpu, Network, Users,
+  Globe, Clock, AlertTriangle,
   ChevronRight, ArrowRight
 } from 'lucide-react';
 
@@ -12,6 +11,13 @@ import {
 // SECURITY & COMPLIANCE PAGE
 // Public-facing page demonstrating compliance readiness
 // =====================================================
+
+const colorMap: Record<string, { bg: string; text: string; border: string }> = {
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/50' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/50' },
+  violet: { bg: 'bg-violet-500/20', text: 'text-violet-400', border: 'border-violet-500/50' },
+  indigo: { bg: 'bg-indigo-500/20', text: 'text-indigo-400', border: 'border-indigo-500/50' },
+};
 
 const CERTIFICATIONS = [
   {
@@ -281,12 +287,12 @@ export default function SecurityCompliancePage() {
           {CERTIFICATIONS.map((cert) => (
             <div
               key={cert.id}
-              className={`bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-${cert.color}-500/50 transition-colors`}
+              className={`bg-slate-900 border border-slate-800 rounded-xl p-6 hover:${colorMap[cert.color]?.border ?? 'border-slate-500/50'} transition-colors`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 bg-${cert.color}-500/20 rounded-lg`}>
-                    <cert.icon className={`w-6 h-6 text-${cert.color}-400`} />
+                  <div className={`p-3 ${colorMap[cert.color]?.bg ?? 'bg-slate-500/20'} rounded-lg`}>
+                    <cert.icon className={`w-6 h-6 ${colorMap[cert.color]?.text ?? 'text-slate-400'}`} />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold">{cert.name}</h3>

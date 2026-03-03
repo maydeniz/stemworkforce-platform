@@ -55,9 +55,9 @@ const SERVICE_CATEGORIES = [
     description: 'Learn new skills through funded training programs',
     color: 'emerald',
     links: [
-      { label: 'Find Training Programs', path: '/workforce/training-providers', primary: true },
-      { label: 'Training Funding (ITAs)', path: '/workforce/training-funding' },
-      { label: 'FAFSA Assistant', path: '/workforce/fafsa-assistant' },
+      { label: 'Find Training Programs', path: '/training', primary: true },
+      { label: 'Training Services', path: '/services/training-services' },
+      { label: 'Scholarship Matcher', path: '/students/scholarship-matcher' },
       { label: 'Apprenticeship Pathways', path: '/students/apprenticeship-pathways' },
     ],
   },
@@ -68,7 +68,7 @@ const SERVICE_CATEGORIES = [
     description: 'Access help with transportation, childcare, and more',
     color: 'pink',
     links: [
-      { label: 'Supportive Services', path: '/workforce/supportive-services', primary: true },
+      { label: 'Career Coaching', path: '/services/career-coaching', primary: true },
       { label: 'Find a Career Coach', path: '/service-providers?type=career-coach' },
       { label: 'Mentorship Programs', path: '/college/mentorship' },
     ],
@@ -80,9 +80,9 @@ const SERVICE_CATEGORIES = [
     description: 'Learn about UI benefits and dislocated worker services',
     color: 'amber',
     links: [
-      { label: 'Unemployment Guide', path: '/workforce/unemployment-benefits', primary: true },
-      { label: 'Dislocated Worker Services', path: '/workforce/dislocated-workers' },
-      { label: 'Rapid Response Info', path: '/workforce/rapid-response' },
+      { label: 'Career Resources', path: '/resources', primary: true },
+      { label: 'Outplacement Services', path: '/services/outplacement' },
+      { label: 'Career Coaching', path: '/services/career-coaching' },
     ],
   },
 ];
@@ -108,7 +108,7 @@ const USER_PERSONAS = [
     description: 'Recently laid off or facing job loss',
     features: ['UI benefits', 'Free training', 'Rapid Response'],
     cta: 'Get Started',
-    path: '/workforce/dislocated-workers',
+    path: '/services/outplacement',
     color: 'emerald',
   },
   {
@@ -118,7 +118,7 @@ const USER_PERSONAS = [
     description: 'Switching industries or advancing',
     features: ['Skills assessment', 'Training funding', 'Pathway planning'],
     cta: 'Explore Training',
-    path: '/workforce/training-providers',
+    path: '/training',
     color: 'purple',
   },
   {
@@ -148,7 +148,7 @@ const USER_PERSONAS = [
     description: 'Work authorization & visa support',
     features: ['Immigration services', 'Employer sponsorship', 'H-1B guidance'],
     cta: 'Learn More',
-    path: '/resources/international',
+    path: '/services/immigration',
     color: 'cyan',
   },
 ];
@@ -239,6 +239,12 @@ const TRUST_SIGNALS = [
 // ===========================================
 // HELPER FUNCTIONS
 // ===========================================
+const hoverBorderColors: Record<string, string> = {
+  blue: 'hover:border-blue-500/50', emerald: 'hover:border-emerald-500/50',
+  purple: 'hover:border-purple-500/50', amber: 'hover:border-amber-500/50',
+  pink: 'hover:border-pink-500/50', cyan: 'hover:border-cyan-500/50',
+};
+
 const getColorClasses = (color: string, type: 'bg' | 'text' | 'border' | 'ring') => {
   const colors: Record<string, Record<string, string>> = {
     blue: { bg: 'bg-blue-600', text: 'text-blue-400', border: 'border-blue-500', ring: 'ring-blue-500/30' },
@@ -317,7 +323,7 @@ const ForTalentPage: React.FC = () => {
                 Browse Jobs
               </Link>
               <Link
-                to="/workforce/career-centers"
+                to="/map"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl border border-white/20 transition-all"
               >
                 <MapPin className="w-5 h-5" />
@@ -394,7 +400,7 @@ const ForTalentPage: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className={`bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-${category.color}-500/50 transition-all`}
+                  className={`bg-gray-900 border border-gray-800 rounded-2xl p-6 ${hoverBorderColors[category.color] || 'hover:border-slate-500/50'} transition-all`}
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className={`w-12 h-12 ${getColorClasses(category.color, 'bg')}/20 rounded-xl flex items-center justify-center`}>
@@ -636,7 +642,7 @@ const ForTalentPage: React.FC = () => {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
-                to="/workforce/career-centers"
+                to="/map"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition-all"
               >
                 <MapPin className="w-5 h-5" />

@@ -113,6 +113,22 @@ const formatCurrency = (amount?: number): string => {
   }).format(amount);
 };
 
+// Static color class maps for Tailwind JIT compatibility
+const fellowshipColors: Record<string, { iconBg: string; iconText: string }> = {
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  purple: { iconBg: 'bg-purple-500/20', iconText: 'text-purple-400' },
+  green: { iconBg: 'bg-green-500/20', iconText: 'text-green-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  indigo: { iconBg: 'bg-indigo-500/20', iconText: 'text-indigo-400' },
+  rose: { iconBg: 'bg-rose-500/20', iconText: 'text-rose-400' },
+  teal: { iconBg: 'bg-teal-500/20', iconText: 'text-teal-400' },
+  gray: { iconBg: 'bg-gray-500/20', iconText: 'text-gray-400' },
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400' },
+};
+
 // ===========================================
 // Stat Card
 // ===========================================
@@ -127,8 +143,8 @@ function StatCard({ label, value, icon: Icon, color, subtitle }: {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
       <div className="flex items-start justify-between">
-        <div className={`p-2.5 rounded-lg bg-${color}-500/20`}>
-          <Icon size={22} className={`text-${color}-400`} />
+        <div className={`p-2.5 rounded-lg ${fellowshipColors[color]?.iconBg || 'bg-slate-500/20'}`}>
+          <Icon size={22} className={fellowshipColors[color]?.iconText || 'text-slate-400'} />
         </div>
       </div>
       <div className="mt-4">
@@ -188,8 +204,8 @@ function ProgramsView() {
           {Object.entries(FELLOWSHIP_PROGRAM_CONFIG).map(([key, config]) => (
             <div key={key} className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
               <div className="flex items-start justify-between">
-                <div className={`p-2.5 rounded-lg bg-${config.color}-500/20`}>
-                  <GraduationCap size={20} className={`text-${config.color}-400`} />
+                <div className={`p-2.5 rounded-lg ${fellowshipColors[config.color]?.iconBg || 'bg-slate-500/20'}`}>
+                  <GraduationCap size={20} className={fellowshipColors[config.color]?.iconText || 'text-slate-400'} />
                 </div>
                 <span className="text-xs text-slate-500 uppercase">{key}</span>
               </div>
@@ -212,8 +228,8 @@ function ProgramsView() {
                 className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors cursor-pointer"
               >
                 <div className="flex items-start justify-between">
-                  <div className={`p-2.5 rounded-lg bg-${config.color}-500/20`}>
-                    <GraduationCap size={20} className={`text-${config.color}-400`} />
+                  <div className={`p-2.5 rounded-lg ${fellowshipColors[config.color]?.iconBg || 'bg-slate-500/20'}`}>
+                    <GraduationCap size={20} className={fellowshipColors[config.color]?.iconText || 'text-slate-400'} />
                   </div>
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${program.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}`}>
                     {program.status === 'active' ? 'Active' : program.status}

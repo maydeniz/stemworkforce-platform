@@ -76,6 +76,15 @@ const sampleDepartments: DepartmentData[] = [
   }
 ];
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+};
+
 export const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ partnerId: _partnerId, tier: _tier }) => {
   const [selectedDept, setSelectedDept] = useState<DepartmentData | null>(null);
 
@@ -102,8 +111,8 @@ export const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ partnerId: _part
         ].map((stat, idx) => (
           <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 bg-${stat.color}-500/20 rounded-lg flex items-center justify-center`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div className={`w-10 h-10 ${twColor[stat.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                <stat.icon className={`w-5 h-5 ${twColor[stat.color]?.text || 'text-slate-400'}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>

@@ -46,6 +46,19 @@ const MENU_COLORS: Record<keyof NavigationFlags, string> = {
   resources: 'cyan',
 };
 
+// Static color class maps for Tailwind JIT compatibility
+const menuColorClasses: Record<string, { iconBg: string; iconText: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  pink: { iconBg: 'bg-pink-500/20', iconText: 'text-pink-400' },
+  indigo: { iconBg: 'bg-indigo-500/20', iconText: 'text-indigo-400' },
+  yellow: { iconBg: 'bg-yellow-500/20', iconText: 'text-yellow-400' },
+  orange: { iconBg: 'bg-orange-500/20', iconText: 'text-orange-400' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400' },
+};
+
 // Status configuration for display
 const STATUS_CONFIG: Record<FeatureStatus, { label: string; icon: any; color: string; bgColor: string }> = {
   enabled: { label: 'Enabled', icon: CheckCircle2, color: 'text-emerald-400', bgColor: 'bg-emerald-500/20' },
@@ -283,8 +296,8 @@ const FeatureFlagsTab = () => {
                     onClick={() => toggleMenu(menuKey)}
                     className="flex items-center gap-3 flex-1 text-left hover:opacity-80 transition-opacity"
                   >
-                    <div className={`p-2 rounded-lg bg-${color}-500/20`}>
-                      <MenuIcon size={20} className={`text-${color}-400`} />
+                    <div className={`p-2 rounded-lg ${menuColorClasses[color]?.iconBg || 'bg-slate-500/20'}`}>
+                      <MenuIcon size={20} className={menuColorClasses[color]?.iconText || 'text-slate-400'} />
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg">{menu.title}</h3>

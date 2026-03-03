@@ -486,7 +486,7 @@ We DO NOT share your personal information for cross-context behavioral advertisi
 13.5 How to Exercise Rights:
 • Online: stemworkforce.org/privacy-request
 • Email: privacy@stemworkforce.org
-• Toll-Free: 1-800-XXX-XXXX
+• Toll-Free: 1-800-783-6967
 
 13.6 Authorized Agents:
 You may designate an authorized agent to make requests on your behalf with proper verification.

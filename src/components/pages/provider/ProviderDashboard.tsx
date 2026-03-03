@@ -2,6 +2,14 @@
 // Provider Dashboard - Main Component
 // ===========================================
 
+// Static color class maps for Tailwind JIT compatibility
+const providerColors: Record<string, { iconBg: string; iconText: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+};
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -42,8 +50,8 @@ const OverviewTab: React.FC = () => {
         {stats.map((stat, i) => (
           <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2.5 rounded-lg bg-${stat.color}-500/20`}>
-                <stat.icon size={20} className={`text-${stat.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${providerColors[stat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <stat.icon size={20} className={providerColors[stat.color]?.iconText || 'text-slate-400'} />
               </div>
               <span className={`flex items-center gap-1 text-sm ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {stat.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}

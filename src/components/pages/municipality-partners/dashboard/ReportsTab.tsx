@@ -239,6 +239,16 @@ const frequencyLabels = {
   on_demand: 'On Demand'
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+};
+
 export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, tier }) => {
   const [activeView, setActiveView] = useState<'templates' | 'generated'>('templates');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -303,8 +313,8 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
         ].map((stat, idx) => (
           <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 bg-${stat.color}-500/20 rounded-lg flex items-center justify-center`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div className={`w-10 h-10 ${twColor[stat.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                <stat.icon className={`w-5 h-5 ${twColor[stat.color]?.text || 'text-slate-400'}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -360,10 +370,10 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 bg-${config.color}-500/20 rounded-lg flex items-center justify-center`}>
-                        <CategoryIcon className={`w-4 h-4 text-${config.color}-400`} />
+                      <div className={`w-8 h-8 ${twColor[config.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                        <CategoryIcon className={`w-4 h-4 ${twColor[config.color]?.text || 'text-slate-400'}`} />
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-xs bg-${config.color}-500/20 text-${config.color}-400`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${twColor[config.color]?.bg || 'bg-slate-500/20'} ${twColor[config.color]?.text || 'text-slate-400'}`}>
                         {config.label}
                       </span>
                     </div>
@@ -423,8 +433,8 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
                           {template.requiredTier} Tier
                         </div>
                         <div className="flex items-center gap-2 mb-3">
-                          <div className={`w-8 h-8 bg-${config.color}-500/20 rounded-lg flex items-center justify-center`}>
-                            <config.icon className={`w-4 h-4 text-${config.color}-400`} />
+                          <div className={`w-8 h-8 ${twColor[config.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                            <config.icon className={`w-4 h-4 ${twColor[config.color]?.text || 'text-slate-400'}`} />
                           </div>
                         </div>
                         <h3 className="text-white font-semibold mb-2">{template.name}</h3>

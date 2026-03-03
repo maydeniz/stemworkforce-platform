@@ -35,6 +35,44 @@ import FederationTab from './tabs/FederationTab';
 // ADMIN DASHBOARD - COMPREHENSIVE VERSION
 // ===========================================
 
+// Static color class maps for Tailwind JIT compatibility
+const roleDotColor: Record<string, string> = {
+  emerald: 'bg-emerald-500', blue: 'bg-blue-500', red: 'bg-red-500',
+  violet: 'bg-violet-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500',
+  pink: 'bg-pink-500', orange: 'bg-orange-500', lime: 'bg-lime-500',
+  sky: 'bg-sky-500', slate: 'bg-slate-500',
+};
+
+const statCardColors: Record<string, { iconBg: string; iconText: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400' },
+  red: { iconBg: 'bg-red-500/20', iconText: 'text-red-400' },
+  pink: { iconBg: 'bg-pink-500/20', iconText: 'text-pink-400' },
+  orange: { iconBg: 'bg-orange-500/20', iconText: 'text-orange-400' },
+  lime: { iconBg: 'bg-lime-500/20', iconText: 'text-lime-400' },
+  sky: { iconBg: 'bg-sky-500/20', iconText: 'text-sky-400' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400' },
+};
+
+const quickActionColors: Record<string, { bg: string; border: string; hover: string; text: string }> = {
+  emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', hover: 'hover:bg-emerald-500/20', text: 'text-emerald-400' },
+  blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/20', hover: 'hover:bg-blue-500/20', text: 'text-blue-400' },
+  violet: { bg: 'bg-violet-500/10', border: 'border-violet-500/20', hover: 'hover:bg-violet-500/20', text: 'text-violet-400' },
+  amber: { bg: 'bg-amber-500/10', border: 'border-amber-500/20', hover: 'hover:bg-amber-500/20', text: 'text-amber-400' },
+  cyan: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', hover: 'hover:bg-cyan-500/20', text: 'text-cyan-400' },
+};
+
+const industryCardColors: Record<string, { bg: string; border: string }> = {
+  emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+  blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+  violet: { bg: 'bg-violet-500/10', border: 'border-violet-500/20' },
+  amber: { bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+  cyan: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
+};
+
 // Menu section interface
 interface MenuSection {
   id: string;
@@ -507,7 +545,7 @@ const AdminDashboard = () => {
                           userRole === r.role ? tc.sidebarItemActive : `${tc.textPrimary} ${tc.sidebarItemHover}`
                         }`}
                       >
-                        <span className={`w-2 h-2 rounded-full bg-${r.color}-500`} />
+                        <span className={`w-2 h-2 rounded-full ${roleDotColor[r.color] || 'bg-slate-500'}`} />
                         {r.label}
                       </button>
                     ))}
@@ -652,8 +690,8 @@ const OverviewTab = ({ stats, loading, onRefresh }: { stats: any; loading: boole
             className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-5 ${tc.cardHover} transition-colors`}
           >
             <div className="flex items-start justify-between">
-              <div className={`p-2.5 rounded-lg bg-${stat.color}-500/20`}>
-                <stat.icon size={22} className={`text-${stat.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${statCardColors[stat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <stat.icon size={22} className={statCardColors[stat.color]?.iconText || 'text-slate-400'} />
               </div>
               <div className={`flex items-center gap-1 text-sm ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {stat.positive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
@@ -698,8 +736,8 @@ const OverviewTab = ({ stats, loading, onRefresh }: { stats: any; loading: boole
               { action: 'Subscription upgraded', user: 'BioTech Solutions', time: '2 hours ago', icon: TrendingUp, color: 'cyan' },
             ].map((item, i) => (
               <div key={i} className={`flex items-center gap-3 p-3 rounded-lg ${tc.bgAccent} ${tc.sidebarItemHover} transition-colors`}>
-                <div className={`p-2 rounded-lg bg-${item.color}-500/20`}>
-                  <item.icon size={16} className={`text-${item.color}-400`} />
+                <div className={`p-2 rounded-lg ${statCardColors[item.color]?.iconBg || 'bg-slate-500/20'}`}>
+                  <item.icon size={16} className={statCardColors[item.color]?.iconText || 'text-slate-400'} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-medium truncate ${tc.textPrimary}`}>{item.action}</p>
@@ -724,9 +762,9 @@ const OverviewTab = ({ stats, loading, onRefresh }: { stats: any; loading: boole
           ].map((action, i) => (
             <button
               key={i}
-              className={`flex items-center gap-3 p-4 rounded-xl bg-${action.color}-500/10 border border-${action.color}-500/20 hover:bg-${action.color}-500/20 transition-colors`}
+              className={`flex items-center gap-3 p-4 rounded-xl ${quickActionColors[action.color]?.bg || 'bg-slate-500/10'} border ${quickActionColors[action.color]?.border || 'border-slate-500/20'} ${quickActionColors[action.color]?.hover || 'hover:bg-slate-500/20'} transition-colors`}
             >
-              <action.icon size={20} className={`text-${action.color}-400`} />
+              <action.icon size={20} className={quickActionColors[action.color]?.text || 'text-slate-400'} />
               <span className={`font-medium text-sm ${tc.textPrimary}`}>{action.label}</span>
             </button>
           ))}
@@ -1377,7 +1415,7 @@ const AnalyticsTab = () => {
             { name: 'Aerospace', jobs: 87, color: 'amber' },
             { name: 'Quantum', jobs: 65, color: 'cyan' },
           ].map((industry, i) => (
-            <div key={i} className={`p-4 bg-${industry.color}-500/10 border border-${industry.color}-500/20 rounded-xl`}>
+            <div key={i} className={`p-4 ${industryCardColors[industry.color]?.bg || 'bg-slate-500/10'} border ${industryCardColors[industry.color]?.border || 'border-slate-500/20'} rounded-xl`}>
               <p className="text-sm text-slate-400">{industry.name}</p>
               <p className="text-xl font-bold mt-1">{industry.jobs}</p>
               <p className="text-xs text-slate-500">active jobs</p>
@@ -1513,8 +1551,8 @@ const MarketplaceOverviewTab = () => {
         {stats.map((stat, i) => (
           <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
             <div className="flex items-start justify-between">
-              <div className={`p-2.5 rounded-lg bg-${stat.color}-500/20`}>
-                <stat.icon size={22} className={`text-${stat.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${statCardColors[stat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <stat.icon size={22} className={statCardColors[stat.color]?.iconText || 'text-slate-400'} />
               </div>
               <span className="text-sm text-emerald-400">{stat.change}</span>
             </div>
@@ -1560,8 +1598,8 @@ const MarketplaceOverviewTab = () => {
             { action: 'Payout processed', user: 'Marcus Johnson - $450', time: '1 hour ago', icon: Wallet, color: 'violet' },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors">
-              <div className={`p-2 rounded-lg bg-${item.color}-500/20`}>
-                <item.icon size={16} className={`text-${item.color}-400`} />
+              <div className={`p-2 rounded-lg ${statCardColors[item.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <item.icon size={16} className={statCardColors[item.color]?.iconText || 'text-slate-400'} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{item.action}</p>

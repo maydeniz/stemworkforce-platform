@@ -31,6 +31,23 @@ const getThemeClasses = (isDark: boolean) => ({
   buttonSecondary: isDark ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-900',
 });
 
+// Static color class maps for Tailwind JIT compatibility
+const challengeColorClasses: Record<string, { iconBg: string; iconText: string; badge: string; dot: string; swatch: string; gradient: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400', badge: 'bg-emerald-500/20 text-emerald-400', dot: 'bg-emerald-500', swatch: 'bg-emerald-500', gradient: 'from-emerald-500 to-emerald-600' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400', badge: 'bg-blue-500/20 text-blue-400', dot: 'bg-blue-500', swatch: 'bg-blue-500', gradient: 'from-blue-500 to-blue-600' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400', badge: 'bg-violet-500/20 text-violet-400', dot: 'bg-violet-500', swatch: 'bg-violet-500', gradient: 'from-violet-500 to-violet-600' },
+  purple: { iconBg: 'bg-purple-500/20', iconText: 'text-purple-400', badge: 'bg-purple-500/20 text-purple-400', dot: 'bg-purple-500', swatch: 'bg-purple-500', gradient: 'from-purple-500 to-purple-600' },
+  red: { iconBg: 'bg-red-500/20', iconText: 'text-red-400', badge: 'bg-red-500/20 text-red-400', dot: 'bg-red-500', swatch: 'bg-red-500', gradient: 'from-red-500 to-red-600' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400', badge: 'bg-amber-500/20 text-amber-400', dot: 'bg-amber-500', swatch: 'bg-amber-500', gradient: 'from-amber-500 to-amber-600' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400', badge: 'bg-cyan-500/20 text-cyan-400', dot: 'bg-cyan-500', swatch: 'bg-cyan-500', gradient: 'from-cyan-500 to-cyan-600' },
+  green: { iconBg: 'bg-green-500/20', iconText: 'text-green-400', badge: 'bg-green-500/20 text-green-400', dot: 'bg-green-500', swatch: 'bg-green-500', gradient: 'from-green-500 to-green-600' },
+  orange: { iconBg: 'bg-orange-500/20', iconText: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-400', dot: 'bg-orange-500', swatch: 'bg-orange-500', gradient: 'from-orange-500 to-orange-600' },
+  pink: { iconBg: 'bg-pink-500/20', iconText: 'text-pink-400', badge: 'bg-pink-500/20 text-pink-400', dot: 'bg-pink-500', swatch: 'bg-pink-500', gradient: 'from-pink-500 to-pink-600' },
+  sky: { iconBg: 'bg-sky-500/20', iconText: 'text-sky-400', badge: 'bg-sky-500/20 text-sky-400', dot: 'bg-sky-500', swatch: 'bg-sky-500', gradient: 'from-sky-500 to-sky-600' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400', badge: 'bg-slate-500/20 text-slate-400', dot: 'bg-slate-500', swatch: 'bg-slate-500', gradient: 'from-slate-500 to-slate-600' },
+  yellow: { iconBg: 'bg-yellow-500/20', iconText: 'text-yellow-400', badge: 'bg-yellow-500/20 text-yellow-400', dot: 'bg-yellow-500', swatch: 'bg-yellow-500', gradient: 'from-yellow-500 to-yellow-600' },
+};
+
 // Challenge type options
 const CHALLENGE_TYPES: { value: ChallengeType; label: string; description: string }[] = [
   { value: 'ideation', label: 'Ideation', description: 'Brainstorm innovative concepts and ideas' },
@@ -195,7 +212,7 @@ const ChallengesTab = () => {
           shortName: i.value,
           icon: i.icon,
           color: i.color,
-          gradient: `from-${i.color}-500 to-${i.color}-600`,
+          gradient: challengeColorClasses[i.color]?.gradient || 'from-slate-500 to-slate-600',
           tagline: '',
           description: '',
           isActive: true,
@@ -211,7 +228,7 @@ const ChallengesTab = () => {
         shortName: i.value,
         icon: i.icon,
         color: i.color,
-        gradient: `from-${i.color}-500 to-${i.color}-600`,
+        gradient: challengeColorClasses[i.color]?.gradient || 'from-slate-500 to-slate-600',
         tagline: '',
         description: '',
         isActive: true,
@@ -614,8 +631,8 @@ const StatCard = ({ label, value, icon: Icon, color, tc }: {
 }) => (
   <div className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-5`}>
     <div className="flex items-start justify-between">
-      <div className={`p-2.5 rounded-lg bg-${color}-500/20`}>
-        <Icon size={22} className={`text-${color}-400`} />
+      <div className={`p-2.5 rounded-lg ${challengeColorClasses[color]?.iconBg || 'bg-slate-500/20'}`}>
+        <Icon size={22} className={challengeColorClasses[color]?.iconText || 'text-slate-400'} />
       </div>
     </div>
     <div className="mt-4">
@@ -633,7 +650,7 @@ const StatusBadge = ({ status }: { status: ChallengeStatus }) => {
   const statusConfig = STATUS_OPTIONS.find(s => s.value === status) || { label: status, color: 'slate' };
 
   return (
-    <span className={`px-2.5 py-1 rounded-full text-xs font-medium bg-${statusConfig.color}-500/20 text-${statusConfig.color}-400`}>
+    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${challengeColorClasses[statusConfig.color]?.badge || 'bg-slate-500/20 text-slate-400'}`}>
       {statusConfig.label}
     </span>
   );
@@ -689,7 +706,7 @@ const IndustriesSection = ({ industries, tc, onAdd, onEdit }: {
             <p className={`mt-3 text-sm ${tc.textSecondary} line-clamp-2`}>{industry.tagline}</p>
           )}
           <div className="mt-3 flex items-center gap-2">
-            <span className={`w-3 h-3 rounded-full bg-${industry.color}-500`} />
+            <span className={`w-3 h-3 rounded-full ${challengeColorClasses[industry.color]?.dot || 'bg-slate-500'}`} />
             <span className={`text-xs ${tc.textMuted}`}>{industry.color}</span>
             {industry.isActive ? (
               <span className="ml-auto text-xs text-emerald-400">Active</span>
@@ -1496,9 +1513,9 @@ const IndustryFormModal = ({ industry, onSave, onClose, tc, isDark: _isDark }: {
                   key={color}
                   onClick={() => {
                     updateField('color', color);
-                    updateField('gradient', `from-${color}-500 to-${color}-600`);
+                    updateField('gradient', challengeColorClasses[color]?.gradient || 'from-slate-500 to-slate-600');
                   }}
-                  className={`w-8 h-8 rounded-full bg-${color}-500 border-2 transition-transform ${
+                  className={`w-8 h-8 rounded-full ${challengeColorClasses[color]?.swatch || 'bg-slate-500'} border-2 transition-transform ${
                     formData.color === color ? 'border-white scale-110' : 'border-transparent hover:scale-105'
                   }`}
                   title={color}

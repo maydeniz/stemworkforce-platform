@@ -11,6 +11,24 @@ import {
   X, Save, Upload, Settings, Bell, Target
 } from 'lucide-react';
 
+// Static color class maps for Tailwind JIT compatibility
+const billingColors: Record<string, {
+  iconBg: string; iconText: string; bar: string;
+  selectedBorder: string; selectedBg: string;
+  cardBg: string; cardBorder: string;
+}> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400', bar: 'bg-emerald-500', selectedBorder: 'border-emerald-500/50', selectedBg: 'bg-emerald-500/10', cardBg: 'bg-emerald-500/10', cardBorder: 'border-emerald-500/20' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400', bar: 'bg-blue-500', selectedBorder: 'border-blue-500/50', selectedBg: 'bg-blue-500/10', cardBg: 'bg-blue-500/10', cardBorder: 'border-blue-500/20' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400', bar: 'bg-violet-500', selectedBorder: 'border-violet-500/50', selectedBg: 'bg-violet-500/10', cardBg: 'bg-violet-500/10', cardBorder: 'border-violet-500/20' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400', bar: 'bg-amber-500', selectedBorder: 'border-amber-500/50', selectedBg: 'bg-amber-500/10', cardBg: 'bg-amber-500/10', cardBorder: 'border-amber-500/20' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400', bar: 'bg-cyan-500', selectedBorder: 'border-cyan-500/50', selectedBg: 'bg-cyan-500/10', cardBg: 'bg-cyan-500/10', cardBorder: 'border-cyan-500/20' },
+  purple: { iconBg: 'bg-purple-500/20', iconText: 'text-purple-400', bar: 'bg-purple-500', selectedBorder: 'border-purple-500/50', selectedBg: 'bg-purple-500/10', cardBg: 'bg-purple-500/10', cardBorder: 'border-purple-500/20' },
+  red: { iconBg: 'bg-red-500/20', iconText: 'text-red-400', bar: 'bg-red-500', selectedBorder: 'border-red-500/50', selectedBg: 'bg-red-500/10', cardBg: 'bg-red-500/10', cardBorder: 'border-red-500/20' },
+  pink: { iconBg: 'bg-pink-500/20', iconText: 'text-pink-400', bar: 'bg-pink-500', selectedBorder: 'border-pink-500/50', selectedBg: 'bg-pink-500/10', cardBg: 'bg-pink-500/10', cardBorder: 'border-pink-500/20' },
+  orange: { iconBg: 'bg-orange-500/20', iconText: 'text-orange-400', bar: 'bg-orange-500', selectedBorder: 'border-orange-500/50', selectedBg: 'bg-orange-500/10', cardBg: 'bg-orange-500/10', cardBorder: 'border-orange-500/20' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400', bar: 'bg-slate-500', selectedBorder: 'border-slate-500/50', selectedBg: 'bg-slate-500/10', cardBg: 'bg-slate-500/10', cardBorder: 'border-slate-500/20' },
+};
+
 // ===========================================
 // TYPE DEFINITIONS
 // ===========================================
@@ -605,13 +623,13 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
               onClick={() => setSelectedCategory(selectedCategory === category.id ? 'all' : category.id)}
               className={`bg-slate-900 border rounded-xl p-4 text-left transition-all ${
                 selectedCategory === category.id
-                  ? `border-${category.color}-500/50 bg-${category.color}-500/10`
+                  ? `${billingColors[category.color]?.selectedBorder || 'border-slate-500/50'} ${billingColors[category.color]?.selectedBg || 'bg-slate-500/10'}`
                   : 'border-slate-800 hover:border-slate-700'
               }`}
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className={`p-1.5 rounded bg-${category.color}-500/20`}>
-                  <Icon size={16} className={`text-${category.color}-400`} />
+                <div className={`p-1.5 rounded ${billingColors[category.color]?.iconBg || 'bg-slate-500/20'}`}>
+                  <Icon size={16} className={billingColors[category.color]?.iconText || 'text-slate-400'} />
                 </div>
                 <span className="text-sm font-medium">{category.name}</span>
               </div>
@@ -668,8 +686,8 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-3">
-                  <div className={`p-2.5 rounded-lg bg-${category?.color}-500/20`}>
-                    <Icon size={20} className={`text-${category?.color}-400`} />
+                  <div className={`p-2.5 rounded-lg ${billingColors[category?.color || 'slate']?.iconBg || 'bg-slate-500/20'}`}>
+                    <Icon size={20} className={billingColors[category?.color || 'slate']?.iconText || 'text-slate-400'} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -1292,8 +1310,8 @@ const BillingTab: React.FC = () => {
                     <div key={stream.id} className="group">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <div className={`p-1.5 rounded bg-${stream.color}-500/20`}>
-                            <stream.icon size={14} className={`text-${stream.color}-400`} />
+                          <div className={`p-1.5 rounded ${billingColors[stream.color]?.iconBg || 'bg-slate-500/20'}`}>
+                            <stream.icon size={14} className={billingColors[stream.color]?.iconText || 'text-slate-400'} />
                           </div>
                           <span className="text-sm">{stream.name}</span>
                         </div>
@@ -1304,7 +1322,7 @@ const BillingTab: React.FC = () => {
                       </div>
                       <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                         <div
-                          className={`h-full bg-${stream.color}-500 rounded-full transition-all group-hover:opacity-80`}
+                          className={`h-full ${billingColors[stream.color]?.bar || 'bg-slate-500'} rounded-full transition-all group-hover:opacity-80`}
                           style={{ width: `${percent}%` }}
                         />
                       </div>
@@ -1325,8 +1343,8 @@ const BillingTab: React.FC = () => {
                     <div key={cat.id} className="group">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <div className={`p-1.5 rounded bg-${cat.color}-500/20`}>
-                            <cat.icon size={14} className={`text-${cat.color}-400`} />
+                          <div className={`p-1.5 rounded ${billingColors[cat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                            <cat.icon size={14} className={billingColors[cat.color]?.iconText || 'text-slate-400'} />
                           </div>
                           <span className="text-sm">{cat.name}</span>
                         </div>
@@ -1339,7 +1357,7 @@ const BillingTab: React.FC = () => {
                       </div>
                       <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                         <div
-                          className={`h-full bg-${cat.color}-500 rounded-full transition-all group-hover:opacity-80`}
+                          className={`h-full ${billingColors[cat.color]?.bar || 'bg-slate-500'} rounded-full transition-all group-hover:opacity-80`}
                           style={{ width: `${percent}%` }}
                         />
                       </div>
@@ -1440,8 +1458,8 @@ const BillingTab: React.FC = () => {
               <div key={stream.id} className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2.5 rounded-lg bg-${stream.color}-500/20`}>
-                      <stream.icon size={20} className={`text-${stream.color}-400`} />
+                    <div className={`p-2.5 rounded-lg ${billingColors[stream.color]?.iconBg || 'bg-slate-500/20'}`}>
+                      <stream.icon size={20} className={billingColors[stream.color]?.iconText || 'text-slate-400'} />
                     </div>
                     <div>
                       <h4 className="font-semibold">{stream.name}</h4>
@@ -1477,9 +1495,9 @@ const BillingTab: React.FC = () => {
                 { type: 'Job Seekers', icon: Users, amount: 18400, count: 184, color: 'emerald' },
                 { type: 'Government/Labs', icon: Landmark, amount: 110170, count: 12, color: 'amber' },
               ].map((stakeholder, i) => (
-                <div key={i} className={`p-4 rounded-xl bg-${stakeholder.color}-500/10 border border-${stakeholder.color}-500/20`}>
+                <div key={i} className={`p-4 rounded-xl ${billingColors[stakeholder.color]?.cardBg || 'bg-slate-500/10'} border ${billingColors[stakeholder.color]?.cardBorder || 'border-slate-500/20'}`}>
                   <div className="flex items-center gap-2 mb-2">
-                    <stakeholder.icon size={18} className={`text-${stakeholder.color}-400`} />
+                    <stakeholder.icon size={18} className={billingColors[stakeholder.color]?.iconText || 'text-slate-400'} />
                     <span className="text-sm font-medium">{stakeholder.type}</span>
                   </div>
                   <p className="text-xl font-bold">{formatCurrency(stakeholder.amount)}</p>
@@ -1564,8 +1582,8 @@ const BillingTab: React.FC = () => {
                 <div key={cat.id} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={`p-2.5 rounded-lg bg-${cat.color}-500/20`}>
-                        <cat.icon size={20} className={`text-${cat.color}-400`} />
+                      <div className={`p-2.5 rounded-lg ${billingColors[cat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                        <cat.icon size={20} className={billingColors[cat.color]?.iconText || 'text-slate-400'} />
                       </div>
                       <div>
                         <h4 className="font-semibold">{cat.name}</h4>
@@ -1584,7 +1602,7 @@ const BillingTab: React.FC = () => {
                   <div className="h-2 bg-slate-800 rounded-full overflow-hidden mb-4">
                     <div
                       className={`h-full rounded-full ${
-                        isOverBudget ? 'bg-red-500' : isWarning ? 'bg-amber-500' : `bg-${cat.color}-500`
+                        isOverBudget ? 'bg-red-500' : isWarning ? 'bg-amber-500' : (billingColors[cat.color]?.bar || 'bg-slate-500')
                       }`}
                       style={{ width: `${Math.min(budgetPercent, 100)}%` }}
                     />
@@ -1864,8 +1882,8 @@ const BillingTab: React.FC = () => {
                     <tr key={cat.id} className="hover:bg-slate-800/50 transition-colors">
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-lg bg-${cat.color}-500/20`}>
-                            <cat.icon size={16} className={`text-${cat.color}-400`} />
+                          <div className={`p-2 rounded-lg ${billingColors[cat.color]?.iconBg || 'bg-slate-500/20'}`}>
+                            <cat.icon size={16} className={billingColors[cat.color]?.iconText || 'text-slate-400'} />
                           </div>
                           <span className="font-medium">{cat.name}</span>
                         </div>
@@ -2120,8 +2138,8 @@ const BillingTab: React.FC = () => {
             ].map((report, i) => (
               <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-lg bg-${report.color}-500/20`}>
-                    <report.icon size={24} className={`text-${report.color}-400`} />
+                  <div className={`p-3 rounded-lg ${billingColors[report.color]?.iconBg || 'bg-slate-500/20'}`}>
+                    <report.icon size={24} className={billingColors[report.color]?.iconText || 'text-slate-400'} />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold">{report.title}</h4>

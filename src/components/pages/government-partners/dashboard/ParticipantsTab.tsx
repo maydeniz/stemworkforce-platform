@@ -164,6 +164,16 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
   dropped: { label: 'Dropped', color: 'red', icon: X }
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+};
+
 const barrierLabels: Record<string, string> = {
   long_term_unemployed: 'Long-term Unemployed',
   basic_skills_deficient: 'Basic Skills Deficient',
@@ -559,7 +569,7 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
                       </p>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-${statusConf.color}-500/20 text-${statusConf.color}-400`}>
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${twColor[statusConf.color]?.bg || 'bg-slate-500/20'} ${twColor[statusConf.color]?.text || 'text-slate-400'}`}>
                         <StatusIcon className="w-3 h-3" />
                         {statusConf.label}
                       </span>
@@ -643,7 +653,7 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
                             Veteran
                           </span>
                         )}
-                        <span className={`px-2 py-0.5 rounded text-xs bg-${statusConfig[selectedParticipant.status]?.color || 'slate'}-500/20 text-${statusConfig[selectedParticipant.status]?.color || 'slate'}-400`}>
+                        <span className={`px-2 py-0.5 rounded text-xs ${twColor[statusConfig[selectedParticipant.status]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[statusConfig[selectedParticipant.status]?.color || 'slate']?.text || 'text-slate-400'}`}>
                           {statusConfig[selectedParticipant.status]?.label || selectedParticipant.status}
                         </span>
                       </div>

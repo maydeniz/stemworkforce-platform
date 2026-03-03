@@ -32,6 +32,18 @@ const getThemeClasses = (isDark: boolean) => ({
   hoverBg: isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-50',
 });
 
+// Static color class maps for Tailwind JIT compatibility
+const fedListingColors: Record<string, { badge: string; badgeSmall: string }> = {
+  emerald: { badge: 'bg-emerald-500/20 text-emerald-400', badgeSmall: 'bg-emerald-500/10 text-emerald-400' },
+  blue: { badge: 'bg-blue-500/20 text-blue-400', badgeSmall: 'bg-blue-500/10 text-blue-400' },
+  amber: { badge: 'bg-amber-500/20 text-amber-400', badgeSmall: 'bg-amber-500/10 text-amber-400' },
+  violet: { badge: 'bg-violet-500/20 text-violet-400', badgeSmall: 'bg-violet-500/10 text-violet-400' },
+  pink: { badge: 'bg-pink-500/20 text-pink-400', badgeSmall: 'bg-pink-500/10 text-pink-400' },
+  rose: { badge: 'bg-rose-500/20 text-rose-400', badgeSmall: 'bg-rose-500/10 text-rose-400' },
+  cyan: { badge: 'bg-cyan-500/20 text-cyan-400', badgeSmall: 'bg-cyan-500/10 text-cyan-400' },
+  slate: { badge: 'bg-slate-500/20 text-slate-400', badgeSmall: 'bg-slate-500/10 text-slate-400' },
+};
+
 // Content type icons and colors
 const CONTENT_TYPE_CONFIG = {
   job: { icon: Briefcase, label: 'Job', color: 'emerald' },
@@ -167,7 +179,7 @@ export const FederatedListingCard = ({
                 <h3 className={`font-semibold ${tc.textPrimary} line-clamp-1`}>{listing.title}</h3>
                 <p className={`text-sm ${tc.textSecondary}`}>{listing.organizationName}</p>
               </div>
-              <span className={`px-2 py-0.5 rounded text-xs font-medium bg-${typeConfig.color}-500/20 text-${typeConfig.color}-400 flex-shrink-0`}>
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${fedListingColors[typeConfig.color]?.badge || 'bg-slate-500/20 text-slate-400'} flex-shrink-0`}>
                 {typeConfig.label}
               </span>
             </div>
@@ -253,7 +265,7 @@ export const FederatedListingCard = ({
 
               {/* Badges */}
               <div className="flex flex-wrap gap-2 mt-3">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium bg-${typeConfig.color}-500/20 text-${typeConfig.color}-400`}>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${fedListingColors[typeConfig.color]?.badge || 'bg-slate-500/20 text-slate-400'}`}>
                   {typeConfig.label}
                 </span>
                 {listing.clearanceRequired && (
@@ -388,7 +400,7 @@ export const FederatedListingCard = ({
 
           {/* Badges Row */}
           <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className={`px-2 py-0.5 rounded text-xs font-medium bg-${typeConfig.color}-500/20 text-${typeConfig.color}-400`}>
+            <span className={`px-2 py-0.5 rounded text-xs font-medium ${fedListingColors[typeConfig.color]?.badge || 'bg-slate-500/20 text-slate-400'}`}>
               {typeConfig.label}
             </span>
             {listing.clearanceRequired && (
@@ -515,7 +527,7 @@ const SourceAttribution = ({
           {listing.sourceName}
         </a>
         {sourceConfig && (
-          <span className={`px-1.5 py-0.5 rounded text-[10px] bg-${sourceConfig.color}-500/10 text-${sourceConfig.color}-400`}>
+          <span className={`px-1.5 py-0.5 rounded text-[10px] ${fedListingColors[sourceConfig.color]?.badgeSmall || 'bg-slate-500/10 text-slate-400'}`}>
             {sourceConfig.label}
           </span>
         )}

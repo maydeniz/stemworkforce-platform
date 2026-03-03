@@ -202,7 +202,7 @@ const TechnicalPortfolioPage: React.FC = () => {
                 { icon: GitBranch, label: 'Contributions', value: '89', color: 'green' },
               ].map((stat, i) => (
                 <div key={i} className="bg-gray-900/50 rounded-xl border border-gray-800 p-4">
-                  <stat.icon className={`w-8 h-8 text-${stat.color}-400 mb-2`} />
+                  <stat.icon className={`w-8 h-8 mb-2 ${stat.color === 'violet' ? 'text-violet-400' : stat.color === 'yellow' ? 'text-yellow-400' : stat.color === 'blue' ? 'text-blue-400' : 'text-green-400'}`} />
                   <div className="text-2xl font-bold text-white">{stat.value}</div>
                   <div className="text-sm text-gray-400">{stat.label}</div>
                 </div>

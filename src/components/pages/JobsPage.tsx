@@ -561,10 +561,10 @@ const JobsPage: React.FC = () => {
           source: 'database',
         }));
 
-        console.log('Fetched database jobs:', transformedJobs.length, 'jobs');
+        if (import.meta.env.DEV) console.log('Fetched database jobs:', transformedJobs.length, 'jobs');
         setDatabaseJobs(transformedJobs);
       } catch (err) {
-        console.error('Error in fetchDatabaseJobs:', err);
+        if (import.meta.env.DEV) console.error('Error in fetchDatabaseJobs:', err);
       } finally {
         setLoadingDbJobs(false);
       }
@@ -625,10 +625,10 @@ const JobsPage: React.FC = () => {
           duration: listing.content_type === 'internship' ? 'varies' : undefined,
         }));
 
-        console.log('Fetched federated jobs:', transformed.length);
+        if (import.meta.env.DEV) console.log('Fetched federated jobs:', transformed.length);
         setFederatedJobs(transformed);
       } catch (err) {
-        console.error('Error in fetchFederatedJobs:', err);
+        if (import.meta.env.DEV) console.error('Error in fetchFederatedJobs:', err);
       }
     };
 

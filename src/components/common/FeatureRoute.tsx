@@ -53,14 +53,21 @@ const DisabledFeaturePage: React.FC<{
     }
   };
 
+  const featureRouteColors: Record<string, { bg: string; text: string }> = {
+    amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+    violet: { bg: 'bg-violet-500/20', text: 'text-violet-400' },
+    blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+    slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  };
+
   const info = getStatusInfo();
   const Icon = info.icon;
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center p-6">
       <div className="max-w-md text-center">
-        <div className={`inline-flex p-4 rounded-full bg-${info.color}-500/20 mb-6`}>
-          <Icon size={48} className={`text-${info.color}-400`} />
+        <div className={`inline-flex p-4 rounded-full ${featureRouteColors[info.color]?.bg || 'bg-slate-500/20'} mb-6`}>
+          <Icon size={48} className={featureRouteColors[info.color]?.text || 'text-slate-400'} />
         </div>
         <h1 className="text-2xl font-bold mb-3">{info.title}</h1>
         <p className="text-slate-400 mb-6">{info.message}</p>

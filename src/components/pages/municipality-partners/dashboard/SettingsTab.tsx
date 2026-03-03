@@ -58,6 +58,14 @@ const roleLabels = {
   viewer: { label: 'Viewer', color: 'slate', description: 'View-only access to dashboards' }
 };
 
+// Static Tailwind color map for role cards
+const roleColorMap: Record<string, { bgLight: string; border: string; text: string }> = {
+  purple: { bgLight: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400' },
+  blue: { bgLight: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400' },
+  teal: { bgLight: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400' },
+  slate: { bgLight: 'bg-slate-500/10', border: 'border-slate-500/30', text: 'text-slate-400' },
+};
+
 const tierFeatures = {
   starter: {
     name: 'Starter',
@@ -363,9 +371,9 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
             <h3 className="text-lg font-medium text-white mb-4">Role Permissions</h3>
             <div className="grid md:grid-cols-2 gap-4">
               {Object.entries(roleLabels).map(([key, config]) => (
-                <div key={key} className={`p-4 bg-${config.color}-500/10 border border-${config.color}-500/30 rounded-lg`}>
+                <div key={key} className={`p-4 ${roleColorMap[config.color]?.bgLight || 'bg-slate-500/10'} border ${roleColorMap[config.color]?.border || 'border-slate-500/30'} rounded-lg`}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield className={`w-4 h-4 text-${config.color}-400`} />
+                    <Shield className={`w-4 h-4 ${roleColorMap[config.color]?.text || 'text-slate-400'}`} />
                     <h4 className="text-white font-medium">{config.label}</h4>
                   </div>
                   <p className="text-gray-400 text-sm">{config.description}</p>

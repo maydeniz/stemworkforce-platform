@@ -93,6 +93,17 @@ const examTypeLabels = {
   education_experience: 'Education & Experience', combined: 'Combined'
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  gray: { bg: 'bg-gray-500/20', text: 'text-gray-400' },
+};
+
 export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _partnerId, tier: _tier }) => {
   const [selectedExam, setSelectedExam] = useState<ExamData | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('');
@@ -132,8 +143,8 @@ export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _pa
         ].map((stat, idx) => (
           <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 bg-${stat.color}-500/20 rounded-lg flex items-center justify-center`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div className={`w-10 h-10 ${twColor[stat.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                <stat.icon className={`w-5 h-5 ${twColor[stat.color]?.text || 'text-slate-400'}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -184,7 +195,7 @@ export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _pa
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${config.color}-500/20 text-${config.color}-400 flex items-center gap-1`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[config.color]?.bg || 'bg-slate-500/20'} ${twColor[config.color]?.text || 'text-slate-400'} flex items-center gap-1`}>
                       <StatusIcon className="w-3 h-3" />
                       {config.label}
                     </span>
@@ -241,7 +252,7 @@ export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _pa
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${statusConfig[selectedExam.status].color}-500/20 text-${statusConfig[selectedExam.status].color}-400`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[statusConfig[selectedExam.status].color]?.bg || 'bg-slate-500/20'} ${twColor[statusConfig[selectedExam.status].color]?.text || 'text-slate-400'}`}>
                       {statusConfig[selectedExam.status].label}
                     </span>
                   </div>

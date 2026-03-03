@@ -46,6 +46,13 @@ const tierConfig: Record<GovernmentPartnerTier, { label: string; color: string; 
   enterprise: { label: 'Enterprise', color: 'purple', icon: Crown, price: 'Custom' },
 };
 
+// Static Tailwind color map
+const govTwColor: Record<string, { bg: string; text: string }> = {
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+};
+
 const agencyTypeLabels: Record<AgencyType, string> = {
   workforce_board: 'State/Local Workforce Board',
   federal_agency: 'Federal Agency',
@@ -197,8 +204,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
         {/* Current Plan Card */}
         <div className="mt-6 p-4 bg-gray-900 border border-gray-800 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <div className={`w-10 h-10 bg-${currentTierConfig.color}-500/20 rounded-lg flex items-center justify-center`}>
-              <currentTierConfig.icon className={`w-5 h-5 text-${currentTierConfig.color}-400`} />
+            <div className={`w-10 h-10 ${govTwColor[currentTierConfig.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+              <currentTierConfig.icon className={`w-5 h-5 ${govTwColor[currentTierConfig.color]?.text || 'text-slate-400'}`} />
             </div>
             <div>
               <p className="text-white font-medium">{currentTierConfig.label}</p>
@@ -419,8 +426,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
                 <div className="bg-gray-800 rounded-lg p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 bg-${currentTierConfig.color}-500/20 rounded-xl flex items-center justify-center`}>
-                        <currentTierConfig.icon className={`w-6 h-6 text-${currentTierConfig.color}-400`} />
+                      <div className={`w-12 h-12 ${govTwColor[currentTierConfig.color]?.bg || 'bg-slate-500/20'} rounded-xl flex items-center justify-center`}>
+                        <currentTierConfig.icon className={`w-6 h-6 ${govTwColor[currentTierConfig.color]?.text || 'text-slate-400'}`} />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-white">{currentTierConfig.label}</h3>
@@ -771,8 +778,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 bg-${config.color}-500/20 rounded-lg flex items-center justify-center`}>
-                            <TierIcon className={`w-5 h-5 text-${config.color}-400`} />
+                          <div className={`w-10 h-10 ${govTwColor[config.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                            <TierIcon className={`w-5 h-5 ${govTwColor[config.color]?.text || 'text-slate-400'}`} />
                           </div>
                           <div>
                             <p className="text-white font-medium">{config.label}</p>

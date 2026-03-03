@@ -9,6 +9,17 @@ import { formatNumber } from '@/utils/helpers';
 import { Button, Card } from '@/components/common';
 import { useDocumentTitle } from '@/hooks';
 
+// Static color class maps for Tailwind JIT compatibility
+const audienceColors: Record<string, {
+  hoverBorder: string; bgLight: string; text: string; textHover: string;
+}> = {
+  yellow: { hoverBorder: 'hover:border-yellow-500/50', bgLight: 'bg-yellow-500/10', text: 'text-yellow-400', textHover: 'group-hover:text-yellow-300' },
+  blue: { hoverBorder: 'hover:border-blue-500/50', bgLight: 'bg-blue-500/10', text: 'text-blue-400', textHover: 'group-hover:text-blue-300' },
+  green: { hoverBorder: 'hover:border-green-500/50', bgLight: 'bg-green-500/10', text: 'text-green-400', textHover: 'group-hover:text-green-300' },
+  pink: { hoverBorder: 'hover:border-pink-500/50', bgLight: 'bg-pink-500/10', text: 'text-pink-400', textHover: 'group-hover:text-pink-300' },
+  cyan: { hoverBorder: 'hover:border-cyan-500/50', bgLight: 'bg-cyan-500/10', text: 'text-cyan-400', textHover: 'group-hover:text-cyan-300' },
+};
+
 const HomePage: React.FC = () => {
   useDocumentTitle('Building America\'s Technology Future');
 
@@ -267,15 +278,15 @@ const HomePage: React.FC = () => {
               <Link
                 key={audience.title}
                 to={audience.link}
-                className={`group relative p-6 bg-dark-surface border border-dark-border rounded-2xl hover:border-${audience.color}-500/50 transition-all hover:transform hover:-translate-y-1`}
+                className={`group relative p-6 bg-dark-surface border border-dark-border rounded-2xl ${audienceColors[audience.color]?.hoverBorder || 'hover:border-slate-500/50'} transition-all hover:transform hover:-translate-y-1`}
               >
-                <div className={`w-14 h-14 bg-${audience.color}-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 ${audienceColors[audience.color]?.bgLight || 'bg-slate-500/10'} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <span className="text-3xl">{audience.icon}</span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-1">{audience.title}</h3>
                 <p className="text-sm text-gray-500 mb-3">{audience.subtitle}</p>
                 <p className="text-sm text-gray-400 mb-4">{audience.description}</p>
-                <span className={`inline-flex items-center text-sm font-medium text-${audience.color}-400 group-hover:text-${audience.color}-300`}>
+                <span className={`inline-flex items-center text-sm font-medium ${audienceColors[audience.color]?.text || 'text-slate-400'} ${audienceColors[audience.color]?.textHover || 'group-hover:text-slate-300'}`}>
                   {audience.cta}
                   <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

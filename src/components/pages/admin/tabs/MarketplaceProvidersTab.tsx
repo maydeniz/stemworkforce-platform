@@ -377,10 +377,21 @@ const MarketplaceProvidersTab: React.FC = () => {
     }
   };
 
+  const categoryColorMap: Record<string, string> = {
+    violet: 'bg-violet-500/20 text-violet-400',
+    blue: 'bg-blue-500/20 text-blue-400',
+    emerald: 'bg-emerald-500/20 text-emerald-400',
+    amber: 'bg-amber-500/20 text-amber-400',
+    cyan: 'bg-cyan-500/20 text-cyan-400',
+    pink: 'bg-pink-500/20 text-pink-400',
+    slate: 'bg-slate-500/20 text-slate-400',
+    indigo: 'bg-indigo-500/20 text-indigo-400',
+  };
+
   const getCategoryColor = (category: string) => {
     const cat = PROVIDER_CATEGORIES.find((c) => c.id === category);
     if (!cat || !cat.color) return 'bg-slate-500/20 text-slate-400';
-    return `bg-${cat.color}-500/20 text-${cat.color}-400`;
+    return categoryColorMap[cat.color] || 'bg-slate-500/20 text-slate-400';
   };
 
   const handleApprove = (providerId: string) => {

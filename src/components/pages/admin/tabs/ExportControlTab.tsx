@@ -118,6 +118,17 @@ const formatDate = (dateStr?: string): string => {
   });
 };
 
+// Static color class maps for Tailwind JIT compatibility
+const exportControlColors: Record<string, { iconBg: string; iconText: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400' },
+  red: { iconBg: 'bg-red-500/20', iconText: 'text-red-400' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400' },
+};
+
 // ===========================================
 // Stat Card Component
 // ===========================================
@@ -132,8 +143,8 @@ function StatCard({ label, value, icon: Icon, color, subtitle }: {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
       <div className="flex items-start justify-between">
-        <div className={`p-2.5 rounded-lg bg-${color}-500/20`}>
-          <Icon size={22} className={`text-${color}-400`} />
+        <div className={`p-2.5 rounded-lg ${exportControlColors[color]?.iconBg || 'bg-slate-500/20'}`}>
+          <Icon size={22} className={exportControlColors[color]?.iconText || 'text-slate-400'} />
         </div>
       </div>
       <div className="mt-4">

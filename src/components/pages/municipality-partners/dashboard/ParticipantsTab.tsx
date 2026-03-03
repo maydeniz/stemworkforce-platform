@@ -96,6 +96,19 @@ const departmentLabels: Record<DepartmentType, string> = {
   housing: 'Housing', other: 'Other'
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  teal: { bg: 'bg-teal-500/20', text: 'text-teal-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  indigo: { bg: 'bg-indigo-500/20', text: 'text-indigo-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  gray: { bg: 'bg-gray-500/20', text: 'text-gray-400' },
+};
+
 export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tier: _tier }) => {
   const [participants, setParticipants] = useState<MunicipalityParticipant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -161,8 +174,8 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
         ].map((stat, idx) => (
           <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 bg-${stat.color}-500/20 rounded-lg flex items-center justify-center`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div className={`w-10 h-10 ${twColor[stat.color]?.bg || 'bg-slate-500/20'} rounded-lg flex items-center justify-center`}>
+                <stat.icon className={`w-5 h-5 ${twColor[stat.color]?.text || 'text-slate-400'}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -292,7 +305,7 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
                         {departmentLabels[participant.department] || participant.department}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded text-xs bg-${statusConf.color}-500/20 text-${statusConf.color}-400`}>
+                        <span className={`px-2 py-1 rounded text-xs ${twColor[statusConf.color]?.bg || 'bg-slate-500/20'} ${twColor[statusConf.color]?.text || 'text-slate-400'}`}>
                           {statusConf.label}
                         </span>
                       </td>
@@ -355,7 +368,7 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="text-gray-400">Department</span><p className="text-white">{departmentLabels[selectedParticipant.department]}</p></div>
                   <div><span className="text-gray-400">Program Type</span><p className="text-white capitalize">{selectedParticipant.programType}</p></div>
-                  <div><span className="text-gray-400">Status</span><p className={`text-${statusConfig[selectedParticipant.status].color}-400`}>{statusConfig[selectedParticipant.status].label}</p></div>
+                  <div><span className="text-gray-400">Status</span><p className={`${twColor[statusConfig[selectedParticipant.status].color]?.text || 'text-slate-400'}`}>{statusConfig[selectedParticipant.status].label}</p></div>
                   <div><span className="text-gray-400">Hours Completed</span><p className="text-white">{selectedParticipant.hoursCompleted}</p></div>
                   <div><span className="text-gray-400">Start Date</span><p className="text-white">{new Date(selectedParticipant.startDate).toLocaleDateString()}</p></div>
                   <div><span className="text-gray-400">End Date</span><p className="text-white">{new Date(selectedParticipant.expectedEndDate).toLocaleDateString()}</p></div>

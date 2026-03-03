@@ -62,6 +62,11 @@ const STATUS_OPTIONS: { value: ChallengeStatus | 'all'; label: string; color: st
   { value: 'completed', label: 'Completed', color: 'purple' },
 ];
 
+const statusDotColors: Record<string, string> = {
+  gray: 'bg-gray-500', green: 'bg-green-500', blue: 'bg-blue-500',
+  yellow: 'bg-yellow-500', purple: 'bg-purple-500',
+};
+
 // ===========================================
 // HELPER FUNCTIONS
 // ===========================================
@@ -393,7 +398,7 @@ const Filters: React.FC<FiltersProps> = ({
                   : 'hover:bg-gray-800 text-gray-300'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full bg-${option.color}-500`} />
+              <span className={`w-2 h-2 rounded-full ${statusDotColors[option.color] || 'bg-slate-500'}`} />
               {option.label}
             </button>
           ))}

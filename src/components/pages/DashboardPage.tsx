@@ -1367,20 +1367,20 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
         }
 
         if (!userData?.organization_id) {
-          console.log('No organization found for educator');
+if (import.meta.env.DEV) console.log('No organization found for educator');
           setLoadingEduJobs(false);
           return;
         }
 
         // Fetch jobs for this organization
-        console.log('Fetching edu jobs for organization:', userData.organization_id);
+if (import.meta.env.DEV) console.log('Fetching edu jobs for organization:', userData.organization_id);
         const { data: jobs, error } = await supabase
           .from('jobs')
           .select('*')
           .eq('organization_id', userData.organization_id)
           .order('created_at', { ascending: false });
 
-        console.log('Edu jobs query result:', { jobs, error, count: jobs?.length });
+if (import.meta.env.DEV) console.log('Edu jobs query result:', { jobs, error, count: jobs?.length });
 
         if (error) {
           console.error('Error fetching edu jobs:', error);
@@ -1403,7 +1403,7 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
         }));
 
         setEduOpportunities(formattedJobs);
-        console.log('Fetched edu jobs:', formattedJobs);
+if (import.meta.env.DEV) console.log('Fetched edu jobs:', formattedJobs);
       } catch (error) {
         console.error('Error in fetchEduJobs:', error);
       } finally {
@@ -1521,7 +1521,7 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
         featured: eduPostingForm.featuredListing || false,
       };
 
-      console.log('Submitting edu job to database:', jobData);
+if (import.meta.env.DEV) console.log('Submitting edu job to database:', jobData);
 
       // Insert into database
       const { data: newJob, error: insertError } = await supabase
@@ -1537,7 +1537,7 @@ const EducatorDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> 
         return;
       }
 
-      console.log('Edu job posted successfully:', newJob);
+if (import.meta.env.DEV) console.log('Edu job posted successfully:', newJob);
 
       // Add to local state for immediate UI update
       const newOpp = {
@@ -1796,7 +1796,7 @@ Thank you for your business!
 
   // Handle program submission from modal
   const handleProgramSubmit = (data: ProgramFormData) => {
-    console.log('Program submitted:', data);
+if (import.meta.env.DEV) console.log('Program submitted:', data);
     // TODO: Save to database via Supabase
     setShowAddProgramModal(false);
     alert('Program submitted successfully! It will be reviewed within 2-3 business days.');
@@ -3609,20 +3609,20 @@ const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> =
         }
 
         if (!userData?.organization_id) {
-          console.log('No organization found for user, user data:', userData);
+if (import.meta.env.DEV) console.log('No organization found for user, user data:', userData);
           setLoadingJobs(false);
           return;
         }
 
         // Fetch jobs for this organization
-        console.log('Fetching jobs for organization:', userData.organization_id);
+if (import.meta.env.DEV) console.log('Fetching jobs for organization:', userData.organization_id);
         const { data: jobs, error } = await supabase
           .from('jobs')
           .select('*')
           .eq('organization_id', userData.organization_id)
           .order('created_at', { ascending: false });
 
-        console.log('Jobs query result:', { jobs, error, count: jobs?.length });
+if (import.meta.env.DEV) console.log('Jobs query result:', { jobs, error, count: jobs?.length });
 
         if (error) {
           console.error('Error fetching jobs:', error);
@@ -3647,7 +3647,7 @@ const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> =
         }));
 
         setJobPostings(formattedJobs);
-        console.log('Fetched jobs:', formattedJobs);
+if (import.meta.env.DEV) console.log('Fetched jobs:', formattedJobs);
       } catch (error) {
         console.error('Error in fetchJobs:', error);
       } finally {
@@ -3997,7 +3997,7 @@ What We Offer:
         status: 'active',
       };
 
-      console.log('Submitting job to database:', jobData);
+if (import.meta.env.DEV) console.log('Submitting job to database:', jobData);
 
       // Insert into database
       const { data: newJob, error: insertError } = await supabase
@@ -4013,7 +4013,7 @@ What We Offer:
         return;
       }
 
-      console.log('Job posted successfully:', newJob);
+if (import.meta.env.DEV) console.log('Job posted successfully:', newJob);
 
       // Add to local state for immediate UI update
       const newPosting = {
@@ -4030,7 +4030,7 @@ What We Offer:
         aiScore: Math.floor(Math.random() * 15) + 85,
         clearance: newJob.clearance || 'None',
       };
-      console.log('Adding new posting to list:', newPosting);
+if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
       setJobPostings(prev => [newPosting, ...prev]);
 
       // Reset form
@@ -6403,7 +6403,7 @@ const DashboardPage: React.FC = () => {
       }
 
       // Try to get profile from users table first (try by id, then auth_id, then email)
-      console.log('[DashboardPage] Fetching profile for user:', authUser.id, authUser.email);
+if (import.meta.env.DEV) console.log('[DashboardPage] Fetching profile for user:', authUser.id, authUser.email);
 
       let profile = null;
 
@@ -6416,7 +6416,7 @@ const DashboardPage: React.FC = () => {
 
       if (profileById) {
         profile = profileById;
-        console.log('[DashboardPage] Found profile by id:', profile.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Found profile by id:', profile.role);
       } else {
         // Try by auth_id
         const { data: profileByAuthId } = await supabase
@@ -6427,7 +6427,7 @@ const DashboardPage: React.FC = () => {
 
         if (profileByAuthId) {
           profile = profileByAuthId;
-          console.log('[DashboardPage] Found profile by auth_id:', profile.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Found profile by auth_id:', profile.role);
         } else if (authUser.email) {
           // Try by email as last resort
           const { data: profileByEmail } = await supabase
@@ -6438,17 +6438,17 @@ const DashboardPage: React.FC = () => {
 
           if (profileByEmail) {
             profile = profileByEmail;
-            console.log('[DashboardPage] Found profile by email:', profile.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Found profile by email:', profile.role);
           }
         }
       }
 
       if (profile) {
-        console.log('[DashboardPage] Using profile with role:', profile.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Using profile with role:', profile.role);
         setUser(profile as UserProfile);
       } else {
         // Fall back to auth user metadata if no profile exists
-        console.log('[DashboardPage] No profile found, using auth metadata');
+if (import.meta.env.DEV) console.log('[DashboardPage] No profile found, using auth metadata');
         const metadata = authUser.user_metadata || {};
         setUser({
           id: authUser.id,
@@ -6511,7 +6511,7 @@ const DashboardPage: React.FC = () => {
   }
 
   // Route to appropriate dashboard based on user role
-  console.log('[DashboardPage] Routing based on role:', user.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Routing based on role:', user.role);
 
   switch (user.role) {
     case 'admin':
@@ -6540,7 +6540,7 @@ const DashboardPage: React.FC = () => {
     case 'partner_academic':
       return <PartnerDashboard user={user} onSignOut={handleSignOut} />;
     default:
-      console.log('[DashboardPage] Unknown role, defaulting to JobSeeker:', user.role);
+if (import.meta.env.DEV) console.log('[DashboardPage] Unknown role, defaulting to JobSeeker:', user.role);
       return <JobSeekerDashboard user={user} onSignOut={handleSignOut} />;
   }
 };

@@ -1,3 +1,11 @@
+// Static color class maps for Tailwind JIT compatibility
+const imageColorBar: Record<string, string> = {
+  blue: 'bg-blue-500', purple: 'bg-purple-500', emerald: 'bg-emerald-500',
+  red: 'bg-red-500', amber: 'bg-amber-500', teal: 'bg-teal-500',
+  cyan: 'bg-cyan-500', indigo: 'bg-indigo-500', orange: 'bg-orange-500',
+  slate: 'bg-slate-500', green: 'bg-green-500', rose: 'bg-rose-500',
+};
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -465,7 +473,7 @@ export default function BlogPage() {
                   key={post.id}
                   className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-colors group cursor-pointer"
                 >
-                  <div className={`h-2 bg-${post.imageColor}-500`} />
+                  <div className={`h-2 ${imageColorBar[post.imageColor] || 'bg-slate-500'}`} />
                   <div className="p-6">
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <span className={`px-2.5 py-1 rounded text-xs font-medium ${getCategoryColor(post.category)}`}>

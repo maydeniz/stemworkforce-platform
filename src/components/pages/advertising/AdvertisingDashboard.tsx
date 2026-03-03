@@ -1,3 +1,12 @@
+// Static color class maps for Tailwind JIT compatibility
+const adColors: Record<string, { iconBg: string; iconText: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400' },
+};
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -183,8 +192,8 @@ const AdOverview = ({ stats, loading }: { stats: AdStats | null; loading: boolea
         {metrics.map((metric, i) => (
           <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2.5 rounded-lg bg-${metric.color}-500/20`}>
-                <metric.icon size={20} className={`text-${metric.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${adColors[metric.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <metric.icon size={20} className={adColors[metric.color]?.iconText || 'text-slate-400'} />
               </div>
               <span className={`flex items-center gap-1 text-sm ${metric.positive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {metric.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}

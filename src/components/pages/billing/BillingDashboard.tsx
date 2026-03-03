@@ -1,3 +1,13 @@
+// Static color class maps for Tailwind JIT compatibility
+const billDashColors: Record<string, { iconBg: string; iconText: string; bar: string; hoverBorder: string }> = {
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400', bar: 'bg-emerald-500', hoverBorder: 'hover:border-emerald-500/30' },
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400', bar: 'bg-blue-500', hoverBorder: 'hover:border-blue-500/30' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400', bar: 'bg-violet-500', hoverBorder: 'hover:border-violet-500/30' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400', bar: 'bg-amber-500', hoverBorder: 'hover:border-amber-500/30' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400', bar: 'bg-cyan-500', hoverBorder: 'hover:border-cyan-500/30' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400', bar: 'bg-slate-500', hoverBorder: 'hover:border-slate-500/30' },
+};
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -169,8 +179,8 @@ const BillingOverview = ({ stats, loading }: { stats: BillingStats | null; loadi
         {metrics.map((metric, i) => (
           <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-2.5 rounded-lg bg-${metric.color}-500/20`}>
-                <metric.icon size={20} className={`text-${metric.color}-400`} />
+              <div className={`p-2.5 rounded-lg ${billDashColors[metric.color]?.iconBg || 'bg-slate-500/20'}`}>
+                <metric.icon size={20} className={billDashColors[metric.color]?.iconText || 'text-slate-400'} />
               </div>
               <span className={`flex items-center gap-1 text-sm ${metric.positive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {metric.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
@@ -217,8 +227,8 @@ const BillingOverview = ({ stats, loading }: { stats: BillingStats | null; loadi
               { type: 'Events', revenue: 2500, percent: 3, color: 'cyan', icon: Calendar },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg bg-${item.color}-500/20`}>
-                  <item.icon size={16} className={`text-${item.color}-400`} />
+                <div className={`p-2 rounded-lg ${billDashColors[item.color]?.iconBg || 'bg-slate-500/20'}`}>
+                  <item.icon size={16} className={billDashColors[item.color]?.iconText || 'text-slate-400'} />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between mb-1">
@@ -226,7 +236,7 @@ const BillingOverview = ({ stats, loading }: { stats: BillingStats | null; loadi
                     <span className="text-sm text-slate-400">{item.percent}%</span>
                   </div>
                   <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div className={`h-full bg-${item.color}-500 rounded-full`} style={{ width: `${item.percent}%` }} />
+                    <div className={`h-full ${billDashColors[item.color]?.bar || 'bg-slate-500'} rounded-full`} style={{ width: `${item.percent}%` }} />
                   </div>
                 </div>
                 <span className="text-sm font-medium w-20 text-right">${item.revenue.toLocaleString()}</span>
@@ -494,8 +504,8 @@ const PlansTab = () => {
           return (
             <div key={type} className="space-y-4">
               <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-lg bg-${color}-500/20`}>
-                  <Icon size={18} className={`text-${color}-400`} />
+                <div className={`p-2 rounded-lg ${billDashColors[color]?.iconBg || 'bg-slate-500/20'}`}>
+                  <Icon size={18} className={billDashColors[color]?.iconText || 'text-slate-400'} />
                 </div>
                 <h4 className="font-semibold capitalize">{type.replace('_', ' ')} Plans</h4>
               </div>
@@ -504,7 +514,7 @@ const PlansTab = () => {
                 {typePlans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-${color}-500/30 transition-colors relative`}
+                    className={`bg-slate-900 border border-slate-800 rounded-xl p-5 ${billDashColors[color]?.hoverBorder || 'hover:border-slate-500/30'} transition-colors relative`}
                   >
                     {plan.is_popular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-emerald-500 rounded-full text-xs font-medium flex items-center gap-1">

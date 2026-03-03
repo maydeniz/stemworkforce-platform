@@ -826,7 +826,20 @@ const ChallengeDetailPage: React.FC = () => {
                     <h2 className="text-2xl font-bold text-white mb-4">About This Challenge</h2>
                     <div
                       className="text-gray-300"
-                      dangerouslySetInnerHTML={{ __html: challenge.description }}
+                      dangerouslySetInnerHTML={{ __html: (() => {
+                        // Sanitize HTML to prevent XSS: strip script tags, event handlers, and dangerous protocols
+                        const temp = document.createElement('div');
+                        temp.innerHTML = challenge.description;
+                        temp.querySelectorAll('script, iframe, object, embed, form').forEach(el => el.remove());
+                        temp.querySelectorAll('*').forEach(el => {
+                          Array.from(el.attributes).forEach(attr => {
+                            if (attr.name.startsWith('on') || attr.value.includes('javascript:')) {
+                              el.removeAttribute(attr.name);
+                            }
+                          });
+                        });
+                        return temp.innerHTML;
+                      })() }}
                     />
                   </div>
 

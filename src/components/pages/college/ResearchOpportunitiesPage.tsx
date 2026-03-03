@@ -473,7 +473,7 @@ const ResearchOpportunitiesPage: React.FC = () => {
                 key={idx}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 text-center hover:border-cyan-500/50 transition-all"
               >
-                <div className={`w-12 h-12 bg-${item.color}-500/20 text-${item.color}-400 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 ${item.color === 'cyan' ? 'bg-cyan-500/20 text-cyan-400' : item.color === 'blue' ? 'bg-blue-500/20 text-blue-400' : item.color === 'purple' ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400'}`}>
                   {item.step}
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>

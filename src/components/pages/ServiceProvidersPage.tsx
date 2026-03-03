@@ -2,6 +2,22 @@
 // Service Providers Marketplace Page
 // ===========================================
 
+// Static color class maps for Tailwind JIT compatibility
+const spColorClasses: Record<string, {
+  selectedBg: string; selectedText: string; selectedBorder: string; selectedCountBg: string;
+  gradient: string; gradientAvatar: string; specialtyBg: string; specialtyText: string;
+}> = {
+  violet: { selectedBg: 'bg-violet-500/20', selectedText: 'text-violet-400', selectedBorder: 'border-violet-500/30', selectedCountBg: 'bg-violet-500/30', gradient: 'from-violet-500/30 to-violet-600/10', gradientAvatar: 'from-violet-500 to-violet-600', specialtyBg: 'bg-violet-500/10', specialtyText: 'text-violet-400' },
+  blue: { selectedBg: 'bg-blue-500/20', selectedText: 'text-blue-400', selectedBorder: 'border-blue-500/30', selectedCountBg: 'bg-blue-500/30', gradient: 'from-blue-500/30 to-blue-600/10', gradientAvatar: 'from-blue-500 to-blue-600', specialtyBg: 'bg-blue-500/10', specialtyText: 'text-blue-400' },
+  emerald: { selectedBg: 'bg-emerald-500/20', selectedText: 'text-emerald-400', selectedBorder: 'border-emerald-500/30', selectedCountBg: 'bg-emerald-500/30', gradient: 'from-emerald-500/30 to-emerald-600/10', gradientAvatar: 'from-emerald-500 to-emerald-600', specialtyBg: 'bg-emerald-500/10', specialtyText: 'text-emerald-400' },
+  amber: { selectedBg: 'bg-amber-500/20', selectedText: 'text-amber-400', selectedBorder: 'border-amber-500/30', selectedCountBg: 'bg-amber-500/30', gradient: 'from-amber-500/30 to-amber-600/10', gradientAvatar: 'from-amber-500 to-amber-600', specialtyBg: 'bg-amber-500/10', specialtyText: 'text-amber-400' },
+  cyan: { selectedBg: 'bg-cyan-500/20', selectedText: 'text-cyan-400', selectedBorder: 'border-cyan-500/30', selectedCountBg: 'bg-cyan-500/30', gradient: 'from-cyan-500/30 to-cyan-600/10', gradientAvatar: 'from-cyan-500 to-cyan-600', specialtyBg: 'bg-cyan-500/10', specialtyText: 'text-cyan-400' },
+  orange: { selectedBg: 'bg-orange-500/20', selectedText: 'text-orange-400', selectedBorder: 'border-orange-500/30', selectedCountBg: 'bg-orange-500/30', gradient: 'from-orange-500/30 to-orange-600/10', gradientAvatar: 'from-orange-500 to-orange-600', specialtyBg: 'bg-orange-500/10', specialtyText: 'text-orange-400' },
+  pink: { selectedBg: 'bg-pink-500/20', selectedText: 'text-pink-400', selectedBorder: 'border-pink-500/30', selectedCountBg: 'bg-pink-500/30', gradient: 'from-pink-500/30 to-pink-600/10', gradientAvatar: 'from-pink-500 to-pink-600', specialtyBg: 'bg-pink-500/10', specialtyText: 'text-pink-400' },
+  slate: { selectedBg: 'bg-slate-500/20', selectedText: 'text-slate-400', selectedBorder: 'border-slate-500/30', selectedCountBg: 'bg-slate-500/30', gradient: 'from-slate-500/30 to-slate-600/10', gradientAvatar: 'from-slate-500 to-slate-600', specialtyBg: 'bg-slate-500/10', specialtyText: 'text-slate-400' },
+  indigo: { selectedBg: 'bg-indigo-500/20', selectedText: 'text-indigo-400', selectedBorder: 'border-indigo-500/30', selectedCountBg: 'bg-indigo-500/30', gradient: 'from-indigo-500/30 to-indigo-600/10', gradientAvatar: 'from-indigo-500 to-indigo-600', specialtyBg: 'bg-indigo-500/10', specialtyText: 'text-indigo-400' },
+};
+
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -499,7 +515,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition-all group">
       {/* Header with gradient */}
-      <div className={`h-24 bg-gradient-to-br from-${categoryColor}-500/30 to-${categoryColor}-600/10 relative`}>
+      <div className={`h-24 bg-gradient-to-br ${spColorClasses[categoryColor]?.gradient || 'from-slate-500/30 to-slate-600/10'} relative`}>
         {provider.isFeatured && (
           <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-amber-500/20 text-amber-400 rounded-full text-xs font-medium">
             <Sparkles size={12} />
@@ -509,7 +525,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
 
         {/* Avatar */}
         <div className="absolute -bottom-10 left-5">
-          <div className={`w-20 h-20 rounded-xl bg-gradient-to-br from-${categoryColor}-500 to-${categoryColor}-600 flex items-center justify-center text-white font-bold text-xl border-4 border-slate-900 shadow-lg`}>
+          <div className={`w-20 h-20 rounded-xl bg-gradient-to-br ${spColorClasses[categoryColor]?.gradientAvatar || 'from-slate-500 to-slate-600'} flex items-center justify-center text-white font-bold text-xl border-4 border-slate-900 shadow-lg`}>
             {getInitials(provider.name)}
           </div>
         </div>
@@ -555,7 +571,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
           {provider.specialties.slice(0, 3).map((specialty, idx) => (
             <span
               key={idx}
-              className={`px-2 py-1 bg-${categoryColor}-500/10 text-${categoryColor}-400 text-xs rounded-md`}
+              className={`px-2 py-1 ${spColorClasses[categoryColor]?.specialtyBg || 'bg-slate-500/10'} ${spColorClasses[categoryColor]?.specialtyText || 'text-slate-400'} text-xs rounded-md`}
             >
               {specialty}
             </span>
@@ -734,14 +750,14 @@ const ServiceProvidersPage: React.FC = () => {
                   onClick={() => setSelectedCategory(category.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all ${
                     isSelected
-                      ? `bg-${category.color}-500/20 text-${category.color}-400 border border-${category.color}-500/30`
+                      ? `${spColorClasses[category.color]?.selectedBg || 'bg-slate-500/20'} ${spColorClasses[category.color]?.selectedText || 'text-slate-400'} border ${spColorClasses[category.color]?.selectedBorder || 'border-slate-500/30'}`
                       : 'bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
                   <CategoryIcon size={18} />
                   <span className="font-medium">{category.name}</span>
                   <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                    isSelected ? `bg-${category.color}-500/30` : 'bg-slate-800'
+                    isSelected ? (spColorClasses[category.color]?.selectedCountBg || 'bg-slate-500/30') : 'bg-slate-800'
                   }`}>
                     {category.count}
                   </span>

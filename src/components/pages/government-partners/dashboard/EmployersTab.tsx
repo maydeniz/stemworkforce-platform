@@ -167,6 +167,18 @@ const commitmentTypeLabels: Record<string, { label: string; icon: React.ElementT
   curriculum_input: { label: 'Curriculum Input', icon: FileText, color: 'cyan' }
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  gray: { bg: 'bg-gray-500/20', text: 'text-gray-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400' },
+};
+
 // ===========================================
 // COMPONENT
 // ===========================================
@@ -474,7 +486,7 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${statusConf.color}-500/20 text-${statusConf.color}-400`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[statusConf.color]?.bg || 'bg-slate-500/20'} ${twColor[statusConf.color]?.text || 'text-slate-400'}`}>
                       {statusConf.label}
                     </span>
                   </div>
@@ -501,7 +513,7 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
                   return (
                     <span
                       key={idx}
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-${typeConf.color}-500/20 text-${typeConf.color}-400`}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${twColor[typeConf.color]?.bg || 'bg-slate-500/20'} ${twColor[typeConf.color]?.text || 'text-slate-400'}`}
                     >
                       <TypeIcon className="w-3 h-3" />
                       {typeConf.label}
@@ -585,7 +597,7 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
                     <div>
                       <h2 className="text-xl font-bold text-white">{selectedEmployer.employerName}</h2>
                       <p className="text-gray-400">{selectedEmployer.industry}</p>
-                      <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs bg-${statusConfig[selectedEmployer.status]?.color || 'slate'}-500/20 text-${statusConfig[selectedEmployer.status]?.color || 'slate'}-400`}>
+                      <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs ${twColor[statusConfig[selectedEmployer.status]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[statusConfig[selectedEmployer.status]?.color || 'slate']?.text || 'text-slate-400'}`}>
                         {statusConfig[selectedEmployer.status]?.label || selectedEmployer.status}
                       </span>
                     </div>
@@ -641,7 +653,7 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
                       return (
                         <span
                           key={idx}
-                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-${typeConf.color}-500/20 text-${typeConf.color}-400`}
+                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${twColor[typeConf.color]?.bg || 'bg-slate-500/20'} ${twColor[typeConf.color]?.text || 'text-slate-400'}`}
                         >
                           <TypeIcon className="w-4 h-4" />
                           {typeConf.label}

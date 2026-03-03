@@ -160,6 +160,19 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
   revision_requested: { label: 'Revision Requested', color: 'orange', icon: RefreshCw }
 };
 
+// Static Tailwind color map
+const twColor: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  emerald: { bg: 'bg-emerald-500/20', text: 'text-emerald-400' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400' },
+  orange: { bg: 'bg-orange-500/20', text: 'text-orange-400' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400' },
+  pink: { bg: 'bg-pink-500/20', text: 'text-pink-400' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  slate: { bg: 'bg-slate-500/20', text: 'text-slate-400' },
+};
+
 // ===========================================
 // COMPONENT
 // ===========================================
@@ -534,10 +547,10 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({ partnerId, tier: _
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs bg-${typeConfig.color}-500/20 text-${typeConfig.color}-400`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${twColor[typeConfig.color]?.bg || 'bg-slate-500/20'} ${twColor[typeConfig.color]?.text || 'text-slate-400'}`}>
                       {typeConfig.label}
                     </span>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-${statusConf.color}-500/20 text-${statusConf.color}-400`}>
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${twColor[statusConf.color]?.bg || 'bg-slate-500/20'} ${twColor[statusConf.color]?.text || 'text-slate-400'}`}>
                       <StatusIcon className="w-3 h-3" />
                       {statusConf.label}
                     </span>
@@ -640,10 +653,10 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({ partnerId, tier: _
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`px-2 py-0.5 rounded text-xs bg-${reportTypeLabels[selectedReport.reportType]?.color || 'slate'}-500/20 text-${reportTypeLabels[selectedReport.reportType]?.color || 'slate'}-400`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${twColor[reportTypeLabels[selectedReport.reportType]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[reportTypeLabels[selectedReport.reportType]?.color || 'slate']?.text || 'text-slate-400'}`}>
                         {reportTypeLabels[selectedReport.reportType]?.label || selectedReport.reportType}
                       </span>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-${statusConfig[selectedReport.status]?.color || 'slate'}-500/20 text-${statusConfig[selectedReport.status]?.color || 'slate'}-400`}>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${twColor[statusConfig[selectedReport.status]?.color || 'slate']?.bg || 'bg-slate-500/20'} ${twColor[statusConfig[selectedReport.status]?.color || 'slate']?.text || 'text-slate-400'}`}>
                         {statusConfig[selectedReport.status]?.label || selectedReport.status}
                       </span>
                     </div>

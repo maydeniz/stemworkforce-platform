@@ -61,6 +61,17 @@ const INTEGRATION_ICONS: Record<IntegrationMethod, typeof Server> = {
   lever_api: Server,
 };
 
+// Static color class maps for Tailwind JIT compatibility
+const fedColorClasses: Record<string, { iconBg: string; iconText: string; badge: string; barBg: string }> = {
+  blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400', badge: 'bg-blue-500/10 text-blue-400', barBg: 'bg-blue-500' },
+  emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400', badge: 'bg-emerald-500/10 text-emerald-400', barBg: 'bg-emerald-500' },
+  violet: { iconBg: 'bg-violet-500/20', iconText: 'text-violet-400', badge: 'bg-violet-500/10 text-violet-400', barBg: 'bg-violet-500' },
+  amber: { iconBg: 'bg-amber-500/20', iconText: 'text-amber-400', badge: 'bg-amber-500/10 text-amber-400', barBg: 'bg-amber-500' },
+  rose: { iconBg: 'bg-rose-500/20', iconText: 'text-rose-400', badge: 'bg-rose-500/10 text-rose-400', barBg: 'bg-rose-500' },
+  cyan: { iconBg: 'bg-cyan-500/20', iconText: 'text-cyan-400', badge: 'bg-cyan-500/10 text-cyan-400', barBg: 'bg-cyan-500' },
+  slate: { iconBg: 'bg-slate-500/20', iconText: 'text-slate-400', badge: 'bg-slate-500/10 text-slate-400', barBg: 'bg-slate-500' },
+};
+
 type TabType = 'sources' | 'sync' | 'analytics' | 'settings';
 
 const FederationTab = () => {
@@ -385,8 +396,8 @@ const StatCard = ({ label, value, icon: Icon, color, tc }: {
 }) => (
   <div className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-5`}>
     <div className="flex items-start justify-between">
-      <div className={`p-2.5 rounded-lg bg-${color}-500/20`}>
-        <Icon size={22} className={`text-${color}-400`} />
+      <div className={`p-2.5 rounded-lg ${fedColorClasses[color]?.iconBg || 'bg-slate-500/20'}`}>
+        <Icon size={22} className={fedColorClasses[color]?.iconText || 'text-slate-400'} />
       </div>
     </div>
     <div className="mt-4">
@@ -433,11 +444,11 @@ const SourceCard = ({
       {/* Header */}
       <div className="flex items-start gap-4">
         {/* Logo */}
-        <div className={`w-12 h-12 rounded-xl bg-${typeConfig?.color || 'slate'}-500/20 flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-12 h-12 rounded-xl ${fedColorClasses[typeConfig?.color || 'slate']?.iconBg || 'bg-slate-500/20'} flex items-center justify-center flex-shrink-0`}>
           {source.logoUrl ? (
             <img src={source.logoUrl} alt={source.name} className="w-8 h-8 object-contain" />
           ) : (
-            <TypeIcon size={24} className={`text-${typeConfig?.color || 'slate'}-400`} />
+            <TypeIcon size={24} className={fedColorClasses[typeConfig?.color || 'slate']?.iconText || 'text-slate-400'} />
           )}
         </div>
 
@@ -459,7 +470,7 @@ const SourceCard = ({
 
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className={`px-2 py-0.5 rounded text-xs bg-${typeConfig?.color || 'slate'}-500/10 text-${typeConfig?.color || 'slate'}-400`}>
+            <span className={`px-2 py-0.5 rounded text-xs ${fedColorClasses[typeConfig?.color || 'slate']?.badge || 'bg-slate-500/10 text-slate-400'}`}>
               {typeConfig?.label || source.type}
             </span>
             <span className={`px-2 py-0.5 rounded text-xs ${tc.bgTertiary} ${tc.textMuted} flex items-center gap-1`}>
@@ -610,10 +621,10 @@ const SyncStatusSection = ({
             <tr key={source.id} className="hover:bg-slate-800/50 transition-colors">
               <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg bg-${SOURCE_TYPE_CONFIG[source.type]?.color || 'slate'}-500/20 flex items-center justify-center`}>
+                  <div className={`w-8 h-8 rounded-lg ${fedColorClasses[SOURCE_TYPE_CONFIG[source.type]?.color || 'slate']?.iconBg || 'bg-slate-500/20'} flex items-center justify-center`}>
                     {(() => {
                       const Icon = SOURCE_TYPE_CONFIG[source.type]?.icon || Building2;
-                      return <Icon size={16} className={`text-${SOURCE_TYPE_CONFIG[source.type]?.color || 'slate'}-400`} />;
+                      return <Icon size={16} className={fedColorClasses[SOURCE_TYPE_CONFIG[source.type]?.color || 'slate']?.iconText || 'text-slate-400'} />;
                     })()}
                   </div>
                   <div>
@@ -701,7 +712,7 @@ const AnalyticsSection = ({
                   </div>
                   <div className={`h-2 ${tc.bgTertiary} rounded-full overflow-hidden`}>
                     <div
-                      className={`h-full bg-${config?.color || 'slate'}-500 rounded-full`}
+                      className={`h-full ${fedColorClasses[config?.color || 'slate']?.barBg || 'bg-slate-500'} rounded-full`}
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

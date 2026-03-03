@@ -394,7 +394,7 @@ const ComplianceReadinessTab: React.FC = () => {
         ].map((item, i) => (
           <div key={i} className="bg-slate-800/50 rounded-xl border border-slate-700 p-4">
             <div className="flex items-center gap-3 mb-2">
-              <item.icon className={`w-5 h-5 text-${item.color}-400`} />
+              <item.icon className={`w-5 h-5 ${item.color === 'blue' ? 'text-blue-400' : item.color === 'emerald' ? 'text-emerald-400' : 'text-slate-400'}`} />
               <span className="text-sm text-gray-400">{item.label}</span>
             </div>
             <div className="text-white font-medium">{item.value}</div>

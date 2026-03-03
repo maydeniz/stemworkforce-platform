@@ -396,7 +396,7 @@ const GraduateSchoolPrepPage: React.FC = () => {
                     to={item.link}
                     className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-emerald-500/50 transition-all group"
                   >
-                    <div className={`p-3 bg-${item.color}-500/20 text-${item.color}-400 rounded-lg inline-block mb-4`}>
+                    <div className={`p-3 rounded-lg inline-block mb-4 ${item.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' : item.color === 'blue' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
                       {item.icon}
                     </div>
                     <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors mb-2">
