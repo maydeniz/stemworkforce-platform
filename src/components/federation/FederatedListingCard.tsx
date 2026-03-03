@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import {
   MapPin, Clock, DollarSign, Briefcase, ExternalLink, Building2,
   Bookmark, BookmarkCheck, Shield, Globe, Calendar, Trophy,
-  GraduationCap, Sparkles, Users, ChevronRight, BadgeCheck
+  GraduationCap, Sparkles, BadgeCheck
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import type { FederatedListing } from '@/types/federation';
@@ -61,10 +61,9 @@ export const FederatedListingCard = ({
   const { isDark } = useTheme();
   const tc = getThemeClasses(isDark);
   const [saved, setSaved] = useState(isSaved);
-  const [isHovered, setIsHovered] = useState(false);
+  const [_isHovered, setIsHovered] = useState(false);
 
   const typeConfig = CONTENT_TYPE_CONFIG[listing.contentType];
-  const TypeIcon = typeConfig.icon;
 
   const handleSaveToggle = async (e: React.MouseEvent) => {
     e.preventDefault();

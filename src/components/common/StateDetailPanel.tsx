@@ -22,7 +22,9 @@ import {
   Clock,
   Award,
   ChevronRight,
+  ExternalLink,
 } from 'lucide-react';
+import { formatSalaryRange, type LiveListing, type PartnerPosting, type DataSource } from '@/services/workforceMapService';
 import { AIMetricsTooltip } from './AIMetricsTooltip';
 import {
   industryAIMetrics,
@@ -63,6 +65,9 @@ interface StateDetailPanelProps {
   onIndustryChange: (industry: string) => void;
   onClose: () => void;
   industryDefinitions: Record<string, { name: string; icon: string; color: string; bgColor: string }>;
+  activeListings?: LiveListing[];
+  partnerPostings?: PartnerPosting[];
+  dataSource?: DataSource;
 }
 
 // Map industry names to AI metrics codes
@@ -92,6 +97,9 @@ export const StateDetailPanel: React.FC<StateDetailPanelProps> = ({
   onIndustryChange,
   onClose,
   industryDefinitions,
+  activeListings = [],
+  partnerPostings = [],
+  dataSource = 'demo',
 }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<'overview' | 'jobs' | 'training' | 'pathways'>('overview');
@@ -166,7 +174,16 @@ export const StateDetailPanel: React.FC<StateDetailPanelProps> = ({
                   {stateCode}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">{stateData.name}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-white">{stateData.name}</h2>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      dataSource === 'live'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'bg-amber-500/20 text-amber-400'
+                    }`}>
+                      {dataSource === 'live' ? 'Live' : 'Demo'}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-green-400 font-medium">{industryData.growth}</span>
                     <span className="text-gray-500">growth</span>
@@ -224,7 +241,7 @@ export const StateDetailPanel: React.FC<StateDetailPanelProps> = ({
           {activeSection === 'overview' && (
             <div className="space-y-6">
               {/* Quick Stats Row */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="bg-gray-900 rounded-xl p-4 text-center border border-gray-800">
                   <div className="text-2xl font-bold text-white">{industryData.totalJobs.toLocaleString()}</div>
                   <div className="text-xs text-gray-400 mt-1">Total Jobs</div>
@@ -237,6 +254,12 @@ export const StateDetailPanel: React.FC<StateDetailPanelProps> = ({
                   <div className="text-2xl font-bold text-purple-400">{industryData.engineers.toLocaleString()}</div>
                   <div className="text-xs text-gray-400 mt-1">Engineers</div>
                 </div>
+                {(activeListings.length > 0 || partnerPostings.length > 0) && (
+                  <div className="bg-gray-900 rounded-xl p-4 text-center border border-green-500/30">
+                    <div className="text-2xl font-bold text-green-400">{activeListings.length + partnerPostings.length}</div>
+                    <div className="text-xs text-gray-400 mt-1">Active Postings</div>
+                  </div>
+                )}
               </div>
 
               {/* AI Metrics Panel */}
@@ -384,8 +407,125 @@ export const StateDetailPanel: React.FC<StateDetailPanelProps> = ({
           {/* JOBS TAB */}
           {activeSection === 'jobs' && (
             <div className="space-y-4">
+              {/* Live Job Listings */}
+              {(activeListings.length > 0 || partnerPostings.length > 0) && (
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      Active Job Openings
+                      <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs font-medium">Live</span>
+                    </h3>
+                    <span className="text-sm text-gray-400">{activeListings.length + partnerPostings.length} openings</span>
+                  </div>
+
+                  {/* Federated listings (USAJobs, etc.) */}
+                  {activeListings.map(listing => (
+                    <div
+                      key={listing.id}
+                      className="bg-gray-900 rounded-xl p-4 border border-green-500/20 hover:border-green-500/40 transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-white">{listing.title}</h4>
+                          <p className="text-sm text-gray-400">{listing.organization}</p>
+                        </div>
+                        {listing.url && (
+                          <a
+                            href={listing.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ExternalLink className="w-4 h-4 text-gray-400" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {listing.city && (
+                          <span className="text-xs text-gray-400 flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> {listing.city}
+                          </span>
+                        )}
+                        <span className="text-xs text-emerald-400 font-medium">
+                          {formatSalaryRange(listing.salaryMin, listing.salaryMax, listing.salaryPeriod)}
+                        </span>
+                        {listing.jobType && (
+                          <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">
+                            {listing.jobType}
+                          </span>
+                        )}
+                      </div>
+                      {listing.skills && listing.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {listing.skills.slice(0, 4).map(skill => (
+                            <span key={skill} className="text-xs px-2 py-0.5 bg-gray-800 text-gray-400 rounded">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Partner postings */}
+                  {partnerPostings.map(posting => (
+                    <div
+                      key={posting.id}
+                      className="bg-gray-900 rounded-xl p-4 border border-blue-500/20 hover:border-blue-500/40 transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="font-medium text-white">{posting.title}</h4>
+                          <p className="text-sm text-gray-400">{posting.company}</p>
+                        </div>
+                        <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">Partner</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {posting.city && (
+                          <span className="text-xs text-gray-400 flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> {posting.city}
+                          </span>
+                        )}
+                        <span className="text-xs text-emerald-400 font-medium">
+                          {formatSalaryRange(posting.salaryMin, posting.salaryMax, posting.salaryType)}
+                        </span>
+                        {posting.experienceLevel && (
+                          <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded">
+                            {posting.experienceLevel}
+                          </span>
+                        )}
+                      </div>
+                      {posting.requiredSkills && posting.requiredSkills.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {posting.requiredSkills.slice(0, 4).map(skill => (
+                            <span key={skill} className="text-xs px-2 py-0.5 bg-gray-800 text-gray-400 rounded">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Divider before static employers */}
+                  <div className="border-t border-gray-800 pt-4 mt-4">
+                    <h3 className="text-sm font-semibold text-gray-400 mb-3">Major Employers in this Sector</h3>
+                  </div>
+                </>
+              )}
+
+              {/* No live listings message */}
+              {activeListings.length === 0 && partnerPostings.length === 0 && (
+                <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-800 text-center mb-4">
+                  <p className="text-gray-400 text-sm">No current openings in this state</p>
+                  <p className="text-gray-500 text-xs mt-1">Major employers in this sector:</p>
+                </div>
+              )}
+
+              {/* Static employer directory */}
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-white">Top Employers Hiring</h3>
+                <h3 className="text-lg font-semibold text-white">Top Employers</h3>
                 <span className="text-sm text-gray-400">{industryData.employers.length} companies</span>
               </div>
 

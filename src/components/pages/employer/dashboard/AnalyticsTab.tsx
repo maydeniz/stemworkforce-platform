@@ -4,8 +4,8 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Clock, Users, DollarSign, Target, BarChart3, Download } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
+import { TrendingUp, TrendingDown, Clock, DollarSign, Target, Download } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 const TIME_TO_FILL = [
   { month: 'Jul', days: 52 }, { month: 'Aug', days: 48 }, { month: 'Sep', days: 45 },

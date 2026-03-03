@@ -15,21 +15,6 @@ import {
 } from '@/types';
 
 // ===========================================
-// CONFIGURATION
-// ===========================================
-
-interface SlackConfig {
-  apiEndpoint: string;
-  botToken?: string;
-  signingSecret?: string;
-  defaultWorkspaceId?: string;
-}
-
-const config: SlackConfig = {
-  apiEndpoint: '/api/slack',
-};
-
-// ===========================================
 // CHANNEL TYPES
 // ===========================================
 
@@ -141,6 +126,7 @@ export async function createChallengeChannel(
     const channel: SlackChannel = {
       id: data.channelId,
       name: channelName,
+      url: data.channelUrl || '',
       isPrivate: channelConfig.isPrivate,
       topic: challenge.shortDescription,
       purpose: channelConfig.description,
@@ -196,6 +182,7 @@ export async function createTeamChannel(
     const channel: SlackChannel = {
       id: data.channelId,
       name: channelName,
+      url: data.channelUrl || '',
       isPrivate: true,
       topic: `Team ${team.name}`,
       purpose: 'Private team collaboration space',
@@ -371,17 +358,7 @@ export async function sendDirectMessage(
 // NOTIFICATION TEMPLATES
 // ===========================================
 
-type NotificationType =
-  | 'challenge_launched'
-  | 'challenge_phase_started'
-  | 'challenge_deadline_reminder'
-  | 'challenge_ended'
-  | 'submission_received'
-  | 'submission_evaluated'
-  | 'team_formed'
-  | 'team_join_request'
-  | 'announcement'
-  | 'winner_announced';
+// NotificationType removed - unused (notification type is inferred from SlackNotification.type)
 
 /**
  * Build Slack blocks for a notification
@@ -406,7 +383,7 @@ function buildNotificationBlocks(notification: SlackNotification): SlackBlock[] 
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: notification.text,
+      text: notification.text || '',
     },
   });
 
@@ -415,8 +392,8 @@ function buildNotificationBlocks(notification: SlackNotification): SlackBlock[] 
     blocks.push({
       type: 'section',
       fields: notification.fields.map(field => ({
-        type: 'mrkdwn',
-        text: `*${field.title}*\n${field.value}`,
+        type: 'mrkdwn' as const,
+        text: `*${field.title || field.label || ''}*\n${field.value}`,
       })),
     });
   }
@@ -429,7 +406,7 @@ function buildNotificationBlocks(notification: SlackNotification): SlackBlock[] 
         type: 'button',
         text: {
           type: 'plain_text',
-          text: action.text,
+          text: action.text ?? action.label ?? '',
           emoji: true,
         },
         url: action.url,
@@ -466,9 +443,9 @@ export async function notifyChallengeLaunched(
     channelId,
     type: 'challenge_launched',
     title: '🚀 New Challenge Launched!',
-    text: `*${challenge.title}*\n\n${challenge.shortDescription}\n\n*Prize Pool:* $${challenge.totalPrizePool.toLocaleString()}\n*Deadline:* ${new Date(challenge.endDate).toLocaleDateString()}`,
+    text: `*${challenge.title}*\n\n${challenge.shortDescription}\n\n*Prize Pool:* $${challenge.totalPrizePool.toLocaleString()}\n*Deadline:* ${new Date(challenge.endDate || challenge.submissionDeadline).toLocaleDateString()}`,
     fields: [
-      { title: 'Industry', value: challenge.industry, short: true },
+      { title: 'Industry', value: challenge.industry || 'Multiple', short: true },
       { title: 'Type', value: challenge.type, short: true },
     ],
     actions: [

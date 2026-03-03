@@ -3,12 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   CheckCircle,
-  Trophy,
-  Clock,
   Edit3,
   Share2,
-  ExternalLink,
-  Calendar,
   AlertCircle,
   Copy
 } from 'lucide-react';

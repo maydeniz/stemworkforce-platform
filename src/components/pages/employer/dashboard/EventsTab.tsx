@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Users, Clock, TrendingUp, Star, Filter, Plus, Globe, Building2, DollarSign, Eye, X, Download } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, TrendingUp, Plus, Globe, Building2, DollarSign, X, Download } from 'lucide-react';
 
 const EVENTS = [
   { id: 1, name: 'MIT Fall STEM Career Fair', date: 'Mar 15, 2025', time: '10:00 AM - 4:00 PM', location: 'Cambridge, MA', type: 'Career Fair', status: 'upcoming', registrations: 450, expectedAttendees: 380, cost: 5000, leadsGenerated: 0, booth: 'Premium (A-12)', description: 'Annual STEM career fair at MIT featuring top employers in AI/ML, quantum computing, and defense tech sectors.' },

@@ -14,7 +14,6 @@ import {
   Globe,
   Mail,
   DollarSign,
-  Users,
   Target,
 } from 'lucide-react';
 

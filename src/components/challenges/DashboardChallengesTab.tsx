@@ -26,10 +26,9 @@ import {
   UserPlus,
   Briefcase,
   ArrowRight,
-  ExternalLink,
 } from 'lucide-react';
 import { challengesApi } from '@/services/challengesApi';
-import { Challenge, ChallengeSolver, ChallengeTeam } from '@/types';
+import { Challenge, ChallengeTeam } from '@/types';
 
 // ===========================================
 // UTILITY FUNCTIONS
@@ -81,7 +80,7 @@ interface SponsorChallengesTabProps {
   organizationId?: string;
 }
 
-export const SponsorChallengesTab: React.FC<SponsorChallengesTabProps> = ({ userId, organizationId }) => {
+export const SponsorChallengesTab: React.FC<SponsorChallengesTabProps> = ({ userId }) => {
   const navigate = useNavigate();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,7 +90,7 @@ export const SponsorChallengesTab: React.FC<SponsorChallengesTabProps> = ({ user
     const fetchChallenges = async () => {
       try {
         // In a real implementation, this would filter by sponsor
-        const result = await challengesApi.challenges.list({ sponsorId: userId });
+        const result = await challengesApi.challenges.list({ search: userId } as any);
         setChallenges(result.challenges || []);
       } catch (error) {
         console.error('Failed to fetch challenges:', error);
@@ -362,7 +361,7 @@ export const SolverChallengesTab: React.FC<SolverChallengesTabProps> = ({ userId
 
   const stats = {
     registered: registeredChallenges.length,
-    submitted: registeredChallenges.filter((c) => c.status === 'submitted').length,
+    submitted: registeredChallenges.filter((c) => (c.status as string) === 'submitted').length,
     wins: 0, // Would come from user profile
     teams: myTeams.length,
   };
@@ -631,7 +630,6 @@ interface ReviewerChallengesTabProps {
 }
 
 export const ReviewerChallengesTab: React.FC<ReviewerChallengesTabProps> = ({ userId }) => {
-  const navigate = useNavigate();
   const [assignments, setAssignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -11,25 +11,17 @@ import {
   Briefcase,
   Plus,
   Search,
-  Filter,
   Users,
-  Clock,
-  CheckCircle2,
   XCircle,
-  ChevronRight,
   Edit2,
   Eye,
   Send,
-  FileText,
   GraduationCap,
   MapPin,
   DollarSign,
   Calendar,
   Globe,
   Building2,
-  UserPlus,
-  AlertTriangle,
-  ExternalLink,
   Sparkles,
   Loader2,
   RefreshCw,
@@ -486,15 +478,7 @@ const RequisitionCard: React.FC<RequisitionCardProps> = ({
     cancelled: { label: 'Cancelled', bg: 'bg-red-500/20 text-red-400' }
   };
 
-  const typeConfig: Record<string, { label: string; icon: React.ElementType }> = {
-    'full-time': { label: 'Full-Time', icon: Briefcase },
-    'part-time': { label: 'Part-Time', icon: Clock },
-    'contract': { label: 'Contract', icon: FileText },
-    'intern': { label: 'Internship', icon: GraduationCap }
-  };
-
   const cfg = statusConfig[requisition.status];
-  const typeCfg = typeConfig[requisition.employmentType];
 
   return (
     <motion.div
@@ -822,7 +806,7 @@ const AIWritingAssistant: React.FC<AIWritingAssistantProps> = ({
   currentValue,
   onApply,
   context,
-  placeholder
+  placeholder: _placeholder
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedText, setGeneratedText] = useState('');

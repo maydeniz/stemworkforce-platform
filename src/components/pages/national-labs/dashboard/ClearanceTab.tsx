@@ -17,7 +17,6 @@ import {
   Loader2,
   FileText,
   X,
-  Mail,
   MapPin,
   Briefcase
 } from 'lucide-react';

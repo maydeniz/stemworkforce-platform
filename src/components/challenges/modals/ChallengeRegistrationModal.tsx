@@ -5,8 +5,6 @@ import {
   CheckCircle,
   Users,
   User,
-  MapPin,
-  Calendar,
   Shield,
   AlertTriangle,
   Loader2,
@@ -65,9 +63,9 @@ export const ChallengeRegistrationModal: React.FC<ChallengeRegistrationModalProp
     {
       id: 'ip',
       label: 'I accept the IP assignment terms',
-      description: challenge.eligibility?.ipAssignment === 'full-transfer'
+      description: challenge.eligibility?.ipAssignment === 'sponsor-owns'
         ? 'Winning solutions will be fully transferred to the sponsor'
-        : challenge.eligibility?.ipAssignment === 'license'
+        : challenge.eligibility?.ipAssignment === 'licensed'
           ? 'You grant the sponsor a license to use your solution'
           : 'You retain ownership of your solution',
       checked: false,
@@ -83,7 +81,7 @@ export const ChallengeRegistrationModal: React.FC<ChallengeRegistrationModalProp
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [participationType, setParticipationType] = useState<'individual' | 'team'>('individual');
-  const [registration, setRegistration] = useState<ChallengeSolver | null>(null);
+  const [_registration, setRegistration] = useState<ChallengeSolver | null>(null);
 
   // Skill suggestions based on challenge
   const suggestedSkills = challenge.skills || [

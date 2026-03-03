@@ -12,13 +12,9 @@ import {
   TrendingDown,
   Minus,
   Users,
-  User,
   Clock,
   Eye,
-  EyeOff,
   RefreshCw,
-  ChevronUp,
-  ChevronDown,
   Star,
   Lock,
 } from 'lucide-react';
@@ -51,7 +47,6 @@ interface ChallengeLeaderboardProps {
 }
 
 export const ChallengeLeaderboard: React.FC<ChallengeLeaderboardProps> = ({
-  challengeId,
   entries,
   currentUserId,
   hasPrivateLeaderboard = false,

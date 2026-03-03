@@ -12,7 +12,6 @@ import {
   Zap,
   Clock,
   ChevronDown,
-  ArrowRight,
   Building,
   CheckCircle,
 } from 'lucide-react';

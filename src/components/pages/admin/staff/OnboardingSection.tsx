@@ -13,18 +13,13 @@ import {
   CheckCircle2,
   Clock,
   Users,
-  Calendar,
   AlertTriangle,
   ChevronRight,
   Upload,
-  Download,
   User,
   Laptop,
   Key,
   BookOpen,
-  Target,
-  GraduationCap,
-  Building2,
   XCircle
 } from 'lucide-react';
 import type { StaffOnboarding, OnboardingStatus, DocumentStatus } from '@/types/staffManagement';

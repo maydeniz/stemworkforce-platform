@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Users, Bell, Shield, Globe, Palette, Link, Save, Plus, X, Trash2 } from 'lucide-react';
+import { Building2, Users, Bell, Link, Save, Plus, Trash2 } from 'lucide-react';
 
 const INITIAL_TEAM = [
   { name: 'Jennifer Walsh', email: 'j.walsh@nexustech.com', role: 'Admin', status: 'active', avatar: 'JW' },

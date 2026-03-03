@@ -78,6 +78,13 @@ export const queryKeys = {
       dashboard: () => [...queryKeys.partners.industry.all, 'dashboard'] as const,
     },
   },
+
+  // Workforce map
+  workforce: {
+    all: ['workforce'] as const,
+    mapSummary: (industry?: string) => [...queryKeys.workforce.all, 'mapSummary', industry] as const,
+    stateDetail: (stateCode: string) => [...queryKeys.workforce.all, 'stateDetail', stateCode] as const,
+  },
 } as const;
 
 /**

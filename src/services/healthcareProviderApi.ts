@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabase';
 import type {
   HealthcareProvider,
   ProviderRegistration,
+  ProviderSpecialty,
+  ProviderVerificationStatus,
   MedicalExcuse,
   MedicalExcuseFormData,
   SportsPhysical,
@@ -136,7 +138,7 @@ const SAMPLE_PROVIDERS: HealthcareProvider[] = [
     stateLicenseState: 'CA',
     stateLicenseExpiration: '2027-03-15',
     providerType: 'nurse-practitioner',
-    specialty: 'school-health',
+    specialty: 'school-health' as ProviderSpecialty,
     verificationStatus: 'fully-verified',
     npiVerifiedAt: '2024-03-01T10:00:00Z',
     licenseVerifiedAt: '2024-03-01T10:00:00Z',
@@ -569,7 +571,7 @@ function mapProvider(row: Record<string, unknown>): HealthcareProvider {
     stateLicenseState: row.state_license_state as string,
     stateLicenseExpiration: row.state_license_expiration as string,
     providerType: row.provider_type as HealthcareProvider['providerType'],
-    specialty: row.specialty as string,
+    specialty: row.specialty as ProviderSpecialty,
     verificationStatus: row.verification_status as HealthcareProvider['verificationStatus'],
     npiVerifiedAt: row.npi_verified_at as string | undefined,
     licenseVerifiedAt: row.license_verified_at as string | undefined,
@@ -1668,7 +1670,7 @@ class HealthcareProviderService {
         schoolId: row.school_id as string,
         schoolName: row.school_name as string,
         subject: row.subject as string,
-        category: row.category as string,
+        category: row.category as MessageThread['category'],
         priority: row.priority as MessageThread['priority'],
         lastMessageAt: row.last_message_at as string,
         unreadCount: (row.unread_count as Record<string, number>) || {},
@@ -1676,7 +1678,7 @@ class HealthcareProviderService {
         status: row.status as MessageThread['status'],
         createdAt: row.created_at as string,
         messages: [],
-      }));
+      })) as unknown as MessageThread[];
     } catch (err) {
       console.error('Error fetching message threads:', err);
       return SAMPLE_MESSAGE_THREADS.filter((t) =>
@@ -1893,7 +1895,7 @@ class HealthcareProviderService {
         activeThreads: 0,
         schoolsServed: (provider?.schools_served as string[])?.length || 0,
         districtsConnected: (provider?.districts_served as string[])?.length || 0,
-        verificationStatus: (provider?.verification_status as string) || 'pending',
+        verificationStatus: ((provider?.verification_status as string) || 'pending') as ProviderVerificationStatus,
         licenseExpirationDate: licenseExpDate,
         daysUntilLicenseExpiration: daysUntilExpiry,
       };
@@ -1950,14 +1952,14 @@ class HealthcareProviderService {
         return data.map((row: Record<string, unknown>) => ({
           id: row.id as string,
           providerId: row.provider_id as string,
-          action: row.action as string,
-          resourceType: row.resource_type as string,
+          action: row.action as ProviderActivityLog['action'],
+          resourceType: row.resource_type as ProviderActivityLog['resourceType'],
           resourceId: row.resource_id as string,
           description: row.description as string,
           studentId: row.student_id as string | undefined,
           schoolId: row.school_id as string | undefined,
           timestamp: row.timestamp as string,
-        }));
+        })) as ProviderActivityLog[];
       }
 
       // Fallback sample data
@@ -1977,7 +1979,7 @@ class HealthcareProviderService {
           id: 'log-002',
           providerId,
           action: 'physical_submitted',
-          resourceType: 'sports_physical',
+          resourceType: 'physical',
           resourceId: 'physical-001',
           description: 'Submitted sports physical for Alex Thompson',
           studentId: 'student-003',

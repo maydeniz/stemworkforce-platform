@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, Users, TrendingUp, Award, MapPin, Calendar, Star, ArrowUpRight, ExternalLink, Eye, Plus, X } from 'lucide-react';
+import { GraduationCap, Users, TrendingUp, Award, MapPin, Calendar, Star, Plus, X } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const UNIVERSITY_PARTNERS = [

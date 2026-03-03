@@ -12,6 +12,7 @@ import type {
   ResearchApplicationStatus,
   ResearchApplicationFormData,
   ResearchApplicationFilters,
+  ResearchFocus,
   SchoolResearchRequest,
   SchoolResearchFilters,
   DataSharingRequest,
@@ -87,7 +88,7 @@ const SAMPLE_RESEARCHERS: Researcher[] = [
     department: 'Department of Education',
     facultyPage: 'https://ucla.edu/~apatel',
     orcidId: '0000-0003-5678-9012',
-    researchAreas: ['special-education', 'inclusion', 'behavioral-interventions'],
+    researchAreas: ['special-education', 'equity-access', 'social-emotional'],
     verificationStatus: 'verified',
     citiTrainingCompleted: true,
     citiTrainingDate: '2024-06-10',
@@ -446,7 +447,7 @@ function mapResearcher(row: Record<string, unknown>): Researcher {
     department: row.department as string,
     facultyPage: row.faculty_page as string | undefined,
     orcidId: row.orcid_id as string | undefined,
-    researchAreas: (row.research_areas as string[]) || [],
+    researchAreas: ((row.research_areas as string[]) || []) as ResearchFocus[],
     verificationStatus: row.verification_status as Researcher['verificationStatus'],
     citiTrainingCompleted: row.citi_training_completed as boolean,
     citiTrainingDate: row.citi_training_date as string | undefined,
@@ -489,7 +490,7 @@ function mapApplication(row: Record<string, unknown>): ResearchApplication {
     shortDescription: row.short_description as string,
     fullDescription: row.full_description as string,
     researchType: row.research_type as ResearchApplication['researchType'],
-    researchFocus: (row.research_focus as string[]) || [],
+    researchFocus: ((row.research_focus as string[]) || []) as ResearchFocus[],
     keywords: (row.keywords as string[]) || [],
     researchQuestions: (row.research_questions as string[]) || [],
     objectives: (row.objectives as string[]) || [],
@@ -520,7 +521,7 @@ function mapApplication(row: Record<string, unknown>): ResearchApplication {
     targetSchools: (row.target_schools as string[]) || [],
     status: row.status as ResearchApplication['status'],
     submittedAt: row.submitted_at as string | undefined,
-    currentReviewStage: row.current_review_stage as string | undefined,
+    currentReviewStage: row.current_review_stage as ReviewStage | undefined,
     reviewHistory: (row.review_history as ResearchApplication['reviewHistory']) || [],
     approvalConditions: (row.approval_conditions as string[]) || [],
     approvedAt: row.approved_at as string | undefined,
@@ -528,7 +529,7 @@ function mapApplication(row: Record<string, unknown>): ResearchApplication {
     expirationDate: row.expiration_date as string | undefined,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
-    lastActivityAt: row.last_activity_at as string | undefined,
+    lastActivityAt: (row.last_activity_at as string | undefined) ?? '',
   };
 }
 
@@ -1178,9 +1179,6 @@ class ResearchPortalService {
       if (filters?.schoolId) {
         query = query.eq('school_id', filters.schoolId);
       }
-      if (filters?.districtId) {
-        query = query.eq('district_id', filters.districtId);
-      }
       if (filters?.status?.length) {
         query = query.in('status', filters.status);
       }
@@ -1425,7 +1423,7 @@ class ResearchPortalService {
         destructionVerified: row.destruction_verified as boolean,
         createdAt: row.created_at as string,
         updatedAt: row.updated_at as string,
-      })) as DataSharingRequest[];
+      })) as unknown as DataSharingRequest[];
     } catch (err) {
       console.error('Error fetching data sharing requests:', err);
       return [];

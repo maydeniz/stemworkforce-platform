@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom';
 import {
   Briefcase,
   MapPin,
-  Clock,
   DollarSign,
   Building2,
   Search,
-  Filter,
   ChevronRight,
   X,
   Users,
@@ -17,7 +15,6 @@ import {
   Heart,
   GraduationCap,
   Laptop,
-  Calendar,
   ArrowRight,
   CheckCircle,
   Star

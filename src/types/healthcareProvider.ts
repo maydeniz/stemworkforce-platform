@@ -3,8 +3,6 @@
 // Enables healthcare providers to communicate with schools
 // ===========================================
 
-import type { IndustryType } from './index';
-
 // Provider Types
 export type ProviderType =
   | 'physician'

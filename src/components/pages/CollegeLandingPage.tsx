@@ -16,20 +16,14 @@ import {
   Users,
   DollarSign,
   Target,
-  CheckCircle2,
   ArrowRight,
   Star,
   FileText,
   MessageSquare,
   Code,
   Award,
-  Search,
-  BookOpen,
   Shield,
   Sparkles,
-  Network,
-  Calendar,
-  Lightbulb,
 } from 'lucide-react';
 
 // ===========================================

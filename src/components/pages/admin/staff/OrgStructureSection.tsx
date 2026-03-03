@@ -9,18 +9,15 @@ import {
   ChevronRight,
   Plus,
   Edit2,
-  Trash2,
   AlertTriangle,
   Star,
   Clock,
   Target,
-  User,
   X,
   Search
 } from 'lucide-react';
 import type {
   Department,
-  StaffPosition,
   OrgChartNode,
   SuccessionPlan
 } from '../../../../types/staffManagement';
@@ -283,7 +280,7 @@ type OrgTab = 'departments' | 'org_chart' | 'succession';
 const OrgStructureSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<OrgTab>('departments');
   const [expandedDepts, setExpandedDepts] = useState<Set<string>>(new Set(['dept-1', 'dept-2']));
-  const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+  const [, setSelectedDepartment] = useState<Department | null>(null);
   const [selectedSuccessionPlan, setSelectedSuccessionPlan] = useState<SuccessionPlan | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddDeptModal, setShowAddDeptModal] = useState(false);
@@ -366,7 +363,7 @@ const OrgStructureSection: React.FC = () => {
   const highRiskRoles = sampleSuccessionPlans.filter(sp => sp.riskOfLoss === 'high').length;
 
   // Recursive org chart node renderer
-  const renderOrgNode = (node: OrgChartNode, isLast: boolean = false) => {
+  const renderOrgNode = (node: OrgChartNode, _isLast: boolean = false) => {
     return (
       <div key={node.id} className="relative">
         <div className="flex items-start">

@@ -9,6 +9,7 @@ import {
   getExposureColor,
   getOpportunityColor,
 } from '@/data/aiMetrics';
+import { WorkforceMapContent } from './WorkforceMapPage';
 
 // Job data type
 interface JobData {
@@ -53,6 +54,24 @@ const jobIndustryToMetricsCode: Record<string, string> = {
 const getJobAIMetrics = (industry: string) => {
   const code = jobIndustryToMetricsCode[industry] || 'manufacturing';
   return industryAIMetrics[code] || industryAIMetrics['manufacturing'];
+};
+
+// Map federated listing industries to local industry codes
+const mapFederatedIndustry = (industries: string[] | null): string => {
+  if (!industries || industries.length === 0) return 'ai';
+  const first = industries[0].toLowerCase();
+  if (first.includes('nuclear') || first.includes('energy')) return 'nuclear';
+  if (first.includes('semiconductor') || first.includes('chip')) return 'semiconductor';
+  if (first.includes('quantum')) return 'quantum';
+  if (first.includes('cyber') || first.includes('security')) return 'cybersecurity';
+  if (first.includes('aerospace') || first.includes('defense')) return 'aerospace';
+  if (first.includes('bio')) return 'biotech';
+  if (first.includes('health') || first.includes('medical')) return 'healthcare';
+  if (first.includes('robot') || first.includes('automat')) return 'robotics';
+  if (first.includes('clean') || first.includes('renewable')) return 'clean_energy';
+  if (first.includes('manufactur')) return 'manufacturing';
+  if (first.includes('ai') || first.includes('artificial') || first.includes('software') || first.includes('data')) return 'ai';
+  return 'ai';
 };
 
 // Industry sectors with icons
@@ -385,7 +404,7 @@ const JobsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [opportunityType, setOpportunityType] = useState<'job' | 'internship'>('job');
+  const [opportunityType, setOpportunityType] = useState<'job' | 'internship' | 'map'>('job');
   const [selectedIndustry, setSelectedIndustry] = useState('all');
   const [selectedOrgTypes, setSelectedOrgTypes] = useState<string[]>(['all']);
   const [workType, setWorkType] = useState('all');
@@ -400,6 +419,7 @@ const JobsPage: React.FC = () => {
 
   // Database jobs state
   const [databaseJobs, setDatabaseJobs] = useState<JobData[]>([]);
+  const [federatedJobs, setFederatedJobs] = useState<JobData[]>([]);
   const [, setLoadingDbJobs] = useState(true);
 
   // Fetch jobs from database
@@ -467,6 +487,68 @@ const JobsPage: React.FC = () => {
     fetchDatabaseJobs();
   }, []);
 
+  // Fetch federated jobs (USAJobs, etc.)
+  useEffect(() => {
+    const fetchFederatedJobs = async () => {
+      try {
+        const { data: listings, error } = await supabase
+          .from('federated_listings')
+          .select(`
+            id, title, description, short_description, source_url,
+            organization_name, location, city, state, is_remote,
+            industries, skills, tags, clearance_required,
+            content_type, job_type, salary_min, salary_max, salary_period,
+            posted_at, expires_at, source_name
+          `)
+          .eq('status', 'active')
+          .in('content_type', ['job', 'internship'])
+          .order('posted_at', { ascending: false })
+          .limit(200);
+
+        if (error) {
+          console.error('Error fetching federated jobs:', error);
+          return;
+        }
+
+        const transformed: JobData[] = (listings || []).map(listing => ({
+          id: `fed-${listing.id}`,
+          title: listing.title,
+          company: listing.organization_name || listing.source_name || 'Federal Agency',
+          logo: '🏛️',
+          location: listing.location || [listing.city, listing.state].filter(Boolean).join(', ') || 'Multiple Locations',
+          salary: listing.salary_min && listing.salary_max
+            ? (listing.salary_period === 'hourly'
+              ? `$${listing.salary_min} - $${listing.salary_max}/hr`
+              : `$${(listing.salary_min/1000).toFixed(0)}K - $${(listing.salary_max/1000).toFixed(0)}K`)
+            : 'See Posting',
+          type: listing.content_type === 'internship' ? 'internship' : 'job',
+          workType: listing.is_remote ? 'remote' : 'onsite',
+          clearance: listing.clearance_required || 'none',
+          citizenship: 'us',
+          experience: 'mid',
+          industry: mapFederatedIndustry(listing.industries),
+          orgType: 'federal',
+          skills: listing.skills || [],
+          description: listing.short_description || listing.description || '',
+          posted: listing.posted_at
+            ? new Date(listing.posted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            : 'Recent',
+          applicants: 0,
+          featured: false,
+          source: listing.source_url || 'usajobs',
+          duration: listing.content_type === 'internship' ? 'varies' : undefined,
+        }));
+
+        console.log('Fetched federated jobs:', transformed.length);
+        setFederatedJobs(transformed);
+      } catch (err) {
+        console.error('Error in fetchFederatedJobs:', err);
+      }
+    };
+
+    fetchFederatedJobs();
+  }, []);
+
   useEffect(() => {
     const industry = searchParams.get('industry');
     const search = searchParams.get('search');
@@ -487,10 +569,10 @@ const JobsPage: React.FC = () => {
     }
   };
 
-  // Combine mock data with database jobs
+  // Combine static data + database jobs + federated jobs (USAJobs etc.)
   const allOpportunities = useMemo(() => {
-    return [...realJobsData, ...databaseJobs];
-  }, [databaseJobs]);
+    return [...realJobsData, ...databaseJobs, ...federatedJobs];
+  }, [databaseJobs, federatedJobs]);
 
   const filteredOpportunities = useMemo(() => {
     return allOpportunities.filter(opp => {
@@ -532,7 +614,7 @@ const JobsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-950 pt-20">
       <div className="bg-gradient-to-b from-gray-900 to-transparent px-6 py-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold text-white mb-2">Jobs & <span className="text-yellow-500">Internships</span></h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Jobs, Internships & <span className="text-yellow-500">Workforce Map</span></h1>
           <p className="text-gray-400">Real opportunities from top employers in emerging technology sectors</p>
           <p className="text-xs text-gray-500 mt-2">📊 Data sourced from: TSMC, Intel, Samsung, IBM Quantum, Google DeepMind, OpenAI, Anthropic, SpaceX, Lockheed Martin, ORNL, INL, Northrop Grumman, CrowdStrike, and more</p>
         </div>
@@ -542,15 +624,22 @@ const JobsPage: React.FC = () => {
         {/* Primary Toggle */}
         <div className="flex justify-center mb-8">
           <div className="bg-gray-800 rounded-full p-1 inline-flex">
-            <button onClick={() => setOpportunityType('job')} className={`px-8 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'job' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+            <button onClick={() => setOpportunityType('job')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'job' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
               💼 Job Opportunities <span className={`px-2 py-0.5 rounded-full text-xs ${opportunityType === 'job' ? 'bg-gray-900/20' : 'bg-gray-700'}`}>{jobCount}</span>
             </button>
-            <button onClick={() => setOpportunityType('internship')} className={`px-8 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'internship' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+            <button onClick={() => setOpportunityType('internship')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'internship' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
               🎓 Internship Opportunities <span className={`px-2 py-0.5 rounded-full text-xs ${opportunityType === 'internship' ? 'bg-gray-900/20' : 'bg-gray-700'}`}>{internshipCount}</span>
+            </button>
+            <button onClick={() => setOpportunityType('map')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'map' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+              🗺️ Workforce Map
             </button>
           </div>
         </div>
 
+        {opportunityType === 'map' ? (
+          <WorkforceMapContent />
+        ) : (
+        <>
         {/* Industry Sector Pills */}
         <div className="mb-6">
           <h3 className="text-sm font-semibold text-gray-400 mb-3">SELECT INDUSTRY SECTOR</h3>
@@ -708,6 +797,8 @@ const JobsPage: React.FC = () => {
             <p className="text-gray-400 mb-6">Try adjusting your filters or search terms</p>
             <button onClick={() => { setSelectedIndustry('all'); setSelectedOrgTypes(['all']); setWorkType('all'); setClearance('all'); setCitizenship('all'); setExperienceLevel('all'); setSearchQuery(''); }} className="px-6 py-3 bg-yellow-500 text-gray-900 rounded-lg font-bold">Clear All Filters</button>
           </div>
+        )}
+        </>
         )}
       </div>
 

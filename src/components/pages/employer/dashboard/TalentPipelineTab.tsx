@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Users, Star, Shield, Mail, Calendar, MapPin, GraduationCap, Briefcase, ChevronRight, Eye, ChevronDown, X, Phone, FileText } from 'lucide-react';
+import { Search, Filter, Shield, Mail, Calendar, MapPin, GraduationCap, Briefcase, ChevronRight, Eye, ChevronDown, X, Phone } from 'lucide-react';
 
 const PIPELINE_STAGES = [
   { key: 'new', label: 'New', count: 456, color: 'bg-gray-500' },

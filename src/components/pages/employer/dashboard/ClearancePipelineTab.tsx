@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Users, Clock, CheckCircle, AlertTriangle, FileText, ChevronRight, X, Download, Mail } from 'lucide-react';
+import { Shield, Clock, CheckCircle, FileText, ChevronRight, X, Download, Mail } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const CLEARANCE_LEVELS = [

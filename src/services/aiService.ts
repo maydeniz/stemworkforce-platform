@@ -244,6 +244,7 @@ async function callAI(
       provider,
       model: config.model || '',
       tokensUsed: data.tokensUsed || 0,
+      cached: false,
       generatedAt: new Date().toISOString(),
     };
 
@@ -263,6 +264,7 @@ async function callAI(
       provider,
       model: config.model || '',
       tokensUsed: 0,
+      cached: false,
       generatedAt: new Date().toISOString(),
       error: error instanceof Error ? error.message : 'Unknown error',
     };
@@ -413,7 +415,7 @@ export async function generateSolverFeedback(
   provider?: AIProvider
 ): Promise<{ success: boolean; feedback?: string; error?: string }> {
   const criteriaScores = evaluation.criteriaScores.map(s => ({
-    criterion: s.criterionId,
+    criterion: s.criterionId ?? '',
     score: s.score,
     maxScore: 100,
   }));
@@ -661,7 +663,6 @@ function parseEvaluationResponse(
     recommendation,
     summary: sections['Overall Assessment'] || 'Evaluation complete.',
     evaluatedAt: new Date().toISOString(),
-    evaluatedBy: 'ai',
   };
 }
 

@@ -4,7 +4,6 @@
 // ===========================================
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -14,14 +13,11 @@ import {
   Users,
   Clock,
   MapPin,
-  Briefcase,
-  ExternalLink,
   Github,
   Linkedin,
   Globe,
   Award,
   TrendingUp,
-  Zap,
 } from 'lucide-react';
 
 interface SolverStats {

@@ -6,13 +6,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, Filter, X, ChevronDown, MapPin, Building2, Briefcase,
-  GraduationCap, Trophy, Calendar, Sparkles, Globe, Shield, Zap,
-  SlidersHorizontal, Grid3X3, List, RefreshCw, ExternalLink
+  Search, X, Briefcase,
+  GraduationCap, Trophy, Calendar, Sparkles, Zap,
+  SlidersHorizontal, Grid3X3, List, RefreshCw
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FederatedListingCard } from './FederatedListingCard';
-import { federationApi, FederatedListingFilters, FederatedListingsResult } from '@/services/federationApi';
+import { federationApi, FederatedListingFilters } from '@/services/federationApi';
 import type { FederatedListing, FederatedSourceType } from '@/types/federation';
 import type { IndustryType } from '@/types';
 

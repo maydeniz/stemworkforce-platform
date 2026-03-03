@@ -75,9 +75,6 @@ import {
   Tooltip,
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
 import { supabase } from '@/lib/supabase';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
@@ -148,15 +145,6 @@ const JOB_MATCHES = [
   { title: 'ML Engineer Intern', company: 'Google DeepMind', location: 'Mountain View, CA', match: 96, salary: '$9,500/mo', logo: 'G' },
   { title: 'AI Research Intern', company: 'OpenAI', location: 'San Francisco, CA', match: 93, salary: '$10,000/mo', logo: 'O' },
   { title: 'Software Engineer Intern', company: 'Meta', location: 'Menlo Park, CA', match: 91, salary: '$9,200/mo', logo: 'M' },
-];
-
-const SKILL_GAP_DATA = [
-  { skill: 'Python', current: 92, required: 90 },
-  { skill: 'ML/AI', current: 78, required: 85 },
-  { skill: 'System Design', current: 65, required: 80 },
-  { skill: 'Cloud (AWS)', current: 55, required: 75 },
-  { skill: 'Databases', current: 72, required: 70 },
-  { skill: 'Communication', current: 75, required: 80 },
 ];
 
 // Career Launch Tab Data
@@ -665,7 +653,7 @@ const OverviewTab: React.FC<{ onTabChange: (tab: TabKey) => void; navigate: Navi
 
 const CareerLaunchTab: React.FC<{ navigate: NavigateFunction }> = ({ navigate }) => {
   const [showExportModal, setShowExportModal] = useState(false);
-  const [showOfferDetail, setShowOfferDetail] = useState<typeof OFFER_COMPARISONS[0] | null>(null);
+  const [_showOfferDetail, _setShowOfferDetail] = useState<typeof OFFER_COMPARISONS[0] | null>(null);
 
   return (
     <div className="space-y-6">

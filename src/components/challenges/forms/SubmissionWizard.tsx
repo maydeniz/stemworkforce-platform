@@ -9,7 +9,6 @@ import {
   X,
   Image as ImageIcon,
   Video,
-  Link as LinkIcon,
   Github,
   Globe,
   FileText,
@@ -19,7 +18,6 @@ import {
   Loader2,
   Trash2,
   Plus,
-  Eye
 } from 'lucide-react';
 import type { Challenge, ChallengeSubmission, ChallengeTeam } from '@/types';
 import { challengesApi } from '@/services/challengesApi';
@@ -111,8 +109,8 @@ export const SubmissionWizard: React.FC<SubmissionWizardProps> = ({
     thumbnailPreview: null,
     teamConfirmed: false,
     contributions: team?.members?.map(m => ({
-      userId: m.id,
-      name: m.userId || 'Team Member',
+      userId: m.userId,
+      name: m.user?.firstName || m.userId || 'Team Member',
       contribution: ''
     })) || [],
     description: existingDraft?.description || '',

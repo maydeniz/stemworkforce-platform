@@ -17,9 +17,7 @@ import {
   Loader2,
   TrendingUp,
   X,
-  Phone,
   MapPin,
-  DollarSign
 } from 'lucide-react';
 import { getEmployerConnections } from '@/services/nonprofitPartnerApi';
 import type { EmployerConnection, EmployerRelationshipStatus, PartnerTier } from '@/types/nonprofitPartner';

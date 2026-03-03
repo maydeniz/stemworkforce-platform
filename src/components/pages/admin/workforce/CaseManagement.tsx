@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   FileText,
   Search,
-  Filter,
   Plus,
   Calendar,
   User,
@@ -12,7 +11,6 @@ import {
   MessageSquare,
   Target,
   Briefcase,
-  DollarSign,
   ChevronRight,
   Edit,
   Phone,

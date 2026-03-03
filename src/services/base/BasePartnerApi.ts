@@ -310,7 +310,7 @@ export abstract class BasePartnerApi<
   /**
    * Get partner statistics (override for partner-specific stats)
    */
-  async getStats(partnerId: string): Promise<ApiResponse<Record<string, number>>> {
+  async getStats(_partnerId: string): Promise<ApiResponse<Record<string, number>>> {
     // Default implementation - override in subclasses for specific stats
     return {
       data: { total: 0 },

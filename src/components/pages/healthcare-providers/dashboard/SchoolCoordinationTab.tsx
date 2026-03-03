@@ -947,7 +947,7 @@ const SchoolDetailModal: React.FC<SchoolDetailModalProps> = ({ channel, onClose 
           <div className="p-4 bg-gray-800/50 rounded-lg">
             <p className="text-sm text-gray-400 mb-2">Authorized School Users</p>
             <div className="flex flex-wrap gap-2">
-              {channel.schoolAuthorizedUsers.map((userId, index) => (
+              {channel.schoolAuthorizedUsers.map((_userId, index) => (
                 <span key={index} className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm">
                   User {index + 1}
                 </span>

@@ -3,27 +3,19 @@ import {
   Building2,
   Users,
   Clock,
-  Calendar,
   MapPin,
   Phone,
   Mail,
   Globe,
   BarChart3,
   TrendingUp,
-  TrendingDown,
-  CheckCircle,
-  AlertTriangle,
   Settings,
   Plus,
   Search,
-  Filter,
   Eye,
   Edit,
-  ChevronDown,
-  ChevronUp,
   UserCheck,
   Briefcase,
-  GraduationCap,
   FileText,
   Activity,
   Wifi,
@@ -71,13 +63,6 @@ interface AJCCenter {
     satisfaction_rating: number;
     wait_time_avg: number;
   };
-}
-
-interface DailyTrafficEntry {
-  time: string;
-  visitors: number;
-  registrations: number;
-  services: number;
 }
 
 // Sample AJC data
@@ -331,7 +316,7 @@ export const AJCOperations: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [selectedCenter, setSelectedCenter] = useState<AJCCenter | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showFilters, setShowFilters] = useState(false);
+  const [_showFilters, _setShowFilters] = useState(false);
 
   // Filter centers
   const filteredCenters = centers.filter((c) => {
@@ -749,7 +734,7 @@ export const AJCOperations: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedCenter.daily_traffic.map((day, idx) => (
+                      {selectedCenter.daily_traffic.map((day) => (
                         <tr key={day.date} className="border-b border-slate-800">
                           <td className="py-2 text-slate-300">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</td>
                           <td className="py-2 text-center text-emerald-400 font-medium">{day.visitors}</td>

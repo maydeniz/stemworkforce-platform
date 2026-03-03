@@ -2,10 +2,7 @@ import { Link } from 'react-router-dom';
 import {
   Shield,
   Clock,
-  CheckCircle,
   AlertTriangle,
-  ArrowRight,
-  Users,
   DollarSign,
   Briefcase,
   FileText,

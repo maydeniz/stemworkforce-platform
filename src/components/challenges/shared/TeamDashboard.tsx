@@ -3,11 +3,10 @@
 // Team collaboration hub for challenge participants
 // ===========================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users,
-  MessageSquare,
   FileText,
   Link as LinkIcon,
   Settings,
@@ -15,13 +14,9 @@ import {
   UserMinus,
   UserPlus,
   Mail,
-  ExternalLink,
-  CheckCircle,
-  Clock,
   AlertCircle,
   Copy,
   Check,
-  Bell,
   Shield,
 } from 'lucide-react';
 import { ChallengeTeam, Challenge } from '@/types';
@@ -68,9 +63,18 @@ export const TeamDashboard: React.FC<TeamDashboardProps> = ({
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const isTeamLead = team.leaderId === currentUserId;
-  const inviteLink = `${window.location.origin}/teams/join/${team.inviteCode}`;
+  const inviteLink = `${window.location.origin}/teams/join/${(team as any).inviteCode || team.id}`;
 
-  const members: TeamMember[] = team.members || [];
+  const members: TeamMember[] = (team.members || []).map(m => ({
+    id: m.userId,
+    name: m.user ? `${m.user.firstName} ${m.user.lastName}` : m.userId,
+    email: '',
+    avatarUrl: m.user?.avatar,
+    role: m.role === 'leader' ? 'lead' : 'member',
+    skills: m.skills || [],
+    joinedAt: m.joinedAt,
+    isOnline: false,
+  }));
 
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;

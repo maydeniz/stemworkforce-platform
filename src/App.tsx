@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, NotificationProvider, BillingProvider, ThemeProvider, FeatureProvider } from '@/contexts';
 import { Layout, MinimalLayout, LayoutLight } from '@/components/layout';
 import { PageLoader, ErrorBoundary } from '@/components/common';
+import { QueryProvider } from '@/lib/queryClient';
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase';
 
@@ -184,6 +185,30 @@ const LoanStrategyPage = lazy(() => import('@/components/pages/college/LoanStrat
 const GradFundingPage = lazy(() => import('@/components/pages/college/GradFundingPage'));
 const RelocationCalculatorPage = lazy(() => import('@/components/pages/college/RelocationCalculatorPage'));
 const BudgetPlannerPage = lazy(() => import('@/components/pages/college/BudgetPlannerPage'));
+
+// Resource & Info pages - lazy loaded
+const ResourcesPage = lazy(() => import('@/components/pages/ResourcesPage'));
+const DocsPage = lazy(() => import('@/components/pages/DocsPage'));
+const BlogPage = lazy(() => import('@/components/pages/BlogPage'));
+const GuidesPage = lazy(() => import('@/components/pages/GuidesPage'));
+const HelpCenterPage = lazy(() => import('@/components/pages/HelpCenterPage'));
+const AboutPage = lazy(() => import('@/components/pages/AboutPage'));
+const PressPage = lazy(() => import('@/components/pages/PressPage'));
+const CareersPage = lazy(() => import('@/components/pages/CareersPage'));
+const SalaryInsightsPage = lazy(() => import('@/components/pages/SalaryInsightsPage'));
+const SecurityCompliancePage = lazy(() => import('@/components/pages/SecurityCompliancePage'));
+const AccessibilityPage = lazy(() => import('@/components/pages/AccessibilityPage'));
+const PrivacyPolicyPage = lazy(() => import('@/components/pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('@/components/pages/TermsOfServicePage'));
+const CookiePolicyPage = lazy(() => import('@/components/pages/CookiePolicyPage'));
+const WorkforceAnalyticsPage = lazy(() => import('@/components/pages/WorkforceAnalyticsPage'));
+const ProjectsPage = lazy(() => import('@/components/pages/ProjectsPage'));
+const TalentSearchPage = lazy(() => import('@/components/pages/TalentSearchPage'));
+const ForTalentPage = lazy(() => import('@/components/pages/ForTalentPage'));
+const HighSchoolLandingPage = lazy(() => import('@/components/pages/HighSchoolLandingPage'));
+const CollegeLandingPage = lazy(() => import('@/components/pages/CollegeLandingPage'));
+const ClearanceGuideLandingPage = lazy(() => import('@/components/pages/ClearanceGuideLandingPage'));
+const MentorshipLandingPage = lazy(() => import('@/components/pages/MentorshipPage'));
 
 // Challenges pages - lazy loaded
 const ChallengesPage = lazy(() => import('@/components/pages/challenges/ChallengesPage'));
@@ -1135,6 +1160,184 @@ const AppRoutes: React.FC = () => {
           }
         />
 
+        {/* Resource & Info Pages */}
+        <Route
+          path="/resources"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ResourcesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/docs"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <DocsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/blog"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BlogPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/guides"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <GuidesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <HelpCenterPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AboutPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/press"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PressPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/careers"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CareersPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/salary-insights"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SalaryInsightsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/security-compliance"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <SecurityCompliancePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/accessibility"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AccessibilityPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <PrivacyPolicyPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TermsOfServicePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/cookie-policy"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CookiePolicyPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/workforce-analytics"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <WorkforceAnalyticsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ProjectsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/talent-search"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TalentSearchPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/for-talent"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ForTalentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/high-school"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <HighSchoolLandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/college"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CollegeLandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/clearance-guide"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ClearanceGuideLandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/mentorship"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <MentorshipLandingPage />
+            </Suspense>
+          }
+        />
+
         {/* Federation Pages - Aggregated Listings */}
         <Route
           path="/explore"
@@ -1283,19 +1486,21 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <AuthProvider>
-            <FeatureProvider>
-              <BillingProvider>
-                <NotificationProvider>
-                  <AppRoutes />
-                </NotificationProvider>
-              </BillingProvider>
-            </FeatureProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </ThemeProvider>
+      <QueryProvider>
+        <ThemeProvider>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AuthProvider>
+              <FeatureProvider>
+                <BillingProvider>
+                  <NotificationProvider>
+                    <AppRoutes />
+                  </NotificationProvider>
+                </BillingProvider>
+              </FeatureProvider>
+            </AuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </QueryProvider>
     </ErrorBoundary>
   );
 };

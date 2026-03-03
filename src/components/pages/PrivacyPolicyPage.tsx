@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Shield, Eye, Database, Lock, Globe, Users, Bell, Mail, Trash2, FileText, Scale, Building, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Shield, Eye, Database, Lock, Globe, Users, Bell, Mail, Trash2, FileText, Scale, Building, CheckCircle, XCircle } from 'lucide-react';
 
 const SECTIONS = [
   {

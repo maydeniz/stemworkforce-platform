@@ -11,7 +11,6 @@ import {
   Sparkles,
   Send,
   Plus,
-  ExternalLink,
   Brain,
   Code,
   Database,
@@ -19,7 +18,7 @@ import {
   Server,
   Shield
 } from 'lucide-react';
-import type { Challenge, ChallengeTeam, ChallengeSolver } from '@/types';
+import type { Challenge, ChallengeTeam } from '@/types';
 import { challengesApi } from '@/services/challengesApi';
 import { useAuth } from '@/contexts';
 
@@ -60,7 +59,7 @@ export const TeamFormationModal: React.FC<TeamFormationModalProps> = ({
   onClose,
   onSuccess
 }) => {
-  const { user } = useAuth();
+  useAuth();
   const [mode, setMode] = useState(initialMode);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +77,6 @@ export const TeamFormationModal: React.FC<TeamFormationModalProps> = ({
   const [joinMessage, setJoinMessage] = useState('');
 
   // Find Teammates State
-  const [solvers, setSolvers] = useState<ChallengeSolver[]>([]);
   const [skillFilter, setSkillFilter] = useState<string[]>([]);
 
   // Success State

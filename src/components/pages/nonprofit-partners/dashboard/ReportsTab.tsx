@@ -106,7 +106,7 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId, tier }) => {
   const [reports, setReports] = useState<GrantReport[]>([]);
   const [grants, setGrants] = useState<Grant[]>([]);
   const [loading, setLoading] = useState(true);
-  const [_selectedReport, setSelectedReport] = useState<GrantReport | null>(null);
+  const [_selectedReport, _setSelectedReport] = useState<GrantReport | null>(null);
   const [showNewReportModal, setShowNewReportModal] = useState(false);
   const [showReportDetailModal, setShowReportDetailModal] = useState<GrantReport | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);

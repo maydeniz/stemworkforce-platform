@@ -8,7 +8,6 @@ import type {
   Challenge,
   ChallengeSponsor,
   ChallengePhase,
-  ChallengeAward,
   ChallengeResource,
   ChallengeSolver,
   ChallengeTeam,
@@ -16,7 +15,6 @@ import type {
   ChallengeSubmission,
   ChallengeJudge,
   ChallengeComment,
-  ChallengeAnnouncement,
   ChallengeFilters,
   ChallengesQueryResult,
   ChallengeFormData,
@@ -124,18 +122,7 @@ interface DBChallengeResource {
   restricted: boolean;
 }
 
-interface DBChallengeSolver {
-  id: string;
-  challenge_id: string;
-  user_id: string;
-  type: string;
-  team_id: string | null;
-  registered_at: string;
-  eligibility_verified: boolean;
-  agreed_to_terms: boolean;
-  status: string;
-  skills: string[] | null;
-}
+// DBChallengeSolver removed - unused
 
 interface DBChallengeTeam {
   id: string;
@@ -1140,7 +1127,7 @@ export const challengesService = {
 
       return (data || [])
         .filter(d => d.challenge)
-        .map(d => transformChallenge(d.challenge as DBChallenge));
+        .map(d => transformChallenge(d.challenge as unknown as DBChallenge));
     },
   },
 
@@ -1170,13 +1157,11 @@ export const challengesService = {
         id: j.id,
         challengeId: j.challenge_id,
         userId: j.user_id,
-        role: j.role,
+        role: j.role as ChallengeJudge['role'],
         expertise: j.expertise || [],
-        assignedSubmissionsCount: j.assigned_submissions_count || 0,
-        completedReviewsCount: j.completed_reviews_count || 0,
-        status: j.status,
-        invitedAt: j.invited_at,
-        acceptedAt: j.accepted_at,
+        assignedSubmissions: j.assigned_submissions || undefined,
+        status: j.status as ChallengeJudge['status'],
+        conflictsOfInterest: j.conflicts_of_interest || undefined,
       }));
     },
 
@@ -1250,24 +1235,28 @@ export const challengesService = {
 
       return (data || [])
         .filter(d => d.submission)
-        .map(d => ({
-          id: d.submission.id,
-          challengeId: d.submission.challenge_id,
-          phaseId: d.submission.phase_id || undefined,
-          solverId: d.submission.solver_id,
-          solverType: d.submission.solver_type as 'individual' | 'team',
-          title: d.submission.title,
-          summary: d.submission.summary,
-          description: d.submission.description,
-          deliverables: d.submission.deliverables || [],
-          repositoryUrl: d.submission.repository_url || undefined,
-          demoUrl: d.submission.demo_url || undefined,
-          videoUrl: d.submission.video_url || undefined,
-          submittedAt: d.submission.submitted_at,
-          updatedAt: d.submission.updated_at,
-          version: d.submission.version,
-          status: d.submission.status as ChallengeSubmission['status'],
-        }));
+        .map(d => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const sub = d.submission as any;
+          return {
+            id: sub.id,
+            challengeId: sub.challenge_id,
+            phaseId: sub.phase_id || undefined,
+            solverId: sub.solver_id,
+            solverType: sub.solver_type as 'individual' | 'team',
+            title: sub.title,
+            summary: sub.summary,
+            description: sub.description,
+            deliverables: sub.deliverables || [],
+            repositoryUrl: sub.repository_url || undefined,
+            demoUrl: sub.demo_url || undefined,
+            videoUrl: sub.video_url || undefined,
+            submittedAt: sub.submitted_at,
+            updatedAt: sub.updated_at,
+            version: sub.version,
+            status: sub.status as ChallengeSubmission['status'],
+          };
+        });
     },
   },
 
@@ -1413,7 +1402,6 @@ export const challengesService = {
         challengeId: s.challenge_id,
         phaseId: s.phase_id || undefined,
         solverId: s.solver_id,
-        teamId: s.team_id || undefined,
         solverType: s.solver_type as 'individual' | 'team',
         title: s.title,
         summary: s.summary,
@@ -1426,8 +1414,6 @@ export const challengesService = {
         updatedAt: s.updated_at,
         version: s.version,
         status: s.status as ChallengeSubmission['status'],
-        evaluations: s.evaluations || [],
-        averageScore: s.average_score,
         finalScore: s.final_score,
         rank: s.rank,
         feedback: s.feedback,
@@ -1454,14 +1440,13 @@ export const challengesService = {
         id: s.id,
         challengeId: s.challenge_id,
         userId: s.user_id,
-        participationType: s.type as 'individual' | 'team-member',
+        type: s.type as 'individual' | 'team-member',
         teamId: s.team_id || undefined,
         registeredAt: s.registered_at,
         eligibilityVerified: s.eligibility_verified,
         agreedToTerms: s.agreed_to_terms,
         status: s.status as ChallengeSolver['status'],
         skills: s.skills || [],
-        hasSubmitted: false, // Would need to check submissions table
       }));
     },
 
@@ -1568,7 +1553,7 @@ export const challengesService = {
         rank: index + 1,
         solverId: entry.solver_id,
         solverName: entry.title || `Solver ${index + 1}`,
-        teamName: entry.team?.name,
+        teamName: (entry.team as unknown as { name: string } | null)?.name,
         isTeam: entry.solver_type === 'team',
         score: entry.final_score || 0,
         submissionCount: 1,

@@ -24,7 +24,6 @@ import {
   Zap,
   Building,
   X,
-  Plus,
 } from 'lucide-react';
 import type {
   LabPartnerTier,

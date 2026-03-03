@@ -23,7 +23,9 @@ export type IntegrationMethod =
   | 'sitemap'           // Structured sitemap parsing
   | 'ical'              // iCal for events
   | 'manual'            // Manual entry or upload
-  | 'partner_portal';   // Direct posting via partner portal
+  | 'partner_portal'    // Direct posting via partner portal
+  | 'greenhouse_api'    // Greenhouse Job Board API (public, no auth)
+  | 'lever_api';        // Lever Postings API (public, no auth)
 
 export type SyncFrequency =
   | 'realtime'          // Webhook/push-based
@@ -345,6 +347,11 @@ export const STEM_KEYWORDS = {
 export interface APISourceConfig {
   baseUrl: string;
   authType: 'none' | 'api_key' | 'bearer' | 'basic' | 'oauth2';
+
+  // Greenhouse/Lever specific
+  boardToken?: string;       // Greenhouse board token (e.g. "spacex")
+  companySlug?: string;      // Lever company slug (e.g. "rigetti")
+  skipSTEMFilter?: boolean;  // Skip STEM title filter for core-industry companies
   authConfig?: {
     apiKeyHeader?: string;
     apiKeyValue?: string;         // Store securely

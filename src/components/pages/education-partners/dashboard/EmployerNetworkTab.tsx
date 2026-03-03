@@ -143,7 +143,7 @@ const CONNECTION_TYPES = [
 
 const EmployerNetworkTab: React.FC<EmployerNetworkTabProps> = ({ partnerId, canAccessNetwork }) => {
   const [connections, setConnections] = useState<EmployerConnection[]>([]);
-  const [employers, setEmployers] = useState<Employer[]>(SAMPLE_EMPLOYERS);
+  const [employers] = useState<Employer[]>(SAMPLE_EMPLOYERS);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [industryFilter, setIndustryFilter] = useState('All Industries');

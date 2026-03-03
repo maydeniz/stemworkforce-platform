@@ -10,7 +10,6 @@ import {
   Eye,
   Plus,
   Search,
-  Filter,
   Check,
   X,
   Clock,
@@ -27,7 +26,6 @@ import type {
   PayrollRun,
   PayStub,
   PayrollDeduction,
-  DirectDepositAccount,
   TaxDocument,
   PayType,
   PayFrequency,
@@ -256,8 +254,8 @@ const PayrollSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<PayrollTab>('compensation');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPayRun, setSelectedPayRun] = useState<PayrollRun | null>(null);
-  const [selectedPayStub, setSelectedPayStub] = useState<PayStub | null>(null);
-  const [showCompensationModal, setShowCompensationModal] = useState(false);
+  const [, setSelectedPayStub] = useState<PayStub | null>(null);
+  const [, setShowCompensationModal] = useState(false);
   const [showCreatePayrollModal, setShowCreatePayrollModal] = useState(false);
   const [payrollRuns, setPayrollRuns] = useState<PayrollRun[]>(samplePayrollRuns);
   const [showPreviewModal, setShowPreviewModal] = useState<PayrollRun | null>(null);

@@ -20,7 +20,6 @@ import {
   Crown,
   Zap,
   Building,
-  X,
   Plus
 } from 'lucide-react';
 import type { GovernmentPartner, GovernmentPartnerTier, AgencyType, AgencyLevel } from '@/types/governmentPartner';

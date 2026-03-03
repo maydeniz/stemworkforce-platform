@@ -35,13 +35,10 @@ import {
   Sparkles,
   Search,
   Calendar,
-  Zap,
   ExternalLink,
   Bell,
   Lock,
-  Eye,
   User,
-  Mail,
   Globe,
   Pencil,
   Video,
@@ -51,7 +48,6 @@ import {
   Atom,
   Cpu,
   FlaskConical,
-  Microscope
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -226,9 +222,6 @@ const PROFILE_COMPLETION_ITEMS = [
   { label: 'Career Interests', complete: true },
 ];
 
-// Pie chart colors
-const PIE_COLORS = ['#7C3AED', '#EA580C', '#3B82F6', '#10B981'];
-
 // ===========================================
 // OVERVIEW TAB
 // ===========================================
@@ -244,8 +237,6 @@ const OverviewTab: React.FC<{ onTabChange: (tab: TabKey) => void }> = ({ onTabCh
     { name: 'In Progress', value: 3 },
     { name: 'Not Started', value: 3 },
   ];
-
-  const urgentDeadlines = DEADLINES.filter(d => d.urgent);
 
   return (
     <div className="space-y-6">
@@ -432,7 +423,7 @@ const OverviewTab: React.FC<{ onTabChange: (tab: TabKey) => void }> = ({ onTabCh
             </button>
           </div>
           <div className="space-y-3">
-            {DEADLINES.slice(0, 5).map((deadline, idx) => (
+            {DEADLINES.slice(0, 5).map((deadline) => (
               <div key={deadline.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg">
                 <div className={`w-1.5 h-10 rounded-full ${
                   deadline.urgent ? 'bg-orange-500' :

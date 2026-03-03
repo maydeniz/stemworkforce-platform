@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FileText, Shield, Users, AlertTriangle, Scale, Mail, Building, Briefcase, GraduationCap, Globe, Gavel, Clock } from 'lucide-react';
+import { FileText, Shield, Users, AlertTriangle, Scale, Mail, Building, Briefcase, GraduationCap, Gavel, Clock } from 'lucide-react';
 
 const SECTIONS = [
   {

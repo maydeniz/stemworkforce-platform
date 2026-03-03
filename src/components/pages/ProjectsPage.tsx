@@ -12,9 +12,7 @@ import {
   Building,
   Zap,
   Users,
-  ArrowRight,
   Star,
-  CheckCircle,
 } from 'lucide-react';
 
 // ===========================================

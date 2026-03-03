@@ -6,7 +6,6 @@ import {
   Ear,
   Hand,
   Brain,
-  Keyboard,
   Monitor,
   Smartphone,
   MessageCircle,

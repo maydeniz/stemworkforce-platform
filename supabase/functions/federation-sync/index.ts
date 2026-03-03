@@ -59,6 +59,7 @@ interface APIConfig {
   authConfig?: {
     apiKeyHeader?: string;
     apiKeyValue?: string;
+    apiKeyEnvVar?: string;
   };
   endpoints: Record<string, string>;
   rateLimitPerMinute?: number;
@@ -71,6 +72,7 @@ interface APIConfig {
     maxPages?: number;
   };
   stemFilters?: STEMFilterConfig;
+  organizationFilter?: string;
 }
 
 interface RSSConfig {
@@ -168,6 +170,103 @@ const STEM_OCCUPATION_CODES = [
   // AEROSPACE
   '2181', '2183', '2185',
 ];
+
+// ===========================================
+// US STATE PARSING
+// Extracts state code from free-text location strings
+// e.g. "San Francisco, CA" -> "CA"
+// ===========================================
+
+const US_STATE_CODES: Record<string, string> = {
+  'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR',
+  'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE',
+  'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID',
+  'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS',
+  'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+  'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS',
+  'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV',
+  'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY',
+  'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK',
+  'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+  'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT',
+  'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV',
+  'wisconsin': 'WI', 'wyoming': 'WY', 'district of columbia': 'DC',
+};
+
+const VALID_STATE_CODES = new Set(Object.values(US_STATE_CODES));
+
+// Zip code prefix -> state (first 3 digits)
+const ZIP_PREFIX_TO_STATE: Record<string, string> = {
+  '100': 'NY', '101': 'NY', '102': 'NY', '103': 'NY', '104': 'NY',
+  '900': 'CA', '901': 'CA', '902': 'CA', '903': 'CA', '904': 'CA',
+  '941': 'CA', '940': 'CA', '943': 'CA', '945': 'CA', '946': 'CA', '947': 'CA', '948': 'CA', '949': 'CA', '950': 'CA', '951': 'CA',
+  '770': 'TX', '771': 'TX', '772': 'TX', '773': 'TX', '750': 'TX', '751': 'TX', '752': 'TX',
+  '600': 'IL', '601': 'IL', '602': 'IL', '603': 'IL', '604': 'IL', '606': 'IL',
+  '200': 'DC', '201': 'MD', '202': 'DC', '203': 'DC', '204': 'VA', '205': 'WV',
+  '980': 'WA', '981': 'WA', '982': 'WA', '983': 'WA', '984': 'WA', '985': 'WA',
+  '802': 'CO', '803': 'CO', '804': 'CO', '805': 'CO', '806': 'CO', '807': 'CO', '808': 'CO', '809': 'CO', '800': 'CO', '801': 'CO',
+};
+
+function parseLocation(location: string | undefined): { state?: string; city?: string; isRemote: boolean } {
+  if (!location) return { isRemote: false };
+
+  const loc = location.trim();
+  const lowerLoc = loc.toLowerCase();
+
+  // Check for remote
+  const isRemote = /\bremote\b/i.test(loc);
+
+  // Pattern 1: "City, ST" or "City, ST 12345"
+  const cityStateMatch = loc.match(/([^,]+),\s*([A-Z]{2})(?:\s+\d{5})?/);
+  if (cityStateMatch) {
+    const code = cityStateMatch[2];
+    if (VALID_STATE_CODES.has(code)) {
+      return { state: code, city: cityStateMatch[1].trim(), isRemote };
+    }
+  }
+
+  // Pattern 2: "City, State Name" (full state name)
+  const cityFullStateMatch = loc.match(/([^,]+),\s*(.+)/);
+  if (cityFullStateMatch) {
+    const stateName = cityFullStateMatch[2].trim().toLowerCase()
+      .replace(/\s*\d{5}.*$/, '') // strip zip
+      .replace(/,?\s*(us|usa|united states)$/i, ''); // strip country
+    if (US_STATE_CODES[stateName]) {
+      return { state: US_STATE_CODES[stateName], city: cityFullStateMatch[1].trim(), isRemote };
+    }
+  }
+
+  // Pattern 3: standalone 2-letter state code
+  const stateOnly = loc.match(/^([A-Z]{2})$/);
+  if (stateOnly && VALID_STATE_CODES.has(stateOnly[1])) {
+    return { state: stateOnly[1], isRemote };
+  }
+
+  // Pattern 4: zip code anywhere in string
+  const zipMatch = loc.match(/\b(\d{5})\b/);
+  if (zipMatch) {
+    const prefix = zipMatch[1].substring(0, 3);
+    if (ZIP_PREFIX_TO_STATE[prefix]) {
+      return { state: ZIP_PREFIX_TO_STATE[prefix], isRemote };
+    }
+  }
+
+  // Pattern 5: state name anywhere in string (for locations like "Remote - California")
+  for (const [name, code] of Object.entries(US_STATE_CODES)) {
+    if (lowerLoc.includes(name)) {
+      return { state: code, isRemote };
+    }
+  }
+
+  return { isRemote };
+}
+
+/**
+ * Strip HTML tags from a string (for Greenhouse job descriptions)
+ */
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
 
 // STEM Keywords for title matching
 const STEM_TITLE_KEYWORDS = [
@@ -452,6 +551,12 @@ async function syncSource(supabase: ReturnType<typeof createClient>, source: Fed
       case 'rss':
         items = await fetchFromRSS(source);
         break;
+      case 'greenhouse_api':
+        items = await fetchFromGreenhouse(source);
+        break;
+      case 'lever_api':
+        items = await fetchFromLever(source);
+        break;
       default:
         throw new Error(`Unsupported integration method: ${source.integration_method}`);
     }
@@ -461,15 +566,20 @@ async function syncSource(supabase: ReturnType<typeof createClient>, source: Fed
 
     // ===========================================
     // STEM FILTERING - Critical step to prevent non-STEM jobs
+    // Greenhouse/Lever core-industry sources skip this (all roles relevant)
     // ===========================================
+    const skipSTEM = source.api_config?.skipSTEMFilter === true;
     const stemFilters = source.api_config?.stemFilters || source.rss_config?.stemFilters;
-    const filteredItems = items.filter(item => {
+    const filteredItems = skipSTEM ? items : items.filter(item => {
       const passes = passesSTEMFilter(item, stemFilters);
       if (!passes) {
         result.itemsFailed++; // Count filtered items as "failed" for stats
       }
       return passes;
     });
+    if (skipSTEM) {
+      console.log(`STEM Filter: Skipped for ${source.name} (core-industry company, all roles relevant)`);
+    }
 
     const rejectedCount = items.length - filteredItems.length;
     if (rejectedCount > 0) {
@@ -546,11 +656,23 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
   // Build request headers
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'User-Agent': 'STEMWorkforce/1.0 (Data Aggregation)',
+    'User-Agent': Deno.env.get('USAJOBS_USER_AGENT') || 'STEMWorkforce/1.0 (contact@stemworkforce.com)',
   };
 
-  if (config.authType === 'api_key' && config.authConfig?.apiKeyHeader && config.authConfig?.apiKeyValue) {
-    headers[config.authConfig.apiKeyHeader] = config.authConfig.apiKeyValue;
+  // USAJobs requires explicit Host header
+  if (config.baseUrl.includes('usajobs.gov')) {
+    headers['Host'] = 'data.usajobs.gov';
+  }
+
+  if (config.authType === 'api_key' && config.authConfig?.apiKeyHeader) {
+    // SECURITY: Read API key from environment variable, never from database
+    const apiKeyEnvVar = config.authConfig.apiKeyEnvVar || 'USAJOBS_API_KEY';
+    const apiKey = Deno.env.get(apiKeyEnvVar) || config.authConfig.apiKeyValue;
+    if (apiKey) {
+      headers[config.authConfig.apiKeyHeader] = apiKey;
+    } else {
+      throw new Error(`API key not found. Set the ${apiKeyEnvVar} environment variable.`);
+    }
   }
 
   // Determine which endpoints to fetch
@@ -582,18 +704,23 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
           endpoint.url,
           config.paginationConfig,
           page,
-          config.stemFilters
+          config.stemFilters,
+          config.organizationFilter
         );
         console.log(`Fetching: ${url}`);
 
         const response = await fetch(url, { headers });
 
         if (!response.ok) {
-          throw new Error(`API returned ${response.status}: ${response.statusText}`);
+          const body = await response.text().catch(() => '');
+          throw new Error(`API returned ${response.status}: ${response.statusText} - ${body.substring(0, 200)}`);
         }
 
         const data = await response.json();
+        console.log(`Response keys: ${Object.keys(data).join(', ')}`);
+
         const results = extractResults(data, config.responseMapping);
+        console.log(`Extracted ${results.length} results from page ${page}`);
 
         for (const result of results) {
           const item = transformAPIResult(result, source, endpoint.type as FetchedItem['contentType'], config.responseMapping);
@@ -611,7 +738,9 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
         }
       }
     } catch (err) {
-      console.error(`Error fetching from ${endpoint.url}:`, err);
+      // Surface fetch errors instead of silently swallowing them
+      console.error(`Error fetching from ${source.name} ${endpoint.url}:`, err);
+      throw new Error(`Failed to fetch ${endpoint.type}s from ${source.name}: ${err.message}`);
     }
   }
 
@@ -623,9 +752,15 @@ function buildAPIUrl(
   endpoint: string,
   pagination: APIConfig['paginationConfig'],
   page: number,
-  stemFilters?: STEMFilterConfig
+  stemFilters?: STEMFilterConfig,
+  organizationFilter?: string
 ): string {
-  const url = new URL(endpoint, baseUrl);
+  // Fix URL construction: ensure baseUrl path is preserved
+  // new URL('/Search', 'https://data.usajobs.gov/api') would drop /api
+  // Instead, concatenate properly
+  const base = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+  const cleanEndpoint = endpoint.replace(/^\//, '');
+  const url = new URL(base + cleanEndpoint);
 
   if (pagination) {
     if (pagination.type === 'page' && pagination.pageParam) {
@@ -637,26 +772,18 @@ function buildAPIUrl(
     }
   }
 
-  // ===========================================
-  // USAJobs-specific STEM filters
-  // Add occupation series codes to filter at API level
-  // This dramatically reduces data transfer and processing
-  // ===========================================
-  if (baseUrl.includes('usajobs.gov') && stemFilters?.occupationSeriesCodes) {
-    // USAJobs uses JobCategoryCode parameter for occupation series
-    // Multiple codes separated by semicolon
-    const codes = stemFilters.occupationSeriesCodes.join(';');
-    url.searchParams.set('JobCategoryCode', codes);
-    console.log(`USAJobs: Filtering by ${stemFilters.occupationSeriesCodes.length} occupation codes`);
-  }
+  if (baseUrl.includes('usajobs.gov')) {
+    // Organization name filter (for lab/agency-specific sources)
+    if (organizationFilter) {
+      url.searchParams.set('Organization', organizationFilter);
+      console.log(`USAJobs: Filtering by organization "${organizationFilter}"`);
+    }
 
-  // For USAJobs, we can also use keyword filtering at API level
-  if (baseUrl.includes('usajobs.gov') && stemFilters?.titleKeywords?.required) {
-    // Use the first few keywords as API-level filter
-    // Secondary filtering happens after fetch
-    const keywords = stemFilters.titleKeywords.required.slice(0, 5).join(' OR ');
-    if (keywords) {
-      url.searchParams.set('Keyword', keywords);
+    // STEM occupation code filter (for the main USAJOBS source)
+    if (stemFilters?.occupationSeriesCodes) {
+      const codes = stemFilters.occupationSeriesCodes.join(';');
+      url.searchParams.set('JobCategoryCode', codes);
+      console.log(`USAJobs: Filtering by ${stemFilters.occupationSeriesCodes.length} occupation codes`);
     }
   }
 
@@ -719,6 +846,228 @@ function transformAPIResult(
     industries: source.industries || [],
     occupationCode, // For STEM filtering verification
   };
+}
+
+// ===========================================
+// GREENHOUSE FETCHER
+// Official public API: https://developers.greenhouse.io/job-board.html
+// GET /v1/boards/{token}/jobs?content=true — no auth, returns all jobs
+// ===========================================
+
+interface GreenhouseJob {
+  id: number;
+  title: string;
+  absolute_url: string;
+  location: { name: string };
+  content: string; // HTML
+  updated_at: string;
+  departments: Array<{ name: string }>;
+  pay_input_ranges?: Array<{
+    min_cents: string;
+    max_cents: string;
+    currency_type: string;
+    title: string; // e.g. "USD per Year"
+  }>;
+}
+
+async function fetchFromGreenhouse(source: FederatedSource): Promise<FetchedItem[]> {
+  const boardToken = (source.api_config as Record<string, unknown>)?.boardToken as string;
+  if (!boardToken) {
+    throw new Error(`Greenhouse board token not configured for ${source.name}`);
+  }
+
+  const url = `https://api.greenhouse.io/v1/boards/${boardToken}/jobs?content=true`;
+  console.log(`Greenhouse: Fetching from ${url}`);
+
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent': 'STEMWorkforce/1.0 (federation-sync)',
+      'Accept': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Greenhouse API returned ${response.status} for ${source.name}`);
+  }
+
+  const data = await response.json();
+  const jobs: GreenhouseJob[] = data.jobs || [];
+  console.log(`Greenhouse: Got ${jobs.length} jobs from ${source.name}`);
+
+  const items: FetchedItem[] = [];
+
+  for (const job of jobs) {
+    const location = parseLocation(job.location?.name);
+
+    // Only include US-based or remote positions
+    if (!location.state && !location.isRemote) {
+      // Check if location contains non-US indicators
+      const locName = (job.location?.name || '').toLowerCase();
+      if (locName && !locName.includes('united states') && !locName.includes('usa') &&
+          !locName.includes('remote') && locName.match(/\b(uk|london|berlin|tokyo|paris|sydney|toronto|vancouver|dublin|amsterdam|singapore|bangalore|mumbai|shanghai|hong kong|munich|zurich|tel aviv)\b/i)) {
+        continue; // Skip non-US locations
+      }
+    }
+
+    // Extract salary from pay_input_ranges
+    let salaryMin: number | undefined;
+    let salaryMax: number | undefined;
+    let salaryPeriod: string | undefined;
+    if (job.pay_input_ranges && job.pay_input_ranges.length > 0) {
+      const range = job.pay_input_ranges[0];
+      salaryMin = Math.round(parseInt(range.min_cents, 10) / 100);
+      salaryMax = Math.round(parseInt(range.max_cents, 10) / 100);
+      salaryPeriod = range.title?.toLowerCase().includes('hour') ? 'hourly' : 'yearly';
+    }
+
+    // Detect internships from title
+    const isInternship = /\b(intern|internship|co-op|coop)\b/i.test(job.title);
+
+    // Extract departments as tags
+    const departments = (job.departments || []).map(d => d.name);
+
+    // Strip HTML from content for description
+    const description = job.content ? stripHtml(job.content).substring(0, 2000) : undefined;
+
+    items.push({
+      externalId: String(job.id),
+      title: job.title,
+      description,
+      shortDescription: description ? description.substring(0, 200) : undefined,
+      sourceUrl: job.absolute_url,
+      organizationName: source.name,
+      location: job.location?.name,
+      city: location.city,
+      state: location.state,
+      country: 'USA',
+      isRemote: location.isRemote,
+      industries: source.industries || [],
+      tags: departments,
+      contentType: isInternship ? 'internship' : 'job',
+      salaryMin,
+      salaryMax,
+      salaryCurrency: 'USD',
+      salaryPeriod,
+      postedAt: job.updated_at || new Date().toISOString(),
+    });
+  }
+
+  console.log(`Greenhouse: ${items.length} US-based items from ${source.name} (filtered ${jobs.length - items.length} non-US)`);
+  return items;
+}
+
+// ===========================================
+// LEVER FETCHER
+// Official public API: https://github.com/lever/postings-api
+// GET /v0/postings/{slug}?mode=json — no auth, returns all postings
+// ===========================================
+
+interface LeverPosting {
+  id: string;
+  text: string; // title
+  hostedUrl: string;
+  categories: {
+    location?: string;
+    team?: string;
+    department?: string;
+    commitment?: string; // Full-time, Part-time, Intern, etc.
+    allLocations?: string[];
+  };
+  descriptionPlain?: string;
+  salaryRange?: {
+    min: number;
+    max: number;
+    currency: string;
+    interval: string; // "per-year-salary", "per-hour-wage"
+  };
+  workplaceType?: string; // "unspecified", "on-site", "remote", "hybrid"
+  createdAt: number; // epoch ms
+}
+
+async function fetchFromLever(source: FederatedSource): Promise<FetchedItem[]> {
+  const companySlug = (source.api_config as Record<string, unknown>)?.companySlug as string;
+  if (!companySlug) {
+    throw new Error(`Lever company slug not configured for ${source.name}`);
+  }
+
+  const url = `https://api.lever.co/v0/postings/${companySlug}?mode=json`;
+  console.log(`Lever: Fetching from ${url}`);
+
+  // Respect Lever robots.txt crawl delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent': 'STEMWorkforce/1.0 (federation-sync)',
+      'Accept': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Lever API returned ${response.status} for ${source.name}`);
+  }
+
+  const postings: LeverPosting[] = await response.json();
+  console.log(`Lever: Got ${postings.length} postings from ${source.name}`);
+
+  const items: FetchedItem[] = [];
+
+  for (const posting of postings) {
+    // Parse primary location
+    const location = parseLocation(posting.categories?.location);
+    const isRemote = location.isRemote || posting.workplaceType === 'remote';
+
+    // Only include US-based or remote positions
+    if (!location.state && !isRemote) {
+      const locName = (posting.categories?.location || '').toLowerCase();
+      if (locName && locName.match(/\b(uk|london|berlin|tokyo|paris|sydney|toronto|vancouver|dublin|amsterdam|singapore|bangalore|mumbai|shanghai|hong kong|munich|zurich|tel aviv)\b/i)) {
+        continue;
+      }
+    }
+
+    // Extract salary
+    let salaryMin: number | undefined;
+    let salaryMax: number | undefined;
+    let salaryPeriod: string | undefined;
+    if (posting.salaryRange) {
+      salaryMin = posting.salaryRange.min;
+      salaryMax = posting.salaryRange.max;
+      salaryPeriod = posting.salaryRange.interval?.includes('hour') ? 'hourly' : 'yearly';
+    }
+
+    // Detect internships
+    const commitment = posting.categories?.commitment || '';
+    const isInternship = /\b(intern|internship|co-op)\b/i.test(posting.text) ||
+                         /\b(intern)\b/i.test(commitment);
+
+    const description = posting.descriptionPlain?.substring(0, 2000);
+
+    items.push({
+      externalId: posting.id,
+      title: posting.text,
+      description,
+      shortDescription: description ? description.substring(0, 200) : undefined,
+      sourceUrl: posting.hostedUrl,
+      organizationName: source.name,
+      location: posting.categories?.location,
+      city: location.city,
+      state: location.state,
+      country: 'USA',
+      isRemote,
+      industries: source.industries || [],
+      tags: [posting.categories?.team, posting.categories?.department, commitment].filter(Boolean) as string[],
+      contentType: isInternship ? 'internship' : 'job',
+      jobType: commitment || undefined,
+      salaryMin,
+      salaryMax,
+      salaryCurrency: posting.salaryRange?.currency || 'USD',
+      salaryPeriod,
+      postedAt: posting.createdAt ? new Date(posting.createdAt).toISOString() : new Date().toISOString(),
+    });
+  }
+
+  console.log(`Lever: ${items.length} US-based items from ${source.name} (filtered ${postings.length - items.length} non-US)`);
+  return items;
 }
 
 // ===========================================

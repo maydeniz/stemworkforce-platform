@@ -3,35 +3,19 @@
 // Comprehensive judging interface for reviewers
 // ===========================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy,
   FileText,
-  Clock,
   CheckCircle,
   AlertCircle,
-  Star,
   ChevronRight,
   ChevronLeft,
-  Filter,
-  Search,
-  Eye,
-  Flag,
-  MessageSquare,
-  BarChart3,
   Calendar,
   Award,
-  Users,
   TrendingUp,
-  XCircle,
-  Maximize2,
-  ExternalLink,
   Play,
-  Image,
-  Download,
-  ThumbsUp,
-  ThumbsDown,
 } from 'lucide-react';
 import { Challenge, ChallengeSubmission } from '@/types';
 import { JudgeEvaluationForm } from '../forms/JudgeEvaluationForm';
@@ -71,7 +55,6 @@ export const JudgePortal: React.FC<JudgePortalProps> = ({
   const [currentSubmissionIndex, setCurrentSubmissionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'reviewed'>('pending');
-  const [showSubmissionPreview, setShowSubmissionPreview] = useState(false);
 
   const stats = {
     totalAssignments: assignments.length,
@@ -106,8 +89,8 @@ export const JudgePortal: React.FC<JudgePortalProps> = ({
 
   const filteredSubmissions = submissions.filter(s => {
     if (filter === 'all') return true;
-    if (filter === 'pending') return !s.evaluations?.some(e => e.judgeId === userId);
-    if (filter === 'reviewed') return s.evaluations?.some(e => e.judgeId === userId);
+    if (filter === 'pending') return !s.scores?.some(e => e.judgeId === userId);
+    if (filter === 'reviewed') return s.scores?.some(e => e.judgeId === userId);
     return true;
   });
 
@@ -461,7 +444,7 @@ export const JudgePortal: React.FC<JudgePortalProps> = ({
               <JudgeEvaluationForm
                 submission={currentSubmission}
                 challenge={challenge}
-                existingEvaluation={currentSubmission.evaluations?.find(e => e.judgeId === userId)}
+                existingEvaluation={currentSubmission.scores?.find(e => e.judgeId === userId) as any}
                 onSave={handleSaveEvaluation}
                 onSkip={(reason) => onSkipSubmission(currentSubmission.id, reason)}
                 totalAssigned={filteredSubmissions.length}

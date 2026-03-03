@@ -9,13 +9,12 @@ import type {
   FederatedListing,
   SyncJob,
   PartnerPortalAccess,
-  ContentQualityCheck,
   SyncStats,
   PartnerAnalytics,
   FederatedSourceType,
   IntegrationMethod,
 } from '@/types/federation';
-import type { IndustryType } from '@/types';
+import type { IndustryType, ClearanceLevel, JobType } from '@/types';
 
 // ===========================================
 // TYPE DEFINITIONS
@@ -332,7 +331,7 @@ export const federatedSavesApi = {
       // Update save count
       await supabase
         .from('federated_listings')
-        .update({ save_count: supabase.sql`save_count + 1` })
+        .update({ save_count: (supabase as any).sql`save_count + 1` })
         .eq('id', listingId);
 
       return true;
@@ -359,7 +358,7 @@ export const federatedSavesApi = {
       // Update save count
       await supabase
         .from('federated_listings')
-        .update({ save_count: supabase.sql`GREATEST(save_count - 1, 0)` })
+        .update({ save_count: (supabase as any).sql`GREATEST(save_count - 1, 0)` })
         .eq('id', listingId);
 
       return true;
@@ -411,7 +410,7 @@ export const federatedSavesApi = {
 
       return (data || [])
         .filter(d => d.listing)
-        .map(d => transformDBListing(d.listing));
+        .map(d => transformDBListing(d.listing as unknown as Record<string, unknown>));
     } catch (error) {
       console.error('Error fetching saved listings:', error);
       return [];
@@ -1057,12 +1056,12 @@ function transformDBListing(db: Record<string, unknown>): FederatedListing {
     country: db.country as string | undefined,
     isRemote: db.is_remote as boolean | undefined,
 
-    industries: (db.industries as string[]) || [],
+    industries: (db.industries as IndustryType[]) || [],
     skills: (db.skills as string[]) || [],
     tags: (db.tags as string[]) || [],
-    clearanceRequired: db.clearance_required as string | undefined,
+    clearanceRequired: db.clearance_required as ClearanceLevel | undefined,
 
-    jobType: db.job_type as string | undefined,
+    jobType: db.job_type as JobType | undefined,
     salaryMin: db.salary_min as number | undefined,
     salaryMax: db.salary_max as number | undefined,
     salaryCurrency: db.salary_currency as string | undefined,
@@ -1125,8 +1124,8 @@ function transformDBSource(db: Record<string, unknown>): FederatedSource {
     providesEvents: db.provides_events as boolean,
     providesScholarships: db.provides_scholarships as boolean,
 
-    industries: (db.industries as string[]) || [],
-    defaultClearanceLevel: db.default_clearance_level as string | undefined,
+    industries: (db.industries as IndustryType[]) || [],
+    defaultClearanceLevel: db.default_clearance_level as ClearanceLevel | undefined,
     geographicFocus: (db.geographic_focus as string[]) || [],
 
     status: db.status as FederatedSource['status'],

@@ -7,7 +7,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   CheckCircle,
-  Circle,
   Clock,
   FileText,
   Users,
@@ -38,7 +37,6 @@ interface ChallengeProgressTrackerProps {
 }
 
 export const ChallengeProgressTracker: React.FC<ChallengeProgressTrackerProps> = ({
-  challengeId,
   registrationDate,
   teamFormed,
   draftStarted,

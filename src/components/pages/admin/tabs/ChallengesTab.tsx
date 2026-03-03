@@ -3,12 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
-  Trophy, Plus, Search, Filter, Edit2, Trash2, Eye, MoreVertical,
-  Calendar, DollarSign, Users, Target, Building2, Clock, CheckCircle,
-  XCircle, AlertCircle, ChevronDown, X, Save, Briefcase, Zap,
-  Globe, Lock, Award, FileText, Layers, Tag, Settings
+  Trophy, Plus, Search, Edit2, Trash2,
+  DollarSign, X, Save, Zap,
+  Layers, Settings
 } from 'lucide-react';
-import type { Challenge, IndustryType, ChallengeType, ChallengeStatus } from '@/types';
+import type { IndustryType, ChallengeType, ChallengeStatus } from '@/types';
 
 // ===========================================
 // CHALLENGES ADMIN TAB
@@ -35,13 +34,11 @@ const getThemeClasses = (isDark: boolean) => ({
 // Challenge type options
 const CHALLENGE_TYPES: { value: ChallengeType; label: string; description: string }[] = [
   { value: 'ideation', label: 'Ideation', description: 'Brainstorm innovative concepts and ideas' },
-  { value: 'design', label: 'Design', description: 'Create visual designs, prototypes, or mockups' },
   { value: 'prototype', label: 'Prototype', description: 'Build working prototypes or MVPs' },
-  { value: 'development', label: 'Development', description: 'Full software development projects' },
-  { value: 'data-science', label: 'Data Science', description: 'Analytics, ML, and data challenges' },
+  { value: 'solution', label: 'Solution', description: 'Complete solution delivery' },
   { value: 'research', label: 'Research', description: 'Scientific or technical research projects' },
   { value: 'hackathon', label: 'Hackathon', description: 'Time-limited intensive coding events' },
-  { value: 'business-plan', label: 'Business Plan', description: 'Business strategy and planning' },
+  { value: 'grand-challenge', label: 'Grand Challenge', description: 'Multi-phase, large prize competitions' },
 ];
 
 // Industry options
@@ -836,7 +833,7 @@ const ChallengeSettingsSection = ({ tc }: { tc: ReturnType<typeof getThemeClasse
 // CHALLENGE FORM MODAL
 // ===========================================
 
-const ChallengeFormModal = ({ challenge, onSave, onClose, tc, isDark }: {
+const ChallengeFormModal = ({ challenge, onSave, onClose, tc, isDark: _isDark }: {
   challenge: any | null;
   onSave: (data: ChallengeFormData) => void;
   onClose: () => void;
@@ -1371,7 +1368,7 @@ const ChallengeFormModal = ({ challenge, onSave, onClose, tc, isDark }: {
 // INDUSTRY FORM MODAL
 // ===========================================
 
-const IndustryFormModal = ({ industry, onSave, onClose, tc, isDark }: {
+const IndustryFormModal = ({ industry, onSave, onClose, tc, isDark: _isDark }: {
   industry: IndustryFormData | null;
   onSave: (data: IndustryFormData) => void;
   onClose: () => void;

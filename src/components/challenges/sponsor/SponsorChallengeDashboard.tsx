@@ -3,8 +3,8 @@
 // Comprehensive challenge management for sponsors
 // ===========================================
 
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect, type FC, type ElementType } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy,
@@ -19,12 +19,10 @@ import {
   TrendingUp,
   MessageSquare,
   Award,
-  Filter,
   Search,
   Download,
   Mail,
   ChevronRight,
-  ChevronDown,
   AlertCircle,
   CheckCircle,
   XCircle,
@@ -44,15 +42,14 @@ interface SponsorChallengeDashboardProps {
 
 type TabType = 'overview' | 'submissions' | 'participants' | 'analytics' | 'judges' | 'settings';
 
-export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps> = ({
+export const SponsorChallengeDashboard: FC<SponsorChallengeDashboardProps> = ({
   challengeId,
   challenge,
 }) => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [submissions, setSubmissions] = useState<ChallengeSubmission[]>([]);
   const [participants, setParticipants] = useState<ChallengeSolver[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
@@ -60,8 +57,8 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
     const fetchData = async () => {
       try {
         const [subs, parts] = await Promise.all([
-          challengesApi.submissions.getByChallengeId(challengeId),
-          challengesApi.solvers.getByChallengeId(challengeId),
+          challengesApi.sponsor.getSubmissions(challengeId),
+          challengesApi.sponsor.getSolvers(challengeId),
         ]);
         setSubmissions(subs || []);
         setParticipants(parts || []);
@@ -87,7 +84,7 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
   };
 
   const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { color: string; icon: React.ElementType }> = {
+    const statusMap: Record<string, { color: string; icon: ElementType }> = {
       draft: { color: 'bg-gray-500/20 text-gray-400', icon: Edit },
       'pending-approval': { color: 'bg-yellow-500/20 text-yellow-400', icon: Clock },
       'registration-open': { color: 'bg-green-500/20 text-green-400', icon: UserPlus },
@@ -118,8 +115,8 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
   const stats = {
     registrations: participants.length,
     submissions: submissions.length,
-    pendingReview: submissions.filter(s => s.status === 'pending-review').length,
-    reviewed: submissions.filter(s => ['reviewed', 'shortlisted', 'finalist'].includes(s.status)).length,
+    pendingReview: submissions.filter(s => s.status === 'under-review').length,
+    reviewed: submissions.filter(s => ['scored', 'finalist', 'winner'].includes(s.status)).length,
     daysRemaining: getDaysRemaining(),
   };
 
@@ -276,7 +273,7 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                     Recent Activity
                   </h3>
                   <div className="space-y-4">
-                    {submissions.slice(0, 5).map((sub, index) => (
+                    {submissions.slice(0, 5).map((sub) => (
                       <div
                         key={sub.id}
                         className="flex items-center gap-3 p-3 bg-gray-900/50 rounded-lg"
@@ -287,12 +284,12 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-white truncate">{sub.title}</p>
                           <p className="text-xs text-gray-500">
-                            Submitted {new Date(sub.submittedAt || sub.createdAt).toLocaleDateString()}
+                            Submitted {new Date(sub.submittedAt || sub.updatedAt).toLocaleDateString()}
                           </p>
                         </div>
                         <span className={`px-2 py-0.5 text-xs rounded-full ${
                           sub.status === 'submitted' ? 'bg-blue-500/20 text-blue-400' :
-                          sub.status === 'reviewed' ? 'bg-green-500/20 text-green-400' :
+                          sub.status === 'scored' ? 'bg-green-500/20 text-green-400' :
                           'bg-gray-500/20 text-gray-400'
                         }`}>
                           {sub.status}
@@ -390,9 +387,9 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                 >
                   <option value="all">All Status</option>
                   <option value="submitted">Submitted</option>
-                  <option value="pending-review">Pending Review</option>
-                  <option value="reviewed">Reviewed</option>
-                  <option value="shortlisted">Shortlisted</option>
+                  <option value="under-review">Under Review</option>
+                  <option value="scored">Scored</option>
+                  <option value="passed-screening">Passed Screening</option>
                   <option value="finalist">Finalist</option>
                 </select>
                 <button className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
@@ -427,13 +424,13 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-gray-300">
-                            {submission.teamId ? 'Team' : 'Individual'}
+                            {submission.solverType === 'team' ? 'Team' : 'Individual'}
                           </td>
                           <td className="px-4 py-3">
                             <span className={`px-2 py-0.5 text-xs rounded-full ${
                               submission.status === 'submitted' ? 'bg-blue-500/20 text-blue-400' :
-                              submission.status === 'reviewed' ? 'bg-green-500/20 text-green-400' :
-                              submission.status === 'shortlisted' ? 'bg-yellow-500/20 text-yellow-400' :
+                              submission.status === 'scored' ? 'bg-green-500/20 text-green-400' :
+                              submission.status === 'passed-screening' ? 'bg-yellow-500/20 text-yellow-400' :
                               submission.status === 'finalist' ? 'bg-purple-500/20 text-purple-400' :
                               'bg-gray-500/20 text-gray-400'
                             }`}>
@@ -441,10 +438,10 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                             </span>
                           </td>
                           <td className="px-4 py-3 text-gray-300">
-                            {submission.averageScore?.toFixed(2) || '-'}
+                            {submission.finalScore?.toFixed(2) || '-'}
                           </td>
                           <td className="px-4 py-3 text-gray-400 text-sm">
-                            {new Date(submission.submittedAt || submission.createdAt).toLocaleDateString()}
+                            {new Date(submission.submittedAt || submission.updatedAt).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
@@ -519,13 +516,13 @@ export const SponsorChallengeDashboard: React.FC<SponsorChallengeDashboardProps>
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className={`px-2 py-0.5 text-xs rounded-full ${
-                            participant.participationType === 'team'
+                            participant.type === 'team-member'
                               ? 'bg-purple-500/20 text-purple-400'
                               : 'bg-blue-500/20 text-blue-400'
                           }`}>
-                            {participant.participationType}
+                            {participant.type}
                           </span>
-                          {participant.hasSubmitted && (
+                          {participant.status === 'submitted' && (
                             <span className="px-2 py-0.5 text-xs bg-green-500/20 text-green-400 rounded-full">
                               Submitted
                             </span>

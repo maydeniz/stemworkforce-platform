@@ -9,16 +9,13 @@ import { motion } from 'framer-motion';
 import {
   Clock,
   Calendar,
-  CheckCircle2,
   XCircle,
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
   Plus,
-  Filter,
   Download,
   Sun,
-  Umbrella,
   Heart,
   Briefcase,
   Home

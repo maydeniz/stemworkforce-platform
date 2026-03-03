@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import {
   DollarSign,
   TrendingUp,
-  TrendingDown,
   PieChart,
   BarChart3,
-  Calendar,
   Download,
   Plus,
-  Filter,
   Eye,
   Edit,
   AlertTriangle,
@@ -16,10 +13,6 @@ import {
   Clock,
   ArrowUpRight,
   ArrowDownRight,
-  FileText,
-  RefreshCw,
-  Settings,
-  ChevronRight,
   X,
 } from 'lucide-react';
 
@@ -189,7 +182,7 @@ const EXPENDITURE_STATUS_CONFIG = {
 export const BudgetFiscal: React.FC = () => {
   const [grants] = useState<GrantAllocation[]>(SAMPLE_GRANTS);
   const [expenditures] = useState<Expenditure[]>(SAMPLE_EXPENDITURES);
-  const [selectedGrant, setSelectedGrant] = useState<GrantAllocation | null>(null);
+  const [, setSelectedGrant] = useState<GrantAllocation | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'grants' | 'expenditures' | 'budget'>('overview');
   const [showAddExpenditureModal, setShowAddExpenditureModal] = useState(false);
 

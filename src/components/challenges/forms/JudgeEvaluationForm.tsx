@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   Save,
   Send,
-  Eye,
   ExternalLink,
   Video,
   Github,
   Globe,
-  FileText,
   Download,
   Star,
   AlertTriangle,
-  CheckCircle,
   Loader2,
   ChevronDown,
   ChevronUp,
@@ -21,7 +17,7 @@ import {
   User,
   Users
 } from 'lucide-react';
-import type { Challenge, ChallengeSubmission, JudgingCriteria } from '@/types';
+import type { Challenge, ChallengeSubmission } from '@/types';
 
 interface SubmissionScore {
   criterionId: string;

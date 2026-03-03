@@ -8,11 +8,8 @@ import {
   DollarSign,
   Briefcase,
   Zap,
-  ArrowRight,
   ArrowUpRight,
   ArrowDownRight,
-  Building,
-  GraduationCap,
   Globe,
 } from 'lucide-react';
 

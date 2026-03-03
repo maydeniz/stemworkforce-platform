@@ -7,20 +7,18 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
-  Database, Plus, Search, RefreshCw, Play, Pause, Trash2, Edit2,
-  ExternalLink, CheckCircle, XCircle, AlertCircle, Clock, Globe,
-  Building2, GraduationCap, Trophy, Calendar, Settings, Eye,
-  ChevronDown, X, Save, Activity, BarChart3, Users, Zap,
-  Shield, Link, Server, Rss, FileText, BadgeCheck
+  Database, Plus, Search, RefreshCw, Pause, Trash2, Edit2,
+  ExternalLink, CheckCircle, XCircle, Clock,
+  Building2, GraduationCap, Trophy, Calendar, Settings,
+  X, Save, BarChart3, Users,
+  Shield, Server, Rss, FileText, BadgeCheck
 } from 'lucide-react';
 import {
-  federationApi,
   federatedSourcesApi,
   federationAdminApi,
 } from '@/services/federationApi';
 import type {
   FederatedSource,
-  FederatedListing,
   SyncJob,
   FederatedSourceType,
   IntegrationMethod,
@@ -59,6 +57,8 @@ const INTEGRATION_ICONS: Record<IntegrationMethod, typeof Server> = {
   ical: Calendar,
   manual: Edit2,
   partner_portal: Users,
+  greenhouse_api: Server,
+  lever_api: Server,
 };
 
 type TabType = 'sources' | 'sync' | 'analytics' | 'settings';
@@ -70,7 +70,7 @@ const FederationTab = () => {
   // State
   const [activeTab, setActiveTab] = useState<TabType>('sources');
   const [sources, setSources] = useState<FederatedSource[]>([]);
-  const [syncJobs, setSyncJobs] = useState<Record<string, SyncJob[]>>({});
+  const [, setSyncJobs] = useState<Record<string, SyncJob[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');

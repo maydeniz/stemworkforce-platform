@@ -3,7 +3,7 @@
 // Enhanced card for challenge browsing/discovery
 // ===========================================
 
-import React from 'react';
+import { type FC } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -13,14 +13,10 @@ import {
   Clock,
   DollarSign,
   Building,
-  Tag,
   Bookmark,
   BookmarkCheck,
   ChevronRight,
   Zap,
-  Target,
-  Star,
-  TrendingUp,
 } from 'lucide-react';
 import { Challenge } from '@/types';
 
@@ -34,7 +30,7 @@ interface ChallengeDiscoveryCardProps {
   index?: number;
 }
 
-export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
+export const ChallengeDiscoveryCard: FC<ChallengeDiscoveryCardProps> = ({
   challenge,
   variant = 'default',
   isSaved = false,
@@ -89,21 +85,6 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
     );
   };
 
-  const getDifficultyColor = (difficulty: string): string => {
-    switch (difficulty?.toLowerCase()) {
-      case 'beginner':
-        return 'text-green-400';
-      case 'intermediate':
-        return 'text-yellow-400';
-      case 'advanced':
-        return 'text-orange-400';
-      case 'expert':
-        return 'text-red-400';
-      default:
-        return 'text-gray-400';
-    }
-  };
-
   // Compact variant
   if (variant === 'compact') {
     return (
@@ -118,9 +99,9 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
           className="flex items-center gap-4 p-3 bg-gray-800/30 border border-gray-700 rounded-xl hover:border-yellow-500/50 hover:bg-gray-800/50 transition-all"
         >
           <div className="flex-shrink-0">
-            {challenge.thumbnailUrl ? (
+            {challenge.thumbnailImage ? (
               <img
-                src={challenge.thumbnailUrl}
+                src={challenge.thumbnailImage}
                 alt={challenge.title}
                 className="w-12 h-12 rounded-lg object-cover"
               />
@@ -171,9 +152,9 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
           </div>
 
           {/* Thumbnail */}
-          {challenge.thumbnailUrl && (
+          {challenge.thumbnailImage && (
             <img
-              src={challenge.thumbnailUrl}
+              src={challenge.thumbnailImage}
               alt={challenge.title}
               className="w-full h-40 rounded-xl object-cover mb-4"
             />
@@ -188,7 +169,7 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
                 </h3>
                 <div className="flex items-center gap-2 mt-1 text-gray-400 text-sm">
                   <Building className="w-4 h-4" />
-                  <span>{challenge.sponsorName}</span>
+                  <span>{challenge.sponsor.name}</span>
                 </div>
               </div>
               {getStatusBadge()}
@@ -222,7 +203,7 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
 
             {/* Categories */}
             <div className="flex flex-wrap gap-2">
-              {challenge.categories?.slice(0, 3).map((category) => (
+              {challenge.tags?.slice(0, 3).map((category) => (
                 <span
                   key={category}
                   className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-full"
@@ -258,9 +239,9 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            {challenge.thumbnailUrl ? (
+            {challenge.thumbnailImage ? (
               <img
-                src={challenge.thumbnailUrl}
+                src={challenge.thumbnailImage}
                 alt={challenge.title}
                 className="w-12 h-12 rounded-lg object-cover"
               />
@@ -270,7 +251,7 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               </div>
             )}
             <div>
-              <span className="text-xs text-gray-500">{challenge.sponsorName}</span>
+              <span className="text-xs text-gray-500">{challenge.sponsor.name}</span>
               <h3 className="font-semibold text-white group-hover:text-yellow-400 transition-colors line-clamp-1">
                 {challenge.title}
               </h3>
@@ -338,10 +319,6 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
             <Users className="w-4 h-4" />
             <span>{challenge.registeredSolversCount || 0}</span>
           </div>
-          <div className={`flex items-center gap-1 ${getDifficultyColor(challenge.difficulty || 'intermediate')}`}>
-            <Target className="w-4 h-4" />
-            <span className="capitalize">{challenge.difficulty || 'Intermediate'}</span>
-          </div>
           {!isClosed && (
             <div className={`flex items-center gap-1 ml-auto ${isUrgent ? 'text-red-400' : 'text-gray-400'}`}>
               <Clock className="w-4 h-4" />
@@ -352,7 +329,7 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
 
         {/* Categories/Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {challenge.categories?.slice(0, 4).map((category) => (
+          {challenge.tags?.slice(0, 4).map((category) => (
             <span
               key={category}
               className="px-2 py-0.5 bg-gray-700/50 text-gray-300 text-xs rounded-full"
@@ -360,9 +337,9 @@ export const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               {category}
             </span>
           ))}
-          {challenge.categories && challenge.categories.length > 4 && (
+          {challenge.tags && challenge.tags.length > 4 && (
             <span className="px-2 py-0.5 text-gray-500 text-xs">
-              +{challenge.categories.length - 4} more
+              +{challenge.tags.length - 4} more
             </span>
           )}
         </div>

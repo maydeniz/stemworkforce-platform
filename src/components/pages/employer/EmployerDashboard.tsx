@@ -23,17 +23,13 @@ import {
   Target,
   DollarSign,
   UserPlus,
-  Search,
-  Filter,
   Plus,
   Star,
   MapPin,
   Building2,
   Zap,
-  Eye,
-  ArrowUpRight,
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 

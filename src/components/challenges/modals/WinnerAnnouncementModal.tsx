@@ -6,10 +6,7 @@ import {
   Medal,
   Star,
   Share2,
-  Download,
-  ExternalLink,
   TrendingUp,
-  Award,
   Sparkles,
   ChevronRight
 } from 'lucide-react';

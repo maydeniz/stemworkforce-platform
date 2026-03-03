@@ -8,17 +8,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Target,
-  Users,
   Calendar,
   TrendingUp,
   Star,
   ChevronRight,
   Plus,
   CheckCircle2,
-  Clock,
-  BarChart3,
   MessageSquare,
-  BookOpen,
   XCircle
 } from 'lucide-react';
 import type { PerformanceGoal, ReviewCycle, GoalStatus, ReviewCycleStatus } from '@/types/staffManagement';

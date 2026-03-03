@@ -2,17 +2,12 @@ import { Link } from 'react-router-dom';
 import {
   Wrench,
   GraduationCap,
-  Users,
   Building,
-  ArrowRight,
   CheckCircle,
-  Briefcase,
-  DollarSign,
   Clock,
   Shield,
   Zap,
   TrendingUp,
-  MapPin,
 } from 'lucide-react';
 
 // ===========================================

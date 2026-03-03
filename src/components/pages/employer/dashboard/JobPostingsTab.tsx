@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, MapPin, Clock, Users, Plus, Search, Filter, Eye, Edit2, Pause, Trash2, Star, Shield, TrendingUp, ChevronDown, Play } from 'lucide-react';
+import { MapPin, Clock, Users, Plus, Search, Eye, Edit2, Pause, Star, Shield, TrendingUp, Play } from 'lucide-react';
 
 const SAMPLE_JOBS = [
   { id: 1, title: 'Senior AI/ML Engineer', department: 'Research & Development', location: 'San Francisco, CA', type: 'Full-time', salary: '$180,000 - $220,000', applicants: 234, newApplicants: 18, views: 3456, daysOpen: 12, clearance: 'None', status: 'active', featured: true, matchRate: 94 },

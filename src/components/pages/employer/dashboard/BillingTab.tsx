@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, CheckCircle, Zap, Download, Clock, X, ArrowUpRight } from 'lucide-react';
+import { CreditCard, CheckCircle, Download, X, ArrowUpRight } from 'lucide-react';
 
 const INVOICES = [
   { date: 'Mar 1, 2025', amount: '$2,499.00', status: 'Paid', id: 'INV-2025-003' },

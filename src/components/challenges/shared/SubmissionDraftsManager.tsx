@@ -13,7 +13,6 @@ import {
   AlertCircle,
   CheckCircle,
   Save,
-  Upload,
   ChevronRight,
   History,
 } from 'lucide-react';
