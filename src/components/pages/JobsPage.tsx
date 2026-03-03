@@ -744,14 +744,14 @@ const JobsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 pb-20">
         {/* Primary Toggle */}
         <div className="flex justify-center mb-8">
-          <div className="bg-gray-800 rounded-full p-1 inline-flex">
-            <button onClick={() => setOpportunityType('job')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'job' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+          <div className="bg-gray-800 rounded-2xl sm:rounded-full p-1 flex flex-col sm:flex-row w-full sm:w-auto">
+            <button onClick={() => setOpportunityType('job')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full text-sm sm:text-base font-semibold transition-all flex items-center justify-center gap-2 ${opportunityType === 'job' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
               💼 Job Opportunities <span className={`px-2 py-0.5 rounded-full text-xs ${opportunityType === 'job' ? 'bg-gray-900/20' : 'bg-gray-700'}`}>{jobCount}</span>
             </button>
-            <button onClick={() => setOpportunityType('internship')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'internship' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
-              🎓 Internship Opportunities <span className={`px-2 py-0.5 rounded-full text-xs ${opportunityType === 'internship' ? 'bg-gray-900/20' : 'bg-gray-700'}`}>{internshipCount}</span>
+            <button onClick={() => setOpportunityType('internship')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full text-sm sm:text-base font-semibold transition-all flex items-center justify-center gap-2 ${opportunityType === 'internship' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+              🎓 Internships <span className={`px-2 py-0.5 rounded-full text-xs ${opportunityType === 'internship' ? 'bg-gray-900/20' : 'bg-gray-700'}`}>{internshipCount}</span>
             </button>
-            <button onClick={() => setOpportunityType('map')} className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${opportunityType === 'map' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+            <button onClick={() => setOpportunityType('map')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full text-sm sm:text-base font-semibold transition-all flex items-center justify-center gap-2 ${opportunityType === 'map' ? 'bg-yellow-500 text-gray-900' : 'text-gray-400 hover:text-white'}`}>
               🗺️ Workforce Map
             </button>
           </div>
