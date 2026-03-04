@@ -106,114 +106,65 @@ const HomePage: React.FC = () => {
 
           {/* Visual Ecosystem Model */}
           <div className="relative max-w-4xl mx-auto mb-16">
-
-            {/* Desktop: 3-column connected layout */}
-            <div className="hidden md:grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+            <div className="grid grid-cols-3 gap-4 md:gap-8 items-center">
               {/* Left Column */}
-              <div className="space-y-6 flex flex-col items-end">
+              <div className="space-y-4 md:space-y-8 flex flex-col items-end">
                 <div className="group">
-                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-blue-500/50 transition-all cursor-pointer">
+                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-blue-500/50 transition-all cursor-pointer">
                     <div className="text-right">
-                      <p className="text-white font-semibold">Employers</p>
-                      <p className="text-sm text-gray-500">Companies, Labs, Agencies</p>
+                      <p className="text-white font-semibold text-xs md:text-base">Employers</p>
+                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Companies, Labs, Agencies</p>
                     </div>
-                    <span className="text-3xl">🏢</span>
+                    <span className="text-xl md:text-3xl">🏢</span>
                   </div>
                 </div>
                 <div className="group">
-                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-green-500/50 transition-all cursor-pointer">
+                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-green-500/50 transition-all cursor-pointer">
                     <div className="text-right">
-                      <p className="text-white font-semibold">Education Partners</p>
-                      <p className="text-sm text-gray-500">Universities & Training</p>
+                      <p className="text-white font-semibold text-xs md:text-base">Education</p>
+                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Universities & Training</p>
                     </div>
-                    <span className="text-3xl">🎓</span>
+                    <span className="text-xl md:text-3xl">🎓</span>
                   </div>
                 </div>
               </div>
 
               {/* Center - Platform Hub */}
-              <div className="relative px-6">
+              <div className="relative min-w-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
-                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-center shadow-2xl w-52">
-                  <div className="w-16 h-16 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-4">
-                    <span className="text-4xl">🔗</span>
+                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-4 md:p-8 text-center shadow-2xl overflow-hidden">
+                  <div className="w-10 h-10 md:w-16 md:h-16 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-2 md:mb-4">
+                    <span className="text-2xl md:text-4xl">🔗</span>
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 whitespace-nowrap">STEMWorkforce</h3>
-                  <p className="text-sm text-blue-200">Connecting the Ecosystem</p>
+                  <h3 className="text-sm md:text-xl font-bold text-white mb-1 md:mb-2">
+                    <span className="md:hidden">STEM<br />Workforce</span>
+                    <span className="hidden md:inline">STEMWorkforce</span>
+                  </h3>
+                  <p className="text-[10px] md:text-sm text-blue-200">Connecting the Ecosystem</p>
                 </div>
                 {/* Connection lines */}
-                <div className="absolute top-1/2 -left-2 w-8 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
-                <div className="absolute top-1/2 -right-2 w-8 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
+                <div className="absolute top-1/2 -left-2 md:-left-4 w-2 md:w-4 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
+                <div className="absolute top-1/2 -right-2 md:-right-4 w-2 md:w-4 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6 flex flex-col items-start">
+              <div className="space-y-4 md:space-y-8 flex flex-col items-start">
                 <div className="group">
-                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-yellow-500/50 transition-all cursor-pointer">
-                    <span className="text-3xl">👤</span>
+                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-yellow-500/50 transition-all cursor-pointer">
+                    <span className="text-xl md:text-3xl">👤</span>
                     <div>
-                      <p className="text-white font-semibold">Talent</p>
-                      <p className="text-sm text-gray-500">Job Seekers & Professionals</p>
+                      <p className="text-white font-semibold text-xs md:text-base">Talent</p>
+                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Job Seekers & Professionals</p>
                     </div>
                   </div>
                 </div>
                 <div className="group">
-                  <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-pink-500/50 transition-all cursor-pointer">
-                    <span className="text-3xl">⭐</span>
+                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-pink-500/50 transition-all cursor-pointer">
+                    <span className="text-xl md:text-3xl">⭐</span>
                     <div>
-                      <p className="text-white font-semibold">Providers</p>
-                      <p className="text-sm text-gray-500">Consultants & Coaches</p>
+                      <p className="text-white font-semibold text-xs md:text-base">Providers</p>
+                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Consultants & Coaches</p>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile: Hub at top, stakeholders radiate below with connectors */}
-            <div className="md:hidden flex flex-col items-center">
-              {/* Center Hub */}
-              <div className="relative mb-2">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
-                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-center shadow-2xl">
-                  <div className="w-14 h-14 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-3xl">🔗</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">STEMWorkforce</h3>
-                  <p className="text-sm text-blue-200">Connecting the Ecosystem</p>
-                </div>
-              </div>
-
-              {/* Vertical connector */}
-              <div className="w-0.5 h-4 bg-gradient-to-b from-purple-500/50 to-transparent" />
-
-              {/* Stakeholder grid - 2 cols on mobile */}
-              <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
-                <div className="flex justify-center">
-                  <div className="p-3 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-blue-500/50 transition-all cursor-pointer text-center">
-                    <span className="text-2xl">🏢</span>
-                    <p className="text-white font-semibold text-sm mt-1">Employers</p>
-                    <p className="text-xs text-gray-500">Companies & Labs</p>
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className="p-3 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-green-500/50 transition-all cursor-pointer text-center">
-                    <span className="text-2xl">🎓</span>
-                    <p className="text-white font-semibold text-sm mt-1">Education</p>
-                    <p className="text-xs text-gray-500">Universities & Training</p>
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className="p-3 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-yellow-500/50 transition-all cursor-pointer text-center">
-                    <span className="text-2xl">👤</span>
-                    <p className="text-white font-semibold text-sm mt-1">Talent</p>
-                    <p className="text-xs text-gray-500">Job Seekers</p>
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className="p-3 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-pink-500/50 transition-all cursor-pointer text-center">
-                    <span className="text-2xl">⭐</span>
-                    <p className="text-white font-semibold text-sm mt-1">Providers</p>
-                    <p className="text-xs text-gray-500">Consultants</p>
                   </div>
                 </div>
               </div>
@@ -221,11 +172,11 @@ const HomePage: React.FC = () => {
 
             {/* Students at bottom */}
             <div className="flex justify-center mt-6 md:mt-8">
-              <div className="inline-flex items-center gap-3 p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-cyan-500/50 transition-all cursor-pointer">
-                <span className="text-3xl">🎒</span>
+              <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-cyan-500/50 transition-all cursor-pointer">
+                <span className="text-xl md:text-3xl">🎒</span>
                 <div>
-                  <p className="text-white font-semibold">Students</p>
-                  <p className="text-sm text-gray-500">Future STEM Workforce</p>
+                  <p className="text-white font-semibold text-xs md:text-base">Students</p>
+                  <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Future STEM Workforce</p>
                 </div>
               </div>
             </div>
