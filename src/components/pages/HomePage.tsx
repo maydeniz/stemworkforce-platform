@@ -36,11 +36,6 @@ const HomePage: React.FC = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full mb-8">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-blue-400">DOE CTO Challenge Initiative</span>
-          </div>
-
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
             Building America's
             <span className="block gradient-text">Technology Future</span>
