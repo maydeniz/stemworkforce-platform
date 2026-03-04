@@ -18,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 import { eventsService } from '@/services/eventsApi';
+import { sampleEvents } from '@/data/sampleEvents';
 import { EventCard, EventCardSkeleton } from './EventCard';
 import type { Event, EventFilters } from '@/types';
 import { cn } from '@/utils/helpers';
@@ -276,8 +277,42 @@ const EventCategoryPage: React.FC = () => {
       const result = await eventsService.events.list(eventFilters, currentPage, pageSize);
       setEvents(result.events);
       setTotalEvents(result.total);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load events');
+    } catch {
+      // Fallback to sample events filtered by category config
+      let filtered = [...sampleEvents];
+
+      // Filter by industries if specified
+      if (config.filters.industries && config.filters.industries.length > 0) {
+        filtered = filtered.filter((e) =>
+          e.industries?.some((ind) => config.filters.industries!.includes(ind))
+        );
+      }
+
+      // Filter by search
+      if (filters.search) {
+        const q = filters.search.toLowerCase();
+        filtered = filtered.filter((e) =>
+          e.title.toLowerCase().includes(q) || e.description?.toLowerCase().includes(q)
+        );
+      }
+
+      // Filter by virtual/in-person
+      if (filters.virtual) {
+        filtered = filtered.filter((e) => e.virtual);
+      }
+      if (filters.inPerson) {
+        filtered = filtered.filter((e) => !e.virtual);
+      }
+
+      // Filter by free
+      if (filters.free) {
+        filtered = filtered.filter((e) => e.isFree);
+      }
+
+      // Paginate
+      const start = (currentPage - 1) * pageSize;
+      setEvents(filtered.slice(start, start + pageSize));
+      setTotalEvents(filtered.length);
     } finally {
       setIsLoading(false);
     }

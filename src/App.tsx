@@ -402,14 +402,6 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="/events/:id"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <EventDetailPage />
-            </Suspense>
-          }
-        />
-        <Route
           path="/events/category/:category"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -417,7 +409,7 @@ const AppRoutes: React.FC = () => {
             </Suspense>
           }
         />
-        {/* Event category shortcuts */}
+        {/* Event category shortcuts — must be before /events/:id */}
         <Route path="/events/career-fairs" element={<Navigate to="/events/category/career-fairs" replace />} />
         <Route path="/events/networking" element={<Navigate to="/events/category/networking" replace />} />
         <Route path="/events/workshops" element={<Navigate to="/events/category/workshops" replace />} />
@@ -433,6 +425,14 @@ const AppRoutes: React.FC = () => {
         <Route path="/events/national-labs" element={<Navigate to="/events/category/national-labs" replace />} />
         <Route path="/events/government" element={<Navigate to="/events/category/government" replace />} />
         <Route path="/events/employers" element={<Navigate to="/events/category/employers" replace />} />
+        <Route
+          path="/events/:id"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <EventDetailPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/training"
           element={
