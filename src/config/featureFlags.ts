@@ -131,7 +131,7 @@ export const defaultNavigationFlags: NavigationFlags = {
         items: [
           { id: 'academic-partnerships', label: 'Academic Partnerships', path: '/partnerships/academic', icon: '🏛️', description: 'Connect with universities', status: 'enabled' },
           { id: 'apprenticeship-programs', label: 'Apprenticeship Programs', path: '/partnerships/apprenticeship', icon: '🛠️', description: 'Registered apprenticeships', status: 'enabled' },
-          { id: 'diversity-initiatives', label: 'Diversity Initiatives', path: '/partnerships/diversity', icon: '🌈', description: 'DEI recruitment programs', status: 'enabled' },
+          { id: 'diversity-initiatives', label: 'Diversity Initiatives', path: '/partnerships/diversity', icon: '👩🏽‍🔬👨🏿‍💻👩🏻‍🔧', description: 'DEI recruitment programs', status: 'enabled' },
         ]
       },
       {

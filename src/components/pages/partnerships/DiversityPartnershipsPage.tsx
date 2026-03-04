@@ -11,32 +11,32 @@ import {
 
 const PROGRAMS = [
   {
-    title: 'Workforce Diversity Partnerships',
-    description: 'Connect underrepresented communities with STEM career pathways through mentorship, training, and direct hiring programs.',
-    features: ['Targeted recruitment campaigns', 'Mentorship matching', 'Skills-based hiring support', 'Pipeline development'],
+    title: 'Rural STEM Access',
+    description: 'Bringing STEM career pathways to rural and underserved communities through mobile labs, satellite programs, and remote mentorship.',
+    features: ['Rural outreach programs', 'Mobile STEM labs', 'Remote mentorship', 'Satellite training centers'],
     icon: Users,
     color: 'emerald',
   },
   {
-    title: 'STEM Education Equity',
-    description: 'Programs designed to increase representation of women, minorities, and persons with disabilities in emerging technology sectors.',
-    features: ['Scholarship connections', 'HBCU partnerships', 'HSI collaborations', 'Tribal college programs'],
+    title: 'HBCU & HSI Partnerships',
+    description: 'Strengthening STEM pipelines through partnerships with HBCUs, Hispanic-Serving Institutions, and Tribal colleges.',
+    features: ['HBCU research collaborations', 'HSI curriculum partnerships', 'Tribal college programs', 'Scholarship connections'],
     icon: GraduationCap,
     color: 'purple',
   },
   {
-    title: 'Inclusive Hiring Initiatives',
-    description: 'Tools and frameworks for employers to build more diverse technical teams through bias-reduction and equitable hiring practices.',
-    features: ['Blind resume screening', 'Structured interviews', 'Diverse panel reviews', 'Equitable job descriptions'],
-    icon: Briefcase,
-    color: 'blue',
-  },
-  {
-    title: 'Community Partnerships',
-    description: 'Collaborate with community organizations, nonprofits, and workforce boards to extend STEM opportunities to underserved communities.',
-    features: ['Community outreach tools', 'Local workforce connections', 'Program impact tracking', 'Grant alignment support'],
+    title: 'Youth STEM Camps',
+    description: 'Summer camps and after-school programs introducing girls and underrepresented youth to hands-on STEM careers.',
+    features: ['Girls in STEM camps', 'After-school programs', 'Industry mentorship days', 'Hands-on lab experiences'],
     icon: Heart,
     color: 'rose',
+  },
+  {
+    title: 'Community Workforce Partnerships',
+    description: 'Collaborating with local organizations and workforce boards to connect African American, Hispanic, and rural communities with STEM opportunities.',
+    features: ['Community outreach tools', 'Local workforce connections', 'Program impact tracking', 'Grant alignment support'],
+    icon: Briefcase,
+    color: 'blue',
   },
 ];
 
@@ -57,12 +57,12 @@ export default function DiversityPartnershipsPage() {
               <Globe size={24} className="text-emerald-400" />
             </div>
             <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-sm font-medium rounded-full">
-              DEI Programs
+              Workforce Programs
             </span>
           </div>
-          <h1 className="text-4xl font-bold">Diversity & Inclusion Partnerships</h1>
+          <h1 className="text-4xl font-bold">STEM Workforce Expansion Partnerships</h1>
           <p className="text-lg text-slate-400 mt-3 max-w-2xl">
-            Building a more representative STEM workforce through equitable access to career pathways, mentorship, training, and hiring opportunities.
+            Expanding America's STEM talent pipeline by connecting rural, African American, Hispanic, and underserved communities with technology career pathways, mentorship, and training.
           </p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function DiversityPartnershipsPage() {
         <div className="bg-gradient-to-r from-purple-500/10 to-emerald-500/10 border border-slate-800 rounded-2xl p-10 text-center">
           <h2 className="text-2xl font-bold">Partner With Us</h2>
           <p className="text-slate-400 mt-2 max-w-lg mx-auto">
-            Join our diversity and inclusion ecosystem to expand your organization's reach and impact in building a representative STEM workforce.
+            Join our workforce expansion ecosystem to broaden your organization's impact in building America's STEM talent pipeline.
           </p>
           <div className="mt-6 flex justify-center gap-4">
             <Link

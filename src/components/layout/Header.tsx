@@ -71,7 +71,7 @@ const EMPLOYERS_MENU = {
       items: [
         { label: 'Staffing Services', path: '/services/staffing', icon: '👥', description: 'Contract and temp-to-perm' },
         { label: 'Recruitment Partners', path: '/service-providers?type=recruiter', icon: '🤝', description: 'Work with specialized recruiters' },
-        { label: 'Workforce Analytics', path: '/analytics', icon: '📈', description: 'Market insights and trends' },
+        { label: 'Workforce Analytics', path: '/workforce-analytics', icon: '📈', description: 'Market insights and trends' },
       ]
     },
     {
@@ -79,7 +79,7 @@ const EMPLOYERS_MENU = {
       items: [
         { label: 'Academic Partnerships', path: '/partnerships/academic', icon: '🏛️', description: 'Connect with universities' },
         { label: 'Apprenticeship Programs', path: '/partnerships/apprenticeship', icon: '🛠️', description: 'Registered apprenticeships' },
-        { label: 'Diversity Initiatives', path: '/partnerships/diversity', icon: '🌈', description: 'DEI recruitment programs' },
+        { label: 'Diversity Initiatives', path: '/partnerships/diversity', icon: '👩🏽‍🔬👨🏿‍💻👩🏻‍🔧', description: 'DEI recruitment programs' },
       ]
     }
   ],
@@ -171,7 +171,7 @@ const SERVICE_PROVIDERS_MENU = {
         { label: 'Become a Provider', path: '/become-a-provider', icon: '🚀', description: 'Apply to join our expert network' },
         { label: 'Provider Resources', path: '/provider-resources', icon: '📋', description: 'Tools, templates & guides' },
         { label: 'Browse Projects', path: '/projects', icon: '📂', description: 'Find active opportunities' },
-        { label: 'Provider Dashboard', path: '/provider-dashboard', icon: '📊', description: 'Manage your practice' },
+        { label: 'Provider Dashboard', path: '/provider', icon: '📊', description: 'Manage your practice' },
       ]
     }
   ],

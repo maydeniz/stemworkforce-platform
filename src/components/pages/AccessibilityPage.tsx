@@ -415,7 +415,7 @@ export default function AccessibilityPage() {
               Terms of Service
             </Link>
             <Link
-              to="/cookies"
+              to="/cookie-policy"
               className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
             >
               Cookie Policy

@@ -853,7 +853,7 @@ export default function PrivacyPolicyPage() {
                 Terms of Service
               </Link>
               <Link
-                to="/security"
+                to="/security-compliance"
                 className="text-blue-400 hover:text-blue-300 text-sm font-medium"
               >
                 Security

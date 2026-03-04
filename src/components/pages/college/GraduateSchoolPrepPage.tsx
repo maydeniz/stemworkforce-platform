@@ -418,7 +418,7 @@ const GraduateSchoolPrepPage: React.FC = () => {
                   <p className="text-gray-400 mt-1">Prestigious awards that fund your graduate education</p>
                 </div>
                 <Link
-                  to="/college/fellowship-finder"
+                  to="/college/fellowships"
                   className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg transition-colors"
                 >
                   Find Fellowships
