@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
 
           {/* Visual Ecosystem Model */}
           <div className="relative max-w-4xl mx-auto mb-16">
-            <div className="grid grid-cols-3 gap-8 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-center">
               {/* Left Column */}
               <div className="space-y-8 text-right">
                 <div className="group">
@@ -130,18 +130,18 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Center - Platform Hub */}
-              <div className="relative">
+              <div className="relative min-w-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
-                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-center shadow-2xl">
+                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 md:p-8 text-center shadow-2xl overflow-hidden">
                   <div className="w-16 h-16 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-4">
                     <span className="text-4xl">🔗</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">STEMWorkforce</h3>
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">STEMWorkforce</h3>
                   <p className="text-sm text-blue-200">Connecting the Ecosystem</p>
                 </div>
-                {/* Connection lines (decorative) */}
-                <div className="absolute top-1/2 -left-8 w-8 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
-                <div className="absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
+                {/* Connection lines (decorative, hidden on mobile) */}
+                <div className="hidden md:block absolute top-1/2 -left-8 w-8 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
+                <div className="hidden md:block absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
               </div>
 
               {/* Right Column */}
