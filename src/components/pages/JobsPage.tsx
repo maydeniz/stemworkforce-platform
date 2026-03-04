@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { AIMetricsTooltip } from '@/components/common/AIMetricsTooltip';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   industryAIMetrics,
   getExposureBgColor,
@@ -985,6 +986,20 @@ const JobsPage: React.FC = () => {
         </>
         )}
       </div>
+
+      {/* Contextual Career Q&A */}
+      {selectedIndustry !== 'all' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-white/5">
+          <ExpertQASection
+            industry={selectedIndustry}
+            title={`Career Q&A: ${selectedIndustry.charAt(0).toUpperCase() + selectedIndustry.slice(1).replace(/-/g, ' ')}`}
+            description="Expert answers related to careers in this industry"
+            limit={3}
+            compactAttribution
+            showTags
+          />
+        </div>
+      )}
 
       {applyingTo && (<QuickApplyModal opportunity={applyingTo} onClose={() => setApplyingTo(null)} onSubmit={handleApplySuccess} />)}
       {toast && (<Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />)}

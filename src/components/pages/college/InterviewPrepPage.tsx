@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Video,
   Code,
@@ -515,6 +516,17 @@ const InterviewPrepPage: React.FC = () => {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Expert Career Q&A */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ExpertQASection
+          scenario="interview-prep"
+          title="Expert Interview Advice"
+          description="Real answers from industry professionals on acing technical and behavioral interviews"
+          limit={5}
+          showTags
+        />
       </div>
     </div>
   );

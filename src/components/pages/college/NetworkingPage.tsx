@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Linkedin,
   Users,
@@ -476,6 +477,17 @@ const NetworkingPage: React.FC = () => {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Expert Networking Q&A */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ExpertQASection
+          scenario="networking-mentorship"
+          title="Networking & Career Advice"
+          description="Expert tips on building professional connections and growing your network"
+          limit={5}
+          showTags
+        />
       </div>
     </div>
   );

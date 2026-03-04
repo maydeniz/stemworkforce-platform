@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Award,
   BookOpen,
@@ -555,6 +556,20 @@ const ProfessionalDevelopmentPage: React.FC = () => {
               Explore Job Opportunities
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Expert Skill Development Q&A */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ExpertQASection
+            scenario="skill-development"
+            title="Skill Development Advice"
+            description="Expert guidance on building skills and advancing your STEM career"
+            limit={5}
+            showTags
+            showScenarios
+          />
         </div>
       </section>
     </div>

@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Users,
   Search,
@@ -358,6 +359,17 @@ const MentorshipPage: React.FC = () => {
             Become a Mentor
           </button>
         </div>
+      </div>
+
+      {/* Expert Mentorship Q&A */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ExpertQASection
+          scenario="networking-mentorship"
+          title="Questions Mentors Answer"
+          description="See the kinds of questions students ask mentors, with expert answers"
+          limit={5}
+          showTags
+        />
       </div>
     </div>
   );

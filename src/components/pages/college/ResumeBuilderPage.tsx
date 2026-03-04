@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   FileText,
   CheckCircle,
@@ -510,6 +511,17 @@ const ResumeBuilderPage: React.FC = () => {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Expert Resume Tips */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ExpertQASection
+          scenario="resume-optimization"
+          title="Expert Resume Tips"
+          description="Professional advice on crafting resumes that pass ATS systems and impress hiring managers"
+          limit={5}
+          showTags
+        />
       </div>
     </div>
   );

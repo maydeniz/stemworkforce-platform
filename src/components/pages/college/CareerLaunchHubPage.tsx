@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Briefcase,
   FileText,
@@ -587,6 +588,19 @@ const CareerLaunchHubPage: React.FC = () => {
               Take Skills Assessment
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Expert Career Q&A */}
+      <section className="py-12 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ExpertQASection
+            scenario="first-job"
+            title="Career Advice from Industry Experts"
+            description="Expert answers to the most common career launch questions"
+            limit={5}
+            showTags
+          />
         </div>
       </section>
     </div>

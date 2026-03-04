@@ -85,6 +85,17 @@ export const queryKeys = {
     mapSummary: (industry?: string) => [...queryKeys.workforce.all, 'mapSummary', industry] as const,
     stateDetail: (stateCode: string) => [...queryKeys.workforce.all, 'stateDetail', stateCode] as const,
   },
+
+  // CareerNet Q&A (CareerVillage.org CC BY 4.0)
+  careerQA: {
+    all: ['careerQA'] as const,
+    search: (filters: Record<string, unknown>) => [...queryKeys.careerQA.all, 'search', filters] as const,
+    byScenario: (scenario: string) => [...queryKeys.careerQA.all, 'scenario', scenario] as const,
+    byIndustry: (industry: string) => [...queryKeys.careerQA.all, 'industry', industry] as const,
+    related: (id: string) => [...queryKeys.careerQA.all, 'related', id] as const,
+    stats: () => [...queryKeys.careerQA.all, 'stats'] as const,
+    popularTags: () => [...queryKeys.careerQA.all, 'tags'] as const,
+  },
 } as const;
 
 /**
@@ -205,7 +216,7 @@ export const QueryProvider: React.FC<QueryProviderProps> = ({ children }) => {
  */
 export function invalidateRelatedQueries(
   client: QueryClient,
-  type: 'challenges' | 'listings' | 'events' | 'user'
+  type: 'challenges' | 'listings' | 'events' | 'user' | 'careerQA'
 ): void {
   switch (type) {
     case 'challenges':
@@ -219,6 +230,9 @@ export function invalidateRelatedQueries(
       break;
     case 'user':
       client.invalidateQueries({ queryKey: queryKeys.user.all });
+      break;
+    case 'careerQA':
+      client.invalidateQueries({ queryKey: queryKeys.careerQA.all });
       break;
   }
 }

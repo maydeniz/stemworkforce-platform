@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import ExpertQASection from '@/components/shared/ExpertQASection';
 
 // Types
 interface InterviewSession {
@@ -271,6 +272,19 @@ const InterviewPrepPage: React.FC = () => {
           </div>
         </section>
       )}
+
+      {/* Expert Career Q&A */}
+      <section className="py-12 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ExpertQASection
+            scenario="interview-prep"
+            title="Expert Interview Advice"
+            description="Real answers from industry professionals on interview preparation"
+            limit={5}
+            showTags
+          />
+        </div>
+      </section>
     </div>
   );
 };
@@ -918,10 +932,16 @@ const SessionReview: React.FC<{
         >
           Practice Again
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => alert('Counselor sharing coming soon!')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all cursor-pointer"
+        >
           Share with Counselor
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => alert('Report download coming soon!')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all cursor-pointer"
+        >
           Download Report
         </button>
       </div>

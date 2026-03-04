@@ -206,6 +206,35 @@ Please provide specific, actionable recommendations to strengthen this solution:
 
 Be specific and practical in your suggestions.
 `,
+
+  // Career Guidance with CareerNet RAG context
+  careerGuidance: (data: {
+    studentQuestion: string;
+    relevantQA: { questionTitle: string; answerBody: string }[];
+    industry?: string;
+  }) => `
+You are an expert career advisor specializing in STEM careers. A student is seeking career guidance.
+
+**Student's Question:** ${data.studentQuestion}
+${data.industry ? `**Industry Focus:** ${data.industry}` : ''}
+
+${data.relevantQA.length > 0 ? `Here are relevant expert answers from CareerVillage.org to inform your response:
+
+${data.relevantQA.map((qa, i) => `--- Expert Answer ${i + 1} ---
+Q: ${qa.questionTitle}
+A: ${qa.answerBody}
+`).join('\n')}` : ''}
+
+Please provide personalized career guidance that:
+1. Directly addresses the student's specific question
+2. Synthesizes insights from the expert answers above when available
+3. Provides specific, actionable next steps
+4. Mentions relevant resources, programs, or certifications
+5. Is encouraging and supportive
+
+When referencing specific advice from the expert answers, cite CareerVillage.org as a source.
+Keep the response concise (200-400 words) and practical.
+`,
 };
 
 // ===========================================

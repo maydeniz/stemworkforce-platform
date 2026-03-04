@@ -26,6 +26,7 @@ import {
   Loader2,
   Shield,
   LogOut,
+  BookOpen,
   X
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -34,6 +35,7 @@ import CounselorApplicationsTab from './CounselorApplicationsTab';
 import CounselorTasksTab from './CounselorTasksTab';
 import CounselorReportsTab from './CounselorReportsTab';
 import CounselorMessagesTab from './CounselorMessagesTab';
+import CounselorResourcesPanel from './components/CounselorResourcesPanel';
 import type {
   CounselorProfile,
   CaseloadStudent,
@@ -47,7 +49,7 @@ import type {
 // TYPES
 // ===========================================
 
-type TabKey = 'caseload' | 'applications' | 'tasks' | 'reports' | 'messages';
+type TabKey = 'caseload' | 'applications' | 'tasks' | 'reports' | 'messages' | 'resources';
 
 interface TabConfig {
   key: TabKey;
@@ -542,7 +544,8 @@ const CounselorDashboard: React.FC = () => {
     { key: 'applications', label: 'Applications', icon: FileText, badge: appMetrics?.readyForReview },
     { key: 'tasks', label: 'Tasks', icon: CheckSquare, badge: tasks.filter(t => t.status === 'pending').length },
     { key: 'reports', label: 'Reports', icon: BarChart3 },
-    { key: 'messages', label: 'Messages', icon: MessageSquare }
+    { key: 'messages', label: 'Messages', icon: MessageSquare },
+    { key: 'resources', label: 'Career Resources', icon: BookOpen }
   ];
 
   if (isLoading) {
@@ -935,6 +938,10 @@ const CounselorDashboard: React.FC = () => {
           <CounselorMessagesTab
             counselorId={counselor?.id || ''}
           />
+        )}
+
+        {activeTab === 'resources' && (
+          <CounselorResourcesPanel />
         )}
       </main>
 
