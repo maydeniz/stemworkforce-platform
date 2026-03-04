@@ -193,7 +193,7 @@ export const industryAIMetrics: Record<string, AIMetrics> = {
     ],
   },
 
-  // Nuclear Energy
+  // Nuclear Technologies
   nuclear: {
     exposureIndex: 38,
     opportunityIndex: 65,

@@ -32,7 +32,7 @@ export const INDUSTRY_SOC_MAPPING: Record<string, IndustrySOCMapping> = {
     ],
     projectedGrowth: 7.5,
   },
-  'Nuclear Energy': {
+  'Nuclear Technologies': {
     socCodes: [
       { code: '172161', title: 'Nuclear Engineers', displayCode: '17-2161' },
       { code: '192012', title: 'Physicists', displayCode: '19-2012' },

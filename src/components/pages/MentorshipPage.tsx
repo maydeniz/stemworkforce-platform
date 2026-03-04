@@ -133,7 +133,7 @@ const FEATURED_MENTORS: Mentor[] = [
     name: 'Dr. Amara Okonkwo',
     title: 'Nuclear Safety Engineer',
     company: 'NRC / DOE',
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     expertise: ['NRC Licensing', 'Health Physics', 'Diversity in Nuclear'],
     rating: 4.8,
     mentees: 9,

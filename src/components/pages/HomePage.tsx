@@ -21,7 +21,7 @@ const audienceColors: Record<string, {
 };
 
 const HomePage: React.FC = () => {
-  useDocumentTitle('Building America\'s Technology Future');
+  useDocumentTitle('Powering America\'s Innovation Workforce | STEMWorkforce');
 
   return (
     <div className="relative">
@@ -36,14 +36,35 @@ const HomePage: React.FC = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Building America's
-            <span className="block gradient-text">Technology Future</span>
-          </h1>
+          {/* Early Access Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full mb-8">
+            <span className="text-sm">🚀</span>
+            <span className="text-sm text-emerald-400 font-medium">Early Access — Building America's STEM Talent Platform</span>
+          </div>
 
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-10">
-            Connect with opportunities across semiconductor, nuclear, AI, quantum computing, 
-            healthcare technology, and other emerging technology sectors driving national security and economic growth.
+          <p className="text-lg md:text-2xl font-semibold text-white mb-4">The Platform</p>
+          <h1 className="text-4xl md:text-7xl font-bold mb-6">
+            <span className="gradient-text">Powering America's Innovation Ecosystem</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6">
+            One platform for the people and organizations building what matters.
+          </p>
+
+          {/* Decorative separator */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-8 h-px bg-gray-700" />
+            <div className="w-1.5 h-1.5 bg-gray-600 rotate-45" />
+            <div className="w-8 h-px bg-gray-700" />
+          </div>
+
+          {/* Sector list — all 11 critical sectors */}
+          <p className="text-sm text-gray-500 tracking-wide max-w-2xl mx-auto mb-10">
+            {INDUSTRY_LIST.map((industry, i) => (
+              <React.Fragment key={industry.id}>
+                {i > 0 && <span className="mx-1.5 text-gray-700">&middot;</span>}
+                {industry.name}
+              </React.Fragment>
+            ))}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -55,168 +76,44 @@ const HomePage: React.FC = () => {
                 </svg>
               </Button>
             </Link>
-            <Link to="/partners">
+            <Link to="/register?role=partner">
               <Button variant="outline" size="lg">
-                Partner With Us
+                Find Talent
               </Button>
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto">
+          {/* Stats — reframed as aspirational */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{formatNumber(PLATFORM_STATS.totalJobs)}+</div>
-              <div className="text-sm text-gray-400 mt-1">Jobs Tracked</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">{formatNumber(PLATFORM_STATS.totalJobs)}+</div>
+              <div className="text-xs text-gray-500 mt-1">Public Job Listings Aggregated</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{PLATFORM_STATS.statesCovered}</div>
-              <div className="text-sm text-gray-400 mt-1">States Covered</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">All {PLATFORM_STATS.statesCovered}</div>
+              <div className="text-xs text-gray-500 mt-1">States</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{PLATFORM_STATS.placementRate}%</div>
-              <div className="text-sm text-gray-400 mt-1">Placement Rate</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">11</div>
+              <div className="text-xs text-gray-500 mt-1">Critical Sectors</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{PLATFORM_STATS.industryPartners}+</div>
-              <div className="text-sm text-gray-400 mt-1">Partners</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">Growing</div>
+              <div className="text-xs text-gray-500 mt-1">Partner Network</div>
             </div>
           </div>
+
+          {/* Mission alignment — NOT DOE endorsement */}
+          <p className="text-xs text-gray-600 mt-6">
+            Aligned with federal STEM workforce development priorities
+          </p>
         </div>
       </section>
 
-      {/* Ecosystem Value Proposition Section */}
-      <section className="py-24 bg-dark-surface border-t border-dark-border">
+      {/* Audience Pathways Section — moved up from position 4 to position 2 */}
+      <section className="py-20 bg-dark-surface border-t border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              The Complete Ecosystem for America's
-              <span className="block gradient-text">Emerging Technology Workforce</span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              More than a job board. STEMWorkforce.net unites talent, employers, educators,
-              and service providers across 11 critical technology sectors powering national
-              security and economic competitiveness.
-            </p>
-          </div>
-
-          {/* Visual Ecosystem Model */}
-          <div className="relative max-w-4xl mx-auto mb-16">
-            <div className="grid grid-cols-3 gap-4 md:gap-8 items-center">
-              {/* Left Column */}
-              <div className="space-y-4 md:space-y-8 flex flex-col items-end">
-                <div className="group">
-                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-blue-500/50 transition-all cursor-pointer">
-                    <div className="text-right">
-                      <p className="text-white font-semibold text-xs md:text-base">Employers</p>
-                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Companies, Labs, Agencies</p>
-                    </div>
-                    <span className="text-xl md:text-3xl">🏢</span>
-                  </div>
-                </div>
-                <div className="group">
-                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-green-500/50 transition-all cursor-pointer">
-                    <div className="text-right">
-                      <p className="text-white font-semibold text-xs md:text-base">Education</p>
-                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Universities & Training</p>
-                    </div>
-                    <span className="text-xl md:text-3xl">🎓</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Center - Platform Hub */}
-              <div className="relative min-w-0">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
-                <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-4 md:p-8 text-center shadow-2xl overflow-hidden">
-                  <div className="w-10 h-10 md:w-16 md:h-16 mx-auto bg-white/10 rounded-xl flex items-center justify-center mb-2 md:mb-4">
-                    <span className="text-2xl md:text-4xl">🔗</span>
-                  </div>
-                  <h3 className="text-sm md:text-xl font-bold text-white mb-1 md:mb-2">
-                    <span className="md:hidden">STEM<br />Workforce</span>
-                    <span className="hidden md:inline">STEMWorkforce</span>
-                  </h3>
-                  <p className="text-[10px] md:text-sm text-blue-200">Connecting the Ecosystem</p>
-                </div>
-                {/* Connection lines */}
-                <div className="absolute top-1/2 -left-2 md:-left-4 w-2 md:w-4 h-0.5 bg-gradient-to-r from-transparent to-blue-500/50" />
-                <div className="absolute top-1/2 -right-2 md:-right-4 w-2 md:w-4 h-0.5 bg-gradient-to-l from-transparent to-purple-500/50" />
-              </div>
-
-              {/* Right Column */}
-              <div className="space-y-4 md:space-y-8 flex flex-col items-start">
-                <div className="group">
-                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-yellow-500/50 transition-all cursor-pointer">
-                    <span className="text-xl md:text-3xl">👤</span>
-                    <div>
-                      <p className="text-white font-semibold text-xs md:text-base">Talent</p>
-                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Job Seekers & Professionals</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="group">
-                  <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-pink-500/50 transition-all cursor-pointer">
-                    <span className="text-xl md:text-3xl">⭐</span>
-                    <div>
-                      <p className="text-white font-semibold text-xs md:text-base">Providers</p>
-                      <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Consultants & Coaches</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Students at bottom */}
-            <div className="flex justify-center mt-6 md:mt-8">
-              <div className="inline-flex items-center gap-2 md:gap-3 p-2 md:p-4 bg-dark-bg/50 border border-dark-border rounded-xl hover:border-cyan-500/50 transition-all cursor-pointer">
-                <span className="text-xl md:text-3xl">🎒</span>
-                <div>
-                  <p className="text-white font-semibold text-xs md:text-base">Students</p>
-                  <p className="text-[10px] md:text-sm text-gray-500 hidden sm:block">Future STEM Workforce</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Three Pillars */}
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-blue-500/30 transition-all">
-              <div className="w-16 h-16 mx-auto bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">🔗</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Unified Platform</h3>
-              <p className="text-gray-400">
-                All 5 stakeholder types connected in one place. Find opportunities, talent,
-                programs, and expertise without switching platforms.
-              </p>
-            </div>
-            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-purple-500/30 transition-all">
-              <div className="w-16 h-16 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">📊</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Workforce Intelligence</h3>
-              <p className="text-gray-400">
-                Data-driven insights and matching across 24+ states. Real-time job market
-                data, skills gap analysis, and trend forecasting.
-              </p>
-            </div>
-            <div className="text-center p-8 bg-dark-bg/30 border border-dark-border rounded-2xl hover:border-green-500/30 transition-all">
-              <div className="w-16 h-16 mx-auto bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">🏛️</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">National Mission</h3>
-              <p className="text-gray-400">
-                A DOE-backed initiative focused on critical technology sectors. Supporting
-                national security, economic competitiveness, and workforce development.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Audience Pathways Section */}
-      <section className="py-24 bg-dark-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               I am a...
             </h2>
@@ -230,8 +127,8 @@ const HomePage: React.FC = () => {
               {
                 icon: '👤',
                 title: 'Talent',
-                subtitle: 'Job Seeker or Professional',
-                description: 'Find jobs, grow your career, connect with mentors',
+                subtitle: 'STEM Professional or Job Seeker',
+                description: 'Get AI-matched to roles across thousands of listings. See salary data. Access coaching to land the offer.',
                 cta: 'Explore Jobs',
                 link: '/jobs',
                 color: 'yellow',
@@ -240,8 +137,8 @@ const HomePage: React.FC = () => {
                 icon: '🏢',
                 title: 'Employer',
                 subtitle: 'Company, Lab, or Agency',
-                description: 'Post jobs, find talent, build your pipeline',
-                cta: 'Post Jobs',
+                description: 'Post once, reach our growing partner network. Source credentialed STEM talent. Run challenges to find your next hire.',
+                cta: 'Find Talent',
                 link: '/register?role=partner',
                 color: 'blue',
               },
@@ -249,7 +146,7 @@ const HomePage: React.FC = () => {
                 icon: '🎓',
                 title: 'Educator',
                 subtitle: 'University or Training Provider',
-                description: 'List programs, connect with industry',
+                description: 'Connect your graduates directly to hiring employers. See which skills are in demand. Track placement outcomes.',
                 cta: 'Partner With Us',
                 link: '/register?role=educator',
                 color: 'green',
@@ -258,7 +155,7 @@ const HomePage: React.FC = () => {
                 icon: '⭐',
                 title: 'Provider',
                 subtitle: 'Consultant or Coach',
-                description: 'Offer services, find clients, grow practice',
+                description: 'Showcase your firm to employers and agencies investing in STEM. Win work across 11 high-growth sectors.',
                 cta: 'Join Network',
                 link: '/register?role=service-provider',
                 color: 'pink',
@@ -266,8 +163,8 @@ const HomePage: React.FC = () => {
               {
                 icon: '🎒',
                 title: 'Student',
-                subtitle: 'Future STEM Professional',
-                description: 'Explore careers, prep for college, find mentors',
+                subtitle: 'High School or College',
+                description: 'Find the right college, win scholarships, land internships, and see what your degree is actually worth.',
                 cta: 'Start Free',
                 link: '/register?role=student',
                 color: 'cyan',
@@ -342,10 +239,10 @@ const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Your Complete Workforce Platform
+              What You Can Do Here
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Everything you need to launch or advance your career in emerging technologies.
+              Tools for every stakeholder — whether you're hiring, job searching, placing graduates, or consulting.
             </p>
           </div>
 
@@ -360,7 +257,7 @@ const HomePage: React.FC = () => {
               {
                 icon: '🗺️',
                 title: 'Workforce Map',
-                description: 'Interactive intelligence on 24+ states with industry clusters and top employers.',
+                description: 'Interactive intelligence across all 50 states with industry clusters and top employers.',
                 link: '/map',
               },
               {
@@ -400,46 +297,90 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Social Proof / Trust Section */}
-      <section className="py-16 bg-dark-bg border-y border-dark-border">
+      {/* Why STEMWorkforce — Differentiation Section */}
+      <section className="py-20 bg-dark-bg border-t border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm text-gray-500 uppercase tracking-wider mb-4">Trusted By Leading Organizations</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Why STEMWorkforce?
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Not another job board. Purpose-built for the sectors that matter most.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-8 bg-dark-surface border border-dark-border rounded-2xl hover:border-blue-500/30 transition-all">
+              <div className="w-14 h-14 mx-auto bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">11 Critical Sectors, One Platform</h3>
+              <p className="text-sm text-gray-400">
+                Unlike general job boards, every feature is built for semiconductor, nuclear, quantum, aerospace, biotech, cybersecurity, and more.
+              </p>
+            </div>
+            <div className="text-center p-8 bg-dark-surface border border-dark-border rounded-2xl hover:border-emerald-500/30 transition-all">
+              <div className="w-14 h-14 mx-auto bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-2xl">🔐</span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">Clearance-Ready Talent Pipeline</h3>
+              <p className="text-sm text-gray-400">
+                Source by clearance level, build pipelines from university programs, and manage workforce data with security-grade standards.
+              </p>
+            </div>
+            <div className="text-center p-8 bg-dark-surface border border-dark-border rounded-2xl hover:border-purple-500/30 transition-all">
+              <div className="w-14 h-14 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-2xl">🔄</span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">Full Career Lifecycle</h3>
+              <p className="text-sm text-gray-400">
+                From students exploring STEM to senior engineers changing sectors — workforce development across the entire pipeline, not just job posts.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust / Social Proof Section — rewritten for legal compliance */}
+      <section className="py-16 bg-dark-surface border-y border-dark-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">Designed for Leading STEM Organizations</p>
+            <p className="text-xs text-gray-600">Target Sectors</p>
           </div>
 
-          {/* Partner Logos (placeholder grid) */}
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 mb-12 opacity-60">
+          {/* Target Sectors — plain text, NOT logo-styled */}
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-10">
             {[
-              { name: 'Department of Energy', abbr: 'DOE' },
-              { name: 'National Laboratories', abbr: 'NAT LABS' },
-              { name: 'Federal Agencies', abbr: 'FED GOVT' },
-              { name: 'Fortune 500', abbr: 'F500' },
-              { name: 'Top Universities', abbr: 'ACADEMIA' },
-              { name: 'Healthcare Systems', abbr: 'HEALTH' },
-            ].map((partner) => (
-              <div key={partner.abbr} className="flex items-center justify-center w-24 h-12 bg-dark-surface rounded-lg border border-dark-border">
-                <span className="text-xs font-bold text-gray-500">{partner.abbr}</span>
-              </div>
+              'Government & Defense',
+              'National Laboratories',
+              'Fortune 500',
+              'Universities',
+              'Healthcare Systems',
+              'Startups & Scale-ups',
+            ].map((sector) => (
+              <span key={sector} className="px-4 py-2 text-sm text-gray-400 border border-dark-border rounded-lg">
+                {sector}
+              </span>
             ))}
           </div>
 
-          {/* Trust Stats Row */}
+          {/* Reframed Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">650+</div>
-              <div className="text-sm text-gray-500">Industry Partners</div>
+              <div className="text-3xl font-bold text-white mb-1">Growing</div>
+              <div className="text-sm text-gray-500">Partner Network</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-white mb-1">11</div>
               <div className="text-sm text-gray-500">Critical Sectors</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">24+</div>
-              <div className="text-sm text-gray-500">States Covered</div>
+              <div className="text-3xl font-bold text-white mb-1">All 50</div>
+              <div className="text-sm text-gray-500">States</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">DOE</div>
-              <div className="text-sm text-gray-500">Backed Initiative</div>
+              <div className="text-3xl font-bold text-white mb-1">Federal</div>
+              <div className="text-sm text-gray-500">Workforce Aligned</div>
             </div>
           </div>
         </div>
@@ -449,19 +390,34 @@ const HomePage: React.FC = () => {
       <section className="py-24 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-y border-dark-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Shape the Future?
+            Start building from here.
           </h2>
           <p className="text-xl text-gray-300 mb-8">
-            Join thousands of professionals building careers in America's most critical technology sectors.
+            Whether you're hiring, job searching, placing graduates, or growing your practice — create your free account in under two minutes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/register">
               <Button size="lg">Create Free Account</Button>
             </Link>
-            <Link to="/partners">
+            <Link to="/register?role=partner">
               <Button variant="secondary" size="lg">Become a Partner</Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Legal Disclaimer */}
+      <section className="py-6 bg-dark-bg border-t border-dark-border">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-xs text-gray-600 text-center leading-relaxed">
+            DISCLAIMER: STEMWorkforce.net is an early-stage platform in active development.
+            Statistics, partner counts, and metrics displayed on this site represent forward-looking
+            goals and design targets, not verified current data, unless explicitly stated otherwise.
+            Sector categories shown represent target markets, not confirmed partnerships or endorsements.
+            STEMWorkforce.net is not endorsed by or affiliated with any federal agency. Job listing
+            counts reflect aggregated public data sources. We are committed to transparency and will
+            update metrics as verified data becomes available.
+          </p>
         </div>
       </section>
     </div>

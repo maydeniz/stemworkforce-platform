@@ -228,7 +228,7 @@ export const defaultNavigationFlags: NavigationFlags = {
         status: 'enabled',
         items: [
           { id: 'semiconductor-consulting', label: 'Semiconductor', path: '/services/semiconductor-consulting', icon: '💎', description: 'Fab consulting & supply chain', status: 'enabled' },
-          { id: 'nuclear-consulting', label: 'Nuclear Energy', path: '/services/nuclear-consulting', icon: '☢️', description: 'Nuclear strategy & workforce planning', status: 'enabled' },
+          { id: 'nuclear-consulting', label: 'Nuclear Technologies', path: '/services/nuclear-consulting', icon: '☢️', description: 'Nuclear strategy & workforce planning', status: 'enabled' },
           { id: 'ai-consulting', label: 'AI & Machine Learning', path: '/services/ai-consulting', icon: '🤖', description: 'AI readiness, strategy & implementation', status: 'enabled' },
           { id: 'quantum-consulting', label: 'Quantum Technologies', path: '/services/quantum-consulting', icon: '⚛️', description: 'Quantum strategy & use case discovery', status: 'enabled' },
           { id: 'cybersecurity-consulting', label: 'Cybersecurity', path: '/services/cybersecurity-consulting', icon: '🛡️', description: 'Assessments, compliance & strategy', status: 'enabled' },

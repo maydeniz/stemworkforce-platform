@@ -16,7 +16,7 @@ const eventCategories = [
 const industries = [
   { id: 'all', name: 'All Industries', icon: '🌐' },
   { id: 'semiconductor', name: 'Semiconductor', icon: '💎' },
-  { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
+  { id: 'nuclear', name: 'Nuclear Technologies', icon: '☢️' },
   { id: 'ai', name: 'AI & Machine Learning', icon: '🤖' },
   { id: 'quantum', name: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cyber', name: 'Cybersecurity', icon: '🛡️' },
@@ -104,7 +104,7 @@ const sampleEvents = [
   },
   {
     id: 3,
-    title: 'Nuclear Energy Workforce Summit',
+    title: 'Nuclear Technologies Workforce Summit',
     subtitle: 'Building the Next Generation Nuclear Workforce',
     category: 'conference',
     industries: ['nuclear'],

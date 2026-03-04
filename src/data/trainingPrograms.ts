@@ -50,7 +50,7 @@ export const trainingPrograms: TrainingProgram[] = [
   // NUCLEAR ENERGY STATES
   // =====================
 
-  // Ohio - Nuclear Energy
+  // Ohio - Nuclear Technologies
   {
     id: generateId(),
     name: 'Ohio State Nuclear Engineering',
@@ -60,7 +60,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$45,000',
     costNumeric: 45000,
     placement: 94,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Ohio',
     stateCode: 'OH',
@@ -81,7 +81,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$8,000',
     costNumeric: 8000,
     placement: 89,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Ohio',
     stateCode: 'OH',
@@ -94,7 +94,7 @@ export const trainingPrograms: TrainingProgram[] = [
     reviewsCount: 156,
   },
 
-  // Idaho - Nuclear Energy
+  // Idaho - Nuclear Technologies
   {
     id: generateId(),
     name: 'Nuclear Engineering Program',
@@ -104,7 +104,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$28,000',
     costNumeric: 28000,
     placement: 95,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Idaho',
     stateCode: 'ID',
@@ -125,7 +125,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: 'FREE',
     costNumeric: 0,
     placement: 98,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Idaho',
     stateCode: 'ID',
@@ -138,7 +138,7 @@ export const trainingPrograms: TrainingProgram[] = [
     reviewsCount: 312,
   },
 
-  // New Mexico - Nuclear Energy
+  // New Mexico - Nuclear Technologies
   {
     id: generateId(),
     name: 'Nuclear Engineering',
@@ -148,7 +148,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$32,000',
     costNumeric: 32000,
     placement: 96,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'New Mexico',
     stateCode: 'NM',
@@ -169,7 +169,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: 'FREE',
     costNumeric: 0,
     placement: 97,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'New Mexico',
     stateCode: 'NM',
@@ -182,7 +182,7 @@ export const trainingPrograms: TrainingProgram[] = [
     reviewsCount: 198,
   },
 
-  // Tennessee - Nuclear Energy
+  // Tennessee - Nuclear Technologies
   {
     id: generateId(),
     name: 'Nuclear Engineering',
@@ -192,7 +192,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$35,000',
     costNumeric: 35000,
     placement: 93,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Tennessee',
     stateCode: 'TN',
@@ -213,7 +213,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: '$9,500',
     costNumeric: 9500,
     placement: 88,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Tennessee',
     stateCode: 'TN',
@@ -234,7 +234,7 @@ export const trainingPrograms: TrainingProgram[] = [
     cost: 'FREE',
     costNumeric: 0,
     placement: 96,
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     industries: ['nuclear'],
     state: 'Tennessee',
     stateCode: 'TN',
@@ -950,7 +950,7 @@ export const getWorkforceMapTraining = (stateCode: string) => {
 
 // Industry code mapping for AI metrics lookup
 const industryCodeMap: Record<string, string> = {
-  'Nuclear Energy': 'nuclear',
+  'Nuclear Technologies': 'nuclear',
   'Semiconductor': 'semiconductor',
   'Healthcare': 'healthcare',
   'AI & Machine Learning': 'ai',

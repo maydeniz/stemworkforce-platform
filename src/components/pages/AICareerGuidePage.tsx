@@ -27,7 +27,7 @@ const industriesData = [
   { id: 'aerospace', name: 'Aerospace & Defense', icon: '🚀' },
   { id: 'biotech', name: 'Biotechnology', icon: '🧬' },
   { id: 'healthcare', name: 'Healthcare IT', icon: '🏥' },
-  { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
+  { id: 'nuclear', name: 'Nuclear Technologies', icon: '☢️' },
   { id: 'clean-energy', name: 'Clean Energy', icon: '⚡' },
   { id: 'manufacturing', name: 'Advanced Manufacturing', icon: '🏭' },
 ];

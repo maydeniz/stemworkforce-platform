@@ -65,7 +65,7 @@ const STATE_DATA: StateData[] = [
 const INDUSTRY_FILTERS = [
   { id: 'all', label: 'All Industries', icon: '🌐' },
   { id: 'semiconductor', label: 'Semiconductor', icon: '💎' },
-  { id: 'nuclear', label: 'Nuclear Energy', icon: '☢️' },
+  { id: 'nuclear', label: 'Nuclear Technologies', icon: '☢️' },
   { id: 'ai', label: 'AI & Machine Learning', icon: '🤖' },
   { id: 'quantum', label: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cybersecurity', label: 'Cybersecurity', icon: '🛡️' },

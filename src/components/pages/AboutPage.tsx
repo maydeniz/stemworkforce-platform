@@ -52,7 +52,7 @@ const WORKFORCE_GAPS = [
   { sector: 'Cybersecurity', gap: '457K unfilled jobs', source: 'CyberSeek 2025', color: 'text-red-400' },
   { sector: 'Semiconductor', gap: '90K technicians needed by 2030', source: 'SIA / White House', color: 'text-blue-400' },
   { sector: 'AI & Machine Learning', gap: '3.2:1 demand-to-supply ratio', source: 'Industry Reports', color: 'text-purple-400' },
-  { sector: 'Nuclear Energy', gap: '4M professionals needed by 2050', source: 'IAEA', color: 'text-emerald-400' },
+  { sector: 'Nuclear Technologies', gap: '4M professionals needed by 2050', source: 'IAEA', color: 'text-emerald-400' },
   { sector: 'Clean Energy', gap: '3.56M workers, growing 3x faster', source: 'DOE 2024', color: 'text-amber-400' },
 ];
 

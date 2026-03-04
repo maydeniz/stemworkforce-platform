@@ -45,7 +45,7 @@ const SALARY_DATA: SalaryData[] = [
   },
   {
     role: 'Nuclear Engineer',
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     location: 'National',
     entryLevel: 85000,
     midLevel: 118000,
@@ -177,7 +177,7 @@ const SALARY_DATA: SalaryData[] = [
   },
 ];
 
-const INDUSTRIES = ['All Industries', 'Semiconductor', 'Nuclear Energy', 'AI & Machine Learning', 'Quantum Technologies', 'Cybersecurity', 'Aerospace & Defense', 'Biotechnology', 'Robotics & Automation', 'Clean Energy', 'National Labs', 'Advanced Manufacturing'];
+const INDUSTRIES = ['All Industries', 'Semiconductor', 'Nuclear Technologies', 'AI & Machine Learning', 'Quantum Technologies', 'Cybersecurity', 'Aerospace & Defense', 'Biotechnology', 'Robotics & Automation', 'Clean Energy', 'National Labs', 'Advanced Manufacturing'];
 
 const LOCATIONS = [
   { value: 'national', label: 'National Average', multiplier: 1.0 },

@@ -62,7 +62,7 @@ const RSS_FEEDS: FeedSource[] = [
     type: 'google_news',
   },
   {
-    name: 'Nuclear Energy Workforce',
+    name: 'Nuclear Technologies Workforce',
     url: 'https://news.google.com/rss/search?q=nuclear+energy+workforce+jobs+hiring&hl=en-US&gl=US&ceid=US:en',
     type: 'google_news',
   },

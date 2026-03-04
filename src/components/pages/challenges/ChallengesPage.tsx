@@ -46,7 +46,7 @@ const INDUSTRIES: { value: IndustryType; label: string }[] = [
   { value: 'ai', label: 'AI & Machine Learning' },
   { value: 'quantum', label: 'Quantum Computing' },
   { value: 'aerospace', label: 'Aerospace' },
-  { value: 'nuclear', label: 'Nuclear Energy' },
+  { value: 'nuclear', label: 'Nuclear Technologies' },
   { value: 'cybersecurity', label: 'Cybersecurity' },
   { value: 'biotech', label: 'Biotechnology' },
   { value: 'clean-energy', label: 'Clean Energy' },

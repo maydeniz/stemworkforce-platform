@@ -62,7 +62,7 @@ const mockAIMetrics = {
 };
 
 const industryDefinitions: Record<string, { name: string; icon: string; color: string; bgColor: string }> = {
-  'Nuclear Energy': { name: 'Nuclear', icon: '⚛️', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' },
+  'Nuclear Technologies': { name: 'Nuclear', icon: '⚛️', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' },
   'Semiconductor': { name: 'Semiconductor', icon: '🔬', color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
   'Healthcare': { name: 'Healthcare', icon: '🏥', color: 'text-teal-400', bgColor: 'bg-teal-500/20' },
   'AI & Machine Learning': { name: 'AI & ML', icon: '🤖', color: 'text-purple-400', bgColor: 'bg-purple-500/20' },

@@ -177,7 +177,7 @@ COMPLIANCE STATUS
 RESEARCH FOCUS AREAS
 ├── Primary Research Areas (multi-select)
 │   ├── Nuclear Weapons
-│   ├── Nuclear Energy
+│   ├── Nuclear Technologies
 │   ├── National Security
 │   ├── Basic Science
 │   ├── Computing/HPC

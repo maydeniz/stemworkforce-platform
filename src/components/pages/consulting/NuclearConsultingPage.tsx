@@ -188,7 +188,7 @@ const nuclearConsultants: Consultant[] = [
     availability: 'available',
     image: '/images/consultants/nuc-6.jpg',
     bio: 'Former Managing Director at Lazard leading nuclear and clean energy advisory. Advised on $40B+ in nuclear project financing and M&A transactions.',
-    credentials: ['MBA - Wharton', 'Former Lazard Managing Director', 'Nuclear Energy Institute Board'],
+    credentials: ['MBA - Wharton', 'Former Lazard Managing Director', 'Nuclear Technologies Institute Board'],
     yearsExperience: 24,
     projectsCompleted: 78,
     specialization: 'Nuclear & Clean Energy Finance',
@@ -601,7 +601,7 @@ const NuclearConsultingPage: React.FC = () => {
   const consultationModal = useConsultationModal({
     industry: 'nuclear',
     serviceType: 'nuclear-consulting',
-    serviceName: 'Nuclear Energy Consulting',
+    serviceName: 'Nuclear Technologies Consulting',
   });
 
   return (

@@ -61,7 +61,7 @@ const CHALLENGE_TYPES: { value: ChallengeType; label: string; description: strin
 // Industry options
 const INDUSTRY_OPTIONS: { value: IndustryType; label: string; icon: string; color: string }[] = [
   { value: 'semiconductor', label: 'Semiconductor', icon: '💎', color: 'blue' },
-  { value: 'nuclear', label: 'Nuclear Energy', icon: '⚛️', color: 'yellow' },
+  { value: 'nuclear', label: 'Nuclear Technologies', icon: '⚛️', color: 'yellow' },
   { value: 'ai', label: 'Artificial Intelligence', icon: '🤖', color: 'violet' },
   { value: 'quantum', label: 'Quantum Computing', icon: '🔮', color: 'purple' },
   { value: 'cybersecurity', label: 'Cybersecurity', icon: '🔒', color: 'red' },

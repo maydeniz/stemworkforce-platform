@@ -539,7 +539,7 @@ const ExpertiseSection: React.FC<{
 }> = ({ data, onChange }) => {
   const industries = [
     { id: 'Semiconductor', icon: '💎' },
-    { id: 'Nuclear Energy', icon: '☢️' },
+    { id: 'Nuclear Technologies', icon: '☢️' },
     { id: 'AI & Machine Learning', icon: '🤖' },
     { id: 'Quantum Technologies', icon: '⚛️' },
     { id: 'Cybersecurity', icon: '🛡️' },
@@ -567,7 +567,7 @@ const ExpertiseSection: React.FC<{
       'Supply Chain', 'Equipment Engineering', 'Yield Optimization',
       'Chip Design', 'Packaging', 'EDA Tools', 'Foundry Relations',
     ],
-    'Nuclear Energy': [
+    'Nuclear Technologies': [
       'NRC Licensing', 'SMR Deployment', 'Nuclear Operations',
       'Fusion Energy', 'Reactor Design', 'Nuclear Safety',
       'Health Physics', 'Decommissioning', 'Nuclear Security',

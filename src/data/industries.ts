@@ -286,7 +286,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
 
   'nuclear-energy': {
     id: 'nuclear-energy',
-    name: 'Nuclear Energy',
+    name: 'Nuclear Technologies',
     shortName: 'Nuclear',
     icon: '⚛️',
     color: '#22c55e',

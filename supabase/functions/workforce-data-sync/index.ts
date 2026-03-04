@@ -27,7 +27,7 @@ const INDUSTRY_SOC_MAPPING: Record<string, { socCodes: { code: string; title: st
     ],
     projectedGrowth: 7.5,
   },
-  'Nuclear Energy': {
+  'Nuclear Technologies': {
     socCodes: [
       { code: '172161', title: 'Nuclear Engineers' },
       { code: '192012', title: 'Physicists' },
@@ -146,7 +146,7 @@ interface IndustryData {
 // Industry-specific skills for enrichment
 const INDUSTRY_SKILLS: Record<string, string[]> = {
   'Semiconductor': ['VLSI Design', 'Cleanroom Operations', 'Process Engineering', 'Photolithography', 'Testing & Validation'],
-  'Nuclear Energy': ['Reactor Operations', 'Radiation Safety', 'Nuclear Physics', 'Quality Assurance', 'Regulatory Compliance'],
+  'Nuclear Technologies': ['Reactor Operations', 'Radiation Safety', 'Nuclear Physics', 'Quality Assurance', 'Regulatory Compliance'],
   'AI & Machine Learning': ['Python', 'TensorFlow/PyTorch', 'Deep Learning', 'NLP', 'Computer Vision', 'MLOps'],
   'Quantum Technologies': ['Quantum Mechanics', 'Cryogenics', 'Python/Qiskit', 'Linear Algebra', 'Error Correction'],
   'Cybersecurity': ['Penetration Testing', 'SIEM', 'Incident Response', 'Cloud Security', 'Zero Trust Architecture'],
@@ -171,7 +171,7 @@ const STATE_MULTIPLIERS: Record<string, { salary: number; jobs: number }> = {
 
 const INDUSTRY_BASES: Record<string, { baseSalary: number; baseJobs: number; growth: number }> = {
   'Semiconductor': { baseSalary: 125000, baseJobs: 15000, growth: 8.5 },
-  'Nuclear Energy': { baseSalary: 110000, baseJobs: 8000, growth: 12.0 },
+  'Nuclear Technologies': { baseSalary: 110000, baseJobs: 8000, growth: 12.0 },
   'AI & Machine Learning': { baseSalary: 145000, baseJobs: 25000, growth: 22.0 },
   'Quantum Technologies': { baseSalary: 155000, baseJobs: 3000, growth: 35.0 },
   'Cybersecurity': { baseSalary: 120000, baseJobs: 45000, growth: 15.0 },

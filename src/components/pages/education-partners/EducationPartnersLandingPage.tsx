@@ -135,7 +135,7 @@ const PARTNER_TYPES = [
 // ===========================================
 const INDUSTRY_OPPORTUNITIES = [
   { name: 'Semiconductor', growth: '+45%', jobs: '245K+', icon: '💎', color: 'from-blue-500 to-indigo-500', badge: 'CHIPS Act' },
-  { name: 'Nuclear Energy', growth: '+15%', jobs: '89K+', icon: '☢️', color: 'from-green-500 to-emerald-500' },
+  { name: 'Nuclear Technologies', growth: '+15%', jobs: '89K+', icon: '☢️', color: 'from-green-500 to-emerald-500' },
   { name: 'AI & Machine Learning', growth: '+340%', jobs: '312K+', icon: '🤖', color: 'from-purple-500 to-pink-500' },
   { name: 'Quantum Technologies', growth: '+67%', jobs: '12K+', icon: '⚛️', color: 'from-pink-500 to-rose-500' },
   { name: 'Cybersecurity', growth: '+32%', jobs: '567K+', icon: '🛡️', color: 'from-red-500 to-orange-500' },

@@ -33,7 +33,7 @@ const CATEGORIES = [
 const INDUSTRIES = [
   'All Industries',
   'Semiconductor',
-  'Nuclear Energy',
+  'Nuclear Technologies',
   'AI & Machine Learning',
   'Cybersecurity',
   'Aerospace & Defense',
@@ -95,7 +95,7 @@ const SAMPLE_PROJECTS: Project[] = [
     title: 'Nuclear Engineering Career Coaching',
     organization: 'DOE National Laboratory',
     category: 'Career Coaching',
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     description: 'Provide career coaching and development planning for early-career nuclear engineers (20 participants). Include clearance preparation guidance.',
     budget: '$40K - $60K',
     duration: '3 months',

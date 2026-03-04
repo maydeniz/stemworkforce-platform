@@ -117,7 +117,7 @@ const marketOpportunities: MarketOpportunity[] = [
     color: 'from-blue-500 to-indigo-600'
   },
   {
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     icon: <Atom className="h-6 w-6" />,
     growth: '+15%',
     demand: 'High',

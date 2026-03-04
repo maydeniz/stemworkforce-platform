@@ -276,7 +276,7 @@ export const federalAgencies: Organization[] = [
     location: 'Washington, DC',
     subunits: [
       { id: 'doe-sc', name: 'Office of Science', type: 'office' },
-      { id: 'doe-ne', name: 'Office of Nuclear Energy', type: 'office' },
+      { id: 'doe-ne', name: 'Office of Nuclear Technologies', type: 'office' },
       { id: 'doe-ee', name: 'Office of Energy Efficiency & Renewable Energy', type: 'office' },
       { id: 'doe-fe', name: 'Office of Fossil Energy', type: 'office' },
       { id: 'doe-nnsa', name: 'National Nuclear Security Administration', type: 'office' },

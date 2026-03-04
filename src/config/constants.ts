@@ -18,7 +18,7 @@ export const INDUSTRIES: Record<IndustryType, Industry> = {
   },
   nuclear: {
     id: 'nuclear',
-    name: 'Nuclear Energy',
+    name: 'Nuclear Technologies',
     icon: '⚛️',
     color: '#22c55e',
     jobsCount: 89000,
@@ -279,7 +279,7 @@ export const PLATFORM_STATS = {
   activeEmployers: 12500,
   trainedProfessionals: 185000,
   placementRate: 87,
-  statesCovered: 24,
+  statesCovered: 50,
   industryPartners: 650,
   healthcareJobs: 892000,
   healthcarePartners: 180,

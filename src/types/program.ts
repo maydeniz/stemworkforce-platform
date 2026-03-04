@@ -106,7 +106,7 @@ export const CAREER_COMPETENCY_FIELDS: { key: keyof CareerCompetencies; label: s
 // Target Industries
 export const TARGET_INDUSTRIES = [
   'Energy & Utilities',
-  'Nuclear Energy',
+  'Nuclear Technologies',
   'Renewable Energy',
   'Defense & National Security',
   'Aerospace',

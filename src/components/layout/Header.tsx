@@ -144,7 +144,7 @@ const SERVICE_PROVIDERS_MENU = {
       title: 'Industry Consulting',
       items: [
         { label: 'Semiconductor', path: '/services/semiconductor-consulting', icon: '💎', description: 'Fab consulting & supply chain' },
-        { label: 'Nuclear Energy', path: '/services/nuclear-consulting', icon: '☢️', description: 'Nuclear strategy & workforce planning' },
+        { label: 'Nuclear Technologies', path: '/services/nuclear-consulting', icon: '☢️', description: 'Nuclear strategy & workforce planning' },
         { label: 'AI & Machine Learning', path: '/services/ai-consulting', icon: '🤖', description: 'AI readiness, strategy & implementation' },
         { label: 'Quantum Technologies', path: '/services/quantum-consulting', icon: '⚛️', description: 'Quantum strategy & use case discovery' },
         { label: 'Cybersecurity', path: '/services/cybersecurity-consulting', icon: '🛡️', description: 'Assessments, compliance & strategy' },

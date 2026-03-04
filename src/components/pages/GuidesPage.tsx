@@ -31,7 +31,7 @@ const GUIDES = [
   },
   {
     id: 'nuclear',
-    title: 'Nuclear Energy Career Roadmap',
+    title: 'Nuclear Technologies Career Roadmap',
     description: 'Career paths in nuclear power, from reactor operations to fusion research. Covers NRC licensing, DOE programs, and the growing SMR sector.',
     icon: '\u{2622}\u{FE0F}',
     color: 'emerald',

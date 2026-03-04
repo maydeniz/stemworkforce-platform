@@ -6,7 +6,7 @@
 
 // Industry definitions with icons and colors - All 11 industries
 export const industryDefinitions: Record<string, { name: string; icon: string; color: string; bgColor: string }> = {
-  'Nuclear Energy': { name: 'Nuclear', icon: '⚛️', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' },
+  'Nuclear Technologies': { name: 'Nuclear', icon: '⚛️', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' },
   'Semiconductor': { name: 'Semiconductor', icon: '🔬', color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
   'Healthcare': { name: 'Healthcare', icon: '🏥', color: 'text-teal-400', bgColor: 'bg-teal-500/20' },
   'AI & Machine Learning': { name: 'AI & ML', icon: '🤖', color: 'text-purple-400', bgColor: 'bg-purple-500/20' },
@@ -21,7 +21,7 @@ export const industryDefinitions: Record<string, { name: string; icon: string; c
 
 // All 11 industries list
 export const ALL_INDUSTRIES = [
-  'Nuclear Energy',
+  'Nuclear Technologies',
   'Semiconductor',
   'Healthcare',
   'AI & Machine Learning',
@@ -65,7 +65,7 @@ const industryTemplates: Record<string, {
     roles: { title: string; salaryRange: [number, number]; requirement: string }[];
   }[];
 }> = {
-  'Nuclear Energy': {
+  'Nuclear Technologies': {
     skills: ['Nuclear Physics', 'Radiation Safety', 'Reactor Operations', 'NRC Regulations', 'Health Physics', 'Dosimetry'],
     basePathways: [
       {
@@ -389,7 +389,7 @@ const stateMultipliers: Record<string, { salary: number; jobs: number }> = {
 const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   // West Coast
   WA: {
-    'Nuclear Energy': ['Richland', 'Hanford'],
+    'Nuclear Technologies': ['Richland', 'Hanford'],
     'Semiconductor': ['Seattle', 'Redmond', 'Bothell'],
     'Healthcare': ['Seattle', 'Tacoma', 'Spokane'],
     'AI & Machine Learning': ['Seattle', 'Redmond', 'Bellevue'],
@@ -402,7 +402,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Seattle', 'Everett', 'Tacoma'],
   },
   OR: {
-    'Nuclear Energy': ['Corvallis'],
+    'Nuclear Technologies': ['Corvallis'],
     'Semiconductor': ['Portland', 'Hillsboro', 'Beaverton'],
     'Healthcare': ['Portland', 'Eugene', 'Salem'],
     'AI & Machine Learning': ['Portland', 'Hillsboro'],
@@ -415,7 +415,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Portland', 'Eugene', 'Hillsboro'],
   },
   CA: {
-    'Nuclear Energy': ['San Diego', 'Livermore'],
+    'Nuclear Technologies': ['San Diego', 'Livermore'],
     'Semiconductor': ['San Jose', 'Santa Clara', 'Milpitas', 'Irvine'],
     'Healthcare': ['San Francisco', 'Los Angeles', 'San Diego', 'Sacramento'],
     'AI & Machine Learning': ['San Francisco', 'Palo Alto', 'Mountain View', 'Los Angeles'],
@@ -429,7 +429,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Mountain West
   NV: {
-    'Nuclear Energy': ['Las Vegas', 'Reno'],
+    'Nuclear Technologies': ['Las Vegas', 'Reno'],
     'Semiconductor': ['Las Vegas', 'Reno'],
     'Healthcare': ['Las Vegas', 'Reno', 'Henderson'],
     'AI & Machine Learning': ['Las Vegas', 'Reno'],
@@ -442,7 +442,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Las Vegas', 'Reno', 'Sparks'],
   },
   ID: {
-    'Nuclear Energy': ['Idaho Falls', 'Boise'],
+    'Nuclear Technologies': ['Idaho Falls', 'Boise'],
     'Semiconductor': ['Boise', 'Nampa'],
     'Healthcare': ['Boise', 'Idaho Falls', 'Nampa'],
     'AI & Machine Learning': ['Boise'],
@@ -455,7 +455,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Boise', 'Nampa', 'Idaho Falls'],
   },
   MT: {
-    'Nuclear Energy': ['Great Falls'],
+    'Nuclear Technologies': ['Great Falls'],
     'Semiconductor': ['Bozeman'],
     'Healthcare': ['Billings', 'Missoula', 'Great Falls'],
     'AI & Machine Learning': ['Bozeman', 'Missoula'],
@@ -468,7 +468,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Billings', 'Great Falls'],
   },
   WY: {
-    'Nuclear Energy': ['Cheyenne'],
+    'Nuclear Technologies': ['Cheyenne'],
     'Semiconductor': ['Cheyenne'],
     'Healthcare': ['Cheyenne', 'Casper'],
     'AI & Machine Learning': ['Cheyenne', 'Laramie'],
@@ -481,7 +481,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Cheyenne', 'Casper'],
   },
   UT: {
-    'Nuclear Energy': ['Salt Lake City'],
+    'Nuclear Technologies': ['Salt Lake City'],
     'Semiconductor': ['Salt Lake City', 'Lehi', 'Draper'],
     'Healthcare': ['Salt Lake City', 'Provo', 'Ogden'],
     'AI & Machine Learning': ['Salt Lake City', 'Lehi', 'Provo'],
@@ -494,7 +494,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Salt Lake City', 'Ogden', 'Provo'],
   },
   AZ: {
-    'Nuclear Energy': ['Phoenix', 'Palo Verde'],
+    'Nuclear Technologies': ['Phoenix', 'Palo Verde'],
     'Semiconductor': ['Phoenix', 'Chandler', 'Tempe'],
     'Healthcare': ['Phoenix', 'Tucson', 'Scottsdale'],
     'AI & Machine Learning': ['Phoenix', 'Tempe', 'Scottsdale'],
@@ -507,7 +507,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Phoenix', 'Chandler', 'Mesa'],
   },
   CO: {
-    'Nuclear Energy': ['Denver', 'Golden'],
+    'Nuclear Technologies': ['Denver', 'Golden'],
     'Semiconductor': ['Denver', 'Colorado Springs', 'Fort Collins'],
     'Healthcare': ['Denver', 'Aurora', 'Colorado Springs'],
     'AI & Machine Learning': ['Denver', 'Boulder', 'Fort Collins'],
@@ -520,7 +520,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Denver', 'Colorado Springs', 'Fort Collins'],
   },
   NM: {
-    'Nuclear Energy': ['Albuquerque', 'Los Alamos', 'Santa Fe'],
+    'Nuclear Technologies': ['Albuquerque', 'Los Alamos', 'Santa Fe'],
     'Semiconductor': ['Albuquerque', 'Rio Rancho'],
     'Healthcare': ['Albuquerque', 'Santa Fe', 'Las Cruces'],
     'AI & Machine Learning': ['Albuquerque', 'Santa Fe'],
@@ -534,7 +534,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Northern Plains
   ND: {
-    'Nuclear Energy': ['Minot'],
+    'Nuclear Technologies': ['Minot'],
     'Semiconductor': ['Fargo'],
     'Healthcare': ['Fargo', 'Bismarck', 'Grand Forks'],
     'AI & Machine Learning': ['Fargo'],
@@ -547,7 +547,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Fargo', 'Bismarck'],
   },
   SD: {
-    'Nuclear Energy': ['Rapid City'],
+    'Nuclear Technologies': ['Rapid City'],
     'Semiconductor': ['Sioux Falls'],
     'Healthcare': ['Sioux Falls', 'Rapid City'],
     'AI & Machine Learning': ['Sioux Falls'],
@@ -560,7 +560,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Sioux Falls', 'Rapid City'],
   },
   NE: {
-    'Nuclear Energy': ['Omaha', 'Lincoln'],
+    'Nuclear Technologies': ['Omaha', 'Lincoln'],
     'Semiconductor': ['Omaha', 'Lincoln'],
     'Healthcare': ['Omaha', 'Lincoln'],
     'AI & Machine Learning': ['Omaha'],
@@ -573,7 +573,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Omaha', 'Lincoln'],
   },
   KS: {
-    'Nuclear Energy': ['Topeka'],
+    'Nuclear Technologies': ['Topeka'],
     'Semiconductor': ['Kansas City', 'Wichita'],
     'Healthcare': ['Kansas City', 'Wichita', 'Topeka'],
     'AI & Machine Learning': ['Kansas City', 'Wichita'],
@@ -587,7 +587,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Upper Midwest
   MN: {
-    'Nuclear Energy': ['Minneapolis'],
+    'Nuclear Technologies': ['Minneapolis'],
     'Semiconductor': ['Minneapolis', 'Bloomington'],
     'Healthcare': ['Minneapolis', 'Rochester', 'St. Paul'],
     'AI & Machine Learning': ['Minneapolis', 'St. Paul'],
@@ -600,7 +600,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Minneapolis', 'St. Paul', 'Duluth'],
   },
   IA: {
-    'Nuclear Energy': ['Ames'],
+    'Nuclear Technologies': ['Ames'],
     'Semiconductor': ['Des Moines', 'Cedar Rapids'],
     'Healthcare': ['Des Moines', 'Iowa City', 'Cedar Rapids'],
     'AI & Machine Learning': ['Des Moines', 'Ames'],
@@ -613,7 +613,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Cedar Rapids', 'Des Moines', 'Davenport'],
   },
   MO: {
-    'Nuclear Energy': ['St. Louis', 'Columbia'],
+    'Nuclear Technologies': ['St. Louis', 'Columbia'],
     'Semiconductor': ['St. Louis', 'Kansas City'],
     'Healthcare': ['St. Louis', 'Kansas City', 'Columbia'],
     'AI & Machine Learning': ['St. Louis', 'Kansas City'],
@@ -626,7 +626,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['St. Louis', 'Kansas City', 'Springfield'],
   },
   WI: {
-    'Nuclear Energy': ['Madison'],
+    'Nuclear Technologies': ['Madison'],
     'Semiconductor': ['Milwaukee', 'Madison'],
     'Healthcare': ['Milwaukee', 'Madison', 'Green Bay'],
     'AI & Machine Learning': ['Madison', 'Milwaukee'],
@@ -639,7 +639,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Milwaukee', 'Madison', 'Oshkosh'],
   },
   IL: {
-    'Nuclear Energy': ['Chicago', 'Argonne'],
+    'Nuclear Technologies': ['Chicago', 'Argonne'],
     'Semiconductor': ['Chicago', 'Naperville', 'Schaumburg'],
     'Healthcare': ['Chicago', 'Champaign', 'Springfield'],
     'AI & Machine Learning': ['Chicago', 'Champaign', 'Evanston'],
@@ -652,7 +652,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Chicago', 'Rockford', 'Peoria'],
   },
   MI: {
-    'Nuclear Energy': ['Detroit', 'Ann Arbor'],
+    'Nuclear Technologies': ['Detroit', 'Ann Arbor'],
     'Semiconductor': ['Detroit', 'Ann Arbor'],
     'Healthcare': ['Detroit', 'Ann Arbor', 'Grand Rapids'],
     'AI & Machine Learning': ['Detroit', 'Ann Arbor'],
@@ -665,7 +665,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Detroit', 'Grand Rapids', 'Flint'],
   },
   IN: {
-    'Nuclear Energy': ['West Lafayette'],
+    'Nuclear Technologies': ['West Lafayette'],
     'Semiconductor': ['Indianapolis', 'West Lafayette'],
     'Healthcare': ['Indianapolis', 'Fort Wayne', 'Bloomington'],
     'AI & Machine Learning': ['Indianapolis', 'West Lafayette'],
@@ -678,7 +678,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Indianapolis', 'Fort Wayne', 'Elkhart'],
   },
   OH: {
-    'Nuclear Energy': ['Columbus', 'Cleveland', 'Piketon'],
+    'Nuclear Technologies': ['Columbus', 'Cleveland', 'Piketon'],
     'Semiconductor': ['Columbus', 'Cleveland'],
     'Healthcare': ['Cleveland', 'Columbus', 'Cincinnati'],
     'AI & Machine Learning': ['Columbus', 'Cleveland', 'Cincinnati'],
@@ -692,7 +692,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // South Central
   OK: {
-    'Nuclear Energy': ['Oklahoma City'],
+    'Nuclear Technologies': ['Oklahoma City'],
     'Semiconductor': ['Oklahoma City', 'Tulsa'],
     'Healthcare': ['Oklahoma City', 'Tulsa'],
     'AI & Machine Learning': ['Oklahoma City', 'Tulsa'],
@@ -705,7 +705,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Oklahoma City', 'Tulsa'],
   },
   TX: {
-    'Nuclear Energy': ['Houston', 'Austin'],
+    'Nuclear Technologies': ['Houston', 'Austin'],
     'Semiconductor': ['Austin', 'Dallas', 'San Antonio', 'Houston'],
     'Healthcare': ['Houston', 'Dallas', 'San Antonio', 'Austin'],
     'AI & Machine Learning': ['Austin', 'Dallas', 'Houston'],
@@ -718,7 +718,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Houston', 'Dallas', 'San Antonio', 'El Paso'],
   },
   AR: {
-    'Nuclear Energy': ['Russellville'],
+    'Nuclear Technologies': ['Russellville'],
     'Semiconductor': ['Little Rock'],
     'Healthcare': ['Little Rock', 'Fayetteville'],
     'AI & Machine Learning': ['Little Rock', 'Fayetteville'],
@@ -731,7 +731,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Little Rock', 'Fort Smith'],
   },
   LA: {
-    'Nuclear Energy': ['Baton Rouge'],
+    'Nuclear Technologies': ['Baton Rouge'],
     'Semiconductor': ['Baton Rouge', 'New Orleans'],
     'Healthcare': ['New Orleans', 'Baton Rouge', 'Shreveport'],
     'AI & Machine Learning': ['New Orleans', 'Baton Rouge'],
@@ -745,7 +745,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Southeast
   KY: {
-    'Nuclear Energy': ['Paducah'],
+    'Nuclear Technologies': ['Paducah'],
     'Semiconductor': ['Louisville', 'Lexington'],
     'Healthcare': ['Louisville', 'Lexington'],
     'AI & Machine Learning': ['Louisville', 'Lexington'],
@@ -758,7 +758,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Louisville', 'Lexington', 'Bowling Green'],
   },
   TN: {
-    'Nuclear Energy': ['Oak Ridge', 'Knoxville', 'Chattanooga'],
+    'Nuclear Technologies': ['Oak Ridge', 'Knoxville', 'Chattanooga'],
     'Semiconductor': ['Nashville', 'Knoxville'],
     'Healthcare': ['Nashville', 'Memphis', 'Knoxville'],
     'AI & Machine Learning': ['Nashville', 'Knoxville'],
@@ -771,7 +771,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Nashville', 'Chattanooga', 'Memphis'],
   },
   MS: {
-    'Nuclear Energy': ['Vicksburg'],
+    'Nuclear Technologies': ['Vicksburg'],
     'Semiconductor': ['Jackson'],
     'Healthcare': ['Jackson', 'Biloxi', 'Hattiesburg'],
     'AI & Machine Learning': ['Jackson', 'Starkville'],
@@ -784,7 +784,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Jackson', 'Tupelo'],
   },
   AL: {
-    'Nuclear Energy': ['Huntsville', 'Scottsboro'],
+    'Nuclear Technologies': ['Huntsville', 'Scottsboro'],
     'Semiconductor': ['Huntsville'],
     'Healthcare': ['Birmingham', 'Huntsville', 'Mobile'],
     'AI & Machine Learning': ['Huntsville', 'Birmingham'],
@@ -797,7 +797,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Huntsville', 'Birmingham', 'Mobile'],
   },
   WV: {
-    'Nuclear Energy': ['Morgantown'],
+    'Nuclear Technologies': ['Morgantown'],
     'Semiconductor': ['Morgantown'],
     'Healthcare': ['Morgantown', 'Charleston', 'Huntington'],
     'AI & Machine Learning': ['Morgantown'],
@@ -810,7 +810,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Charleston', 'Morgantown'],
   },
   VA: {
-    'Nuclear Energy': ['Arlington', 'Newport News'],
+    'Nuclear Technologies': ['Arlington', 'Newport News'],
     'Semiconductor': ['Richmond', 'Northern Virginia', 'Manassas'],
     'Healthcare': ['Richmond', 'Charlottesville', 'Norfolk'],
     'AI & Machine Learning': ['Arlington', 'McLean', 'Tysons'],
@@ -823,7 +823,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Richmond', 'Norfolk', 'Roanoke'],
   },
   NC: {
-    'Nuclear Energy': ['Charlotte', 'Raleigh'],
+    'Nuclear Technologies': ['Charlotte', 'Raleigh'],
     'Semiconductor': ['Raleigh', 'Durham', 'Charlotte'],
     'Healthcare': ['Raleigh', 'Durham', 'Charlotte', 'Chapel Hill'],
     'AI & Machine Learning': ['Raleigh', 'Durham', 'Charlotte'],
@@ -836,7 +836,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Charlotte', 'Greensboro', 'Raleigh'],
   },
   SC: {
-    'Nuclear Energy': ['Aiken', 'Savannah River Site'],
+    'Nuclear Technologies': ['Aiken', 'Savannah River Site'],
     'Semiconductor': ['Charleston', 'Greenville'],
     'Healthcare': ['Charleston', 'Columbia', 'Greenville'],
     'AI & Machine Learning': ['Charleston', 'Columbia'],
@@ -849,7 +849,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Greenville', 'Spartanburg', 'Charleston'],
   },
   GA: {
-    'Nuclear Energy': ['Augusta'],
+    'Nuclear Technologies': ['Augusta'],
     'Semiconductor': ['Atlanta', 'Alpharetta'],
     'Healthcare': ['Atlanta', 'Augusta', 'Savannah'],
     'AI & Machine Learning': ['Atlanta', 'Midtown Atlanta'],
@@ -862,7 +862,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Atlanta', 'Savannah', 'Augusta'],
   },
   FL: {
-    'Nuclear Energy': ['Cape Canaveral', 'Miami'],
+    'Nuclear Technologies': ['Cape Canaveral', 'Miami'],
     'Semiconductor': ['Tampa', 'Orlando', 'Miami'],
     'Healthcare': ['Miami', 'Tampa', 'Orlando', 'Jacksonville'],
     'AI & Machine Learning': ['Miami', 'Tampa', 'Orlando'],
@@ -876,7 +876,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Northeast
   PA: {
-    'Nuclear Energy': ['Pittsburgh', 'State College'],
+    'Nuclear Technologies': ['Pittsburgh', 'State College'],
     'Semiconductor': ['Pittsburgh', 'Philadelphia'],
     'Healthcare': ['Pittsburgh', 'Philadelphia', 'Hershey'],
     'AI & Machine Learning': ['Pittsburgh', 'Philadelphia'],
@@ -889,7 +889,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Pittsburgh', 'Philadelphia', 'Allentown'],
   },
   NY: {
-    'Nuclear Energy': ['Schenectady', 'Upton'],
+    'Nuclear Technologies': ['Schenectady', 'Upton'],
     'Semiconductor': ['Albany', 'New York City'],
     'Healthcare': ['New York City', 'Rochester', 'Buffalo'],
     'AI & Machine Learning': ['New York City', 'Ithaca'],
@@ -902,7 +902,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Rochester', 'Buffalo', 'Syracuse'],
   },
   NJ: {
-    'Nuclear Energy': ['Princeton'],
+    'Nuclear Technologies': ['Princeton'],
     'Semiconductor': ['Princeton', 'New Brunswick'],
     'Healthcare': ['New Brunswick', 'Newark', 'Princeton'],
     'AI & Machine Learning': ['Princeton', 'Newark', 'Hoboken'],
@@ -915,7 +915,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Newark', 'Camden', 'Trenton'],
   },
   MD: {
-    'Nuclear Energy': ['Bethesda', 'College Park'],
+    'Nuclear Technologies': ['Bethesda', 'College Park'],
     'Semiconductor': ['Columbia', 'Bethesda'],
     'Healthcare': ['Baltimore', 'Bethesda', 'Rockville'],
     'AI & Machine Learning': ['Bethesda', 'Columbia', 'Baltimore'],
@@ -928,7 +928,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Baltimore', 'Hagerstown'],
   },
   DE: {
-    'Nuclear Energy': ['Wilmington'],
+    'Nuclear Technologies': ['Wilmington'],
     'Semiconductor': ['Wilmington', 'Newark'],
     'Healthcare': ['Wilmington', 'Newark'],
     'AI & Machine Learning': ['Wilmington'],
@@ -941,7 +941,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Wilmington', 'Dover'],
   },
   CT: {
-    'Nuclear Energy': ['Groton', 'New London'],
+    'Nuclear Technologies': ['Groton', 'New London'],
     'Semiconductor': ['Hartford', 'New Haven'],
     'Healthcare': ['Hartford', 'New Haven', 'Stamford'],
     'AI & Machine Learning': ['Hartford', 'New Haven', 'Stamford'],
@@ -954,7 +954,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Hartford', 'Bridgeport', 'New Haven'],
   },
   RI: {
-    'Nuclear Energy': ['Providence'],
+    'Nuclear Technologies': ['Providence'],
     'Semiconductor': ['Providence'],
     'Healthcare': ['Providence', 'Warwick'],
     'AI & Machine Learning': ['Providence'],
@@ -967,7 +967,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Providence', 'Warwick'],
   },
   MA: {
-    'Nuclear Energy': ['Cambridge', 'Boston'],
+    'Nuclear Technologies': ['Cambridge', 'Boston'],
     'Semiconductor': ['Boston', 'Cambridge', 'Burlington'],
     'Healthcare': ['Boston', 'Cambridge', 'Worcester'],
     'AI & Machine Learning': ['Cambridge', 'Boston', 'Waltham'],
@@ -980,7 +980,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Boston', 'Worcester', 'Springfield'],
   },
   VT: {
-    'Nuclear Energy': ['Burlington'],
+    'Nuclear Technologies': ['Burlington'],
     'Semiconductor': ['Burlington'],
     'Healthcare': ['Burlington', 'Rutland'],
     'AI & Machine Learning': ['Burlington'],
@@ -993,7 +993,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Burlington', 'Rutland'],
   },
   NH: {
-    'Nuclear Energy': ['Seabrook'],
+    'Nuclear Technologies': ['Seabrook'],
     'Semiconductor': ['Nashua', 'Manchester'],
     'Healthcare': ['Manchester', 'Concord', 'Nashua'],
     'AI & Machine Learning': ['Manchester', 'Nashua'],
@@ -1006,7 +1006,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Manchester', 'Nashua', 'Portsmouth'],
   },
   ME: {
-    'Nuclear Energy': ['Wiscasset'],
+    'Nuclear Technologies': ['Wiscasset'],
     'Semiconductor': ['Portland'],
     'Healthcare': ['Portland', 'Bangor', 'Lewiston'],
     'AI & Machine Learning': ['Portland'],
@@ -1020,7 +1020,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
   },
   // Non-contiguous
   AK: {
-    'Nuclear Energy': ['Fairbanks'],
+    'Nuclear Technologies': ['Fairbanks'],
     'Semiconductor': ['Anchorage'],
     'Healthcare': ['Anchorage', 'Fairbanks', 'Juneau'],
     'AI & Machine Learning': ['Anchorage'],
@@ -1033,7 +1033,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
     'Advanced Manufacturing': ['Anchorage', 'Fairbanks'],
   },
   HI: {
-    'Nuclear Energy': ['Pearl Harbor'],
+    'Nuclear Technologies': ['Pearl Harbor'],
     'Semiconductor': ['Honolulu'],
     'Healthcare': ['Honolulu', 'Hilo'],
     'AI & Machine Learning': ['Honolulu'],
@@ -1049,7 +1049,7 @@ const stateIndustryHubs: Record<string, Record<string, string[]>> = {
 
 // Base job numbers by industry (national average for a mid-sized state)
 const baseIndustryJobs: Record<string, number> = {
-  'Nuclear Energy': 5000,
+  'Nuclear Technologies': 5000,
   'Semiconductor': 80000,
   'Healthcare': 95000,
   'AI & Machine Learning': 45000,
@@ -1064,7 +1064,7 @@ const baseIndustryJobs: Record<string, number> = {
 
 // Growth rates by industry (varies by state focus)
 const baseGrowthRates: Record<string, number> = {
-  'Nuclear Energy': 25,
+  'Nuclear Technologies': 25,
   'Semiconductor': 35,
   'Healthcare': 28,
   'AI & Machine Learning': 52,
@@ -1080,7 +1080,7 @@ const baseGrowthRates: Record<string, number> = {
 // Generate employers for a state/industry
 const generateEmployers = (state: string, industry: string): { name: string; positions: number; growth: string }[] => {
   const employersByIndustry: Record<string, string[]> = {
-    'Nuclear Energy': ['National Lab', 'Nuclear Power Plant', 'Energy Company'],
+    'Nuclear Technologies': ['National Lab', 'Nuclear Power Plant', 'Energy Company'],
     'Semiconductor': ['Intel', 'Micron', 'TSMC', 'Samsung', 'Applied Materials'],
     'Healthcare': ['Regional Hospital System', 'Medical Research Center', 'Health Tech Company'],
     'AI & Machine Learning': ['Tech Giant', 'AI Startup', 'Research Lab'],

@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS workforce_national_stats (
 -- Insert initial industry records
 INSERT INTO workforce_national_stats (industry) VALUES
     ('Semiconductor'),
-    ('Nuclear Energy'),
+    ('Nuclear Technologies'),
     ('AI & Machine Learning'),
     ('Quantum Technologies'),
     ('Cybersecurity'),

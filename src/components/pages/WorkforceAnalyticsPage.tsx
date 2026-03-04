@@ -53,7 +53,7 @@ const SECTOR_METRICS = [
     color: 'red',
   },
   {
-    sector: 'Nuclear Energy',
+    sector: 'Nuclear Technologies',
     openings: '3,800',
     medianSalary: '$118K',
     growth: '+5.7%',

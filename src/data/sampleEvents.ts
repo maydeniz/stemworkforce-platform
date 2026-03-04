@@ -89,7 +89,7 @@ export const sampleEvents: Event[] = [
   },
   {
     id: '3',
-    title: 'Nuclear Energy Workforce Summit',
+    title: 'Nuclear Technologies Workforce Summit',
     slug: 'nuclear-energy-workforce-summit-2025',
     description: 'Explore workforce strategies for nuclear renaissance including SMR deployment, plant life extensions, and nuclear security. Tours of ORNL facilities available.',
     shortDescription: 'Building the Next Generation Nuclear Workforce',

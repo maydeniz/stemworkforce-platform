@@ -14,7 +14,7 @@
 
 // Canonical industry names used across the platform
 export const CANONICAL_INDUSTRIES = [
-  'Nuclear Energy',
+  'Nuclear Technologies',
   'Semiconductor',
   'Healthcare',
   'AI & Machine Learning',
@@ -35,7 +35,7 @@ export type CanonicalIndustry = typeof CANONICAL_INDUSTRIES[number];
  */
 export const listingTagToCanonical: Record<string, CanonicalIndustry> = {
   // Direct matches (lowercase)
-  'nuclear energy': 'Nuclear Energy',
+  'nuclear energy': 'Nuclear Technologies',
   'semiconductor': 'Semiconductor',
   'healthcare': 'Healthcare',
   'ai & machine learning': 'AI & Machine Learning',
@@ -48,7 +48,7 @@ export const listingTagToCanonical: Record<string, CanonicalIndustry> = {
   'advanced manufacturing': 'Advanced Manufacturing',
 
   // Common variations
-  'nuclear': 'Nuclear Energy',
+  'nuclear': 'Nuclear Technologies',
   'semiconductors': 'Semiconductor',
   'chips': 'Semiconductor',
   'health': 'Healthcare',

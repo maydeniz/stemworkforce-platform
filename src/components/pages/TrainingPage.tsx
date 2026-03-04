@@ -34,7 +34,7 @@ const INDUSTRIES = [
   { value: 'ai', label: 'AI & Machine Learning' },
   { value: 'quantum', label: 'Quantum Technologies' },
   { value: 'semiconductor', label: 'Semiconductor' },
-  { value: 'nuclear', label: 'Nuclear Energy' },
+  { value: 'nuclear', label: 'Nuclear Technologies' },
   { value: 'cybersecurity', label: 'Cybersecurity' },
   { value: 'aerospace', label: 'Aerospace & Defense' },
   { value: 'biotech', label: 'Biotechnology' },

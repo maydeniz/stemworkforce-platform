@@ -165,7 +165,7 @@ export default function SettingsPage() {
                     <select className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-emerald-500 outline-none">
                       <option value="">All Industries</option>
                       <option>Semiconductor</option>
-                      <option>Nuclear Energy</option>
+                      <option>Nuclear Technologies</option>
                       <option>AI & Machine Learning</option>
                       <option>Quantum Computing</option>
                       <option>Cybersecurity</option>

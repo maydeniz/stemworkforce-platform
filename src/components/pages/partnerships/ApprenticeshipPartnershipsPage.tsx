@@ -38,7 +38,7 @@ const PROGRAM_TYPES = [
     duration: '12-18 months',
   },
   {
-    title: 'Nuclear Energy Apprenticeships',
+    title: 'Nuclear Technologies Apprenticeships',
     description: 'NRC-pathway programs for reactor operators, health physicists, and nuclear technicians. Includes security clearance support and regulatory compliance training.',
     features: ['NRC licensing pathway', 'Clearance sponsorship', 'Hands-on reactor training', 'DOE lab placements'],
     icon: Shield,
@@ -56,7 +56,7 @@ const STATS = [
 const SECTORS = [
   { name: 'Semiconductor Manufacturing', openings: '2,400+', growth: 'New programs launching at Intel, TSMC, Samsung fabs' },
   { name: 'Cybersecurity', openings: '1,800+', growth: 'DOD CyberSkills2Go and NICE framework programs' },
-  { name: 'Nuclear Energy', openings: '950+', growth: 'SMR buildout driving technician demand' },
+  { name: 'Nuclear Technologies', openings: '950+', growth: 'SMR buildout driving technician demand' },
   { name: 'Aerospace & Defense', openings: '3,200+', growth: 'Manufacturing and maintenance technician pipelines' },
   { name: 'Clean Energy', openings: '5,100+', growth: 'IRA-funded solar, wind, and EV battery programs' },
   { name: 'Advanced Manufacturing', openings: '4,800+', growth: 'CNC, robotics, and additive manufacturing tracks' },

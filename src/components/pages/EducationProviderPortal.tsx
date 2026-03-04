@@ -6,7 +6,7 @@ import type { ProgramFormData } from '@/types/program';
 // Industry options for program categorization
 const industryOptions = [
   { id: 'semiconductor', name: 'Semiconductor', icon: '💎' },
-  { id: 'nuclear', name: 'Nuclear Energy', icon: '☢️' },
+  { id: 'nuclear', name: 'Nuclear Technologies', icon: '☢️' },
   { id: 'ai', name: 'AI & Machine Learning', icon: '🤖' },
   { id: 'quantum', name: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cyber', name: 'Cybersecurity', icon: '🛡️' },

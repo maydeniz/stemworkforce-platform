@@ -186,7 +186,7 @@ const FOCUS_AREAS = [
 
 const INDUSTRIES = [
   { id: 'semiconductor', label: 'Semiconductor', icon: '💎' },
-  { id: 'nuclear', label: 'Nuclear Energy', icon: '☢️' },
+  { id: 'nuclear', label: 'Nuclear Technologies', icon: '☢️' },
   { id: 'ai_ml', label: 'AI & Machine Learning', icon: '🤖' },
   { id: 'quantum', label: 'Quantum Technologies', icon: '⚛️' },
   { id: 'cybersecurity', label: 'Cybersecurity', icon: '🛡️' },

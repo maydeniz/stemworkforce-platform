@@ -46,7 +46,7 @@ interface BlogPost {
 const SECTORS = [
   { value: 'all', label: 'All Sectors' },
   { value: 'semiconductor', label: 'Semiconductor' },
-  { value: 'nuclear', label: 'Nuclear Energy' },
+  { value: 'nuclear', label: 'Nuclear Technologies' },
   { value: 'ai-ml', label: 'AI & Machine Learning' },
   { value: 'quantum', label: 'Quantum Technologies' },
   { value: 'cybersecurity', label: 'Cybersecurity' },

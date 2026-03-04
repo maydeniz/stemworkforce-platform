@@ -23,7 +23,7 @@ import {
 const INDUSTRIES = [
   'All Industries',
   'Semiconductor',
-  'Nuclear Energy',
+  'Nuclear Technologies',
   'AI & Machine Learning',
   'Quantum Computing',
   'Cybersecurity',
@@ -100,7 +100,7 @@ const SAMPLE_CANDIDATES: CandidateProfile[] = [
     name: 'R. Thompson',
     title: 'Nuclear Systems Engineer',
     location: 'Oak Ridge, TN',
-    industry: 'Nuclear Energy',
+    industry: 'Nuclear Technologies',
     experience: 'Senior (8-15 years)',
     clearance: 'DOE Q',
     skills: ['Reactor Design', 'MCNP', 'NRC Regulations', 'Thermal Hydraulics'],

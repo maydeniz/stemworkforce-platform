@@ -72,7 +72,7 @@ interface StateDetailPanelProps {
 
 // Map industry names to AI metrics codes
 const industryToMetricsCode: Record<string, string> = {
-  'Nuclear Energy': 'nuclear',
+  'Nuclear Technologies': 'nuclear',
   'Semiconductor': 'semiconductor',
   'Healthcare': 'healthcare',
   'AI & Machine Learning': 'ai',

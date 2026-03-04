@@ -93,13 +93,13 @@ INSERT INTO federated_sources (
 -- NUCLEAR & CLEAN ENERGY
 ('Kairos Power', 'Kairos', 'industry_partner', 'https://kairospower.com/careers', 'greenhouse_api', 'active',
   true, true, false, false, false,
-  ARRAY['Nuclear Energy', 'Clean Energy & Sustainability'],
+  ARRAY['Nuclear Technologies', 'Clean Energy & Sustainability'],
   false, NULL, 'public_data', 'daily',
   '{"boardToken": "kairospower", "skipSTEMFilter": true}'::jsonb),
 
 ('Oklo', 'Oklo', 'industry_partner', 'https://oklo.com/careers', 'greenhouse_api', 'active',
   true, true, false, false, false,
-  ARRAY['Nuclear Energy', 'Clean Energy & Sustainability'],
+  ARRAY['Nuclear Technologies', 'Clean Energy & Sustainability'],
   false, NULL, 'public_data', 'daily',
   '{"boardToken": "oklo", "skipSTEMFilter": true}'::jsonb),
 

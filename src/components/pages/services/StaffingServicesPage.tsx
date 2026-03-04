@@ -168,7 +168,7 @@ const industrySpecializations: IndustrySpecialization[] = [
     icon: '💎',
   },
   {
-    name: 'Nuclear Energy',
+    name: 'Nuclear Technologies',
     roles: ['Nuclear Engineers', 'Reactor Operators', 'Health Physicists', 'Licensing Specialists', 'Decommissioning Experts'],
     icon: '☢️',
   },

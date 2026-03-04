@@ -134,7 +134,7 @@ const COMMON_OUTCOMES = [
 
 const INDUSTRIES: { value: IndustryType; label: string; icon: string }[] = [
   { value: 'semiconductor', label: 'Semiconductor', icon: '💎' },
-  { value: 'nuclear', label: 'Nuclear Energy', icon: '☢️' },
+  { value: 'nuclear', label: 'Nuclear Technologies', icon: '☢️' },
   { value: 'ai', label: 'AI & Machine Learning', icon: '🤖' },
   { value: 'quantum', label: 'Quantum Technologies', icon: '⚛️' },
   { value: 'cybersecurity', label: 'Cybersecurity', icon: '🛡️' },
