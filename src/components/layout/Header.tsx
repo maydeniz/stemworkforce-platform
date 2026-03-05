@@ -34,7 +34,7 @@ const TALENT_MENU = {
       title: 'Grow Your Career',
       items: [
         { label: 'Training Programs', path: '/training', icon: '📚', description: 'Upskill with industry certifications' },
-        { label: 'Career Resources', path: '/resources', icon: '📋', description: 'Resume tools, interview prep & more' },
+        { label: 'Career Guides', path: '/guides', icon: '📋', description: 'Industry career roadmaps & playbooks' },
         { label: 'Salary Insights', path: '/salary-insights', icon: '📊', description: 'Compensation data by role & region' },
         { label: 'Industry Insights', path: '/industries', icon: '📈', description: 'Explore emerging tech sectors' },
       ]
@@ -212,7 +212,8 @@ const HIGH_SCHOOL_MENU = {
         { label: 'Work-Based Learning', path: '/students/work-based-learning', icon: '🔧', description: 'Job shadows, co-ops & mentorships' },
         { label: 'Youth Apprenticeships', path: '/students/apprenticeship-pathways', icon: '🏆', description: 'Earn while you learn - paid training' },
         { label: 'AI Scholarship Matcher', path: '/students/scholarship-matcher', icon: '💰', description: '5,000+ STEM scholarships matched to you' },
-        { label: 'CHIPS Act & STEM Funding', path: '/students/stem-funding', icon: '⚡', description: 'DOE, NSF, semiconductor programs' },
+        { label: 'Workforce Map', path: '/map', icon: '🗺️', description: 'Explore STEM jobs by region & sector' },
+        { label: 'Career Guides', path: '/guides', icon: '📚', description: 'Explore STEM career paths before you choose' },
         { label: 'STEM Career ROI Calculator', path: '/students/career-roi', icon: '📈', description: '15-year projection by career path' },
       ]
     },
@@ -224,6 +225,8 @@ const HIGH_SCHOOL_MENU = {
         { label: 'CSS Profile Optimizer', path: '/students/css-profile', icon: '🎯', description: 'Minimize expected contribution legally' },
         { label: 'Appeal Letter Generator', path: '/students/appeal-letter', icon: '📄', description: 'Professional appeals that get results' },
         { label: 'Loan Payoff Modeler', path: '/students/loan-payoff', icon: '📉', description: 'IDR, PSLF & repayment strategies' },
+        { label: 'CHIPS Act & STEM Funding', path: '/students/stem-funding', icon: '⚡', description: 'DOE, NSF, semiconductor programs' },
+        { label: 'STEM Salary Explorer', path: '/salary-insights', icon: '💵', description: 'Compare earnings by field before you commit' },
       ]
     }
   ],
@@ -242,8 +245,9 @@ const COLLEGE_MENU = {
         { label: 'Resume & Portfolio Builder', path: '/college/resume-builder', icon: '📄', description: 'ATS-optimized resumes with AI feedback' },
         { label: 'Interview Preparation', path: '/college/interview-prep', icon: '🎤', description: 'Technical & behavioral mock interviews' },
         { label: 'Salary Negotiation', path: '/college/salary-negotiation', icon: '💰', description: 'Know your worth with real comp data' },
+        { label: 'STEM Salary Data', path: '/salary-insights', icon: '💵', description: 'Market benchmarks by role & region' },
         { label: 'Internship & Co-op Finder', path: '/college/internships', icon: '🎯', description: 'Find the right experience for your goals' },
-        { label: 'Offer Comparison Tool', path: '/college/offer-compare', icon: '⚖️', description: 'Compare total compensation packages' },
+        { label: 'Workforce Map', path: '/map', icon: '🗺️', description: 'See where STEM careers are growing' },
       ]
     },
     {
@@ -251,6 +255,7 @@ const COLLEGE_MENU = {
       items: [
         { label: 'Skills Assessment', path: '/college/skills-assessment', icon: '📊', description: 'Identify gaps & get learning paths' },
         { label: 'Certification Pathways', path: '/college/professional-development', icon: '🏆', description: 'AWS, Google, CompTIA & more' },
+        { label: 'Career Guides', path: '/guides', icon: '📚', description: 'Field-specific roadmaps for STEM careers' },
         { label: 'Technical Portfolio', path: '/college/portfolio-builder', icon: '💻', description: 'Showcase projects that impress employers' },
         { label: 'Professional Networking', path: '/college/networking', icon: '🤝', description: 'LinkedIn optimization & industry connections' },
         { label: 'Mentorship Matching', path: '/college/mentorship', icon: '👥', description: 'Connect with industry professionals' },
@@ -327,30 +332,9 @@ const EVENTS_MENU = {
   cta: { label: 'Browse All Events', path: '/events', variant: 'primary' }
 };
 
-// Resources & More
-const RESOURCES_MENU = {
-  title: 'Resources',
-  sections: [
-    {
-      title: 'Explore',
-      items: [
-        { label: 'Workforce Map', path: '/map', icon: '🗺️', description: 'Interactive opportunity explorer' },
-        { label: 'News & Insights', path: '/blog', icon: '📰', description: 'Industry trends and updates' },
-      ]
-    },
-    {
-      title: 'Learn',
-      items: [
-        { label: 'Career Guides', path: '/guides', icon: '📚', description: 'Industry career roadmaps' },
-        { label: 'Salary Data', path: '/salary-insights', icon: '💵', description: 'Compensation by role & region' },
-        { label: 'About Us', path: '/about', icon: '🏢', description: 'Our mission & team' },
-      ]
-    }
-  ]
-};
-
 // Main Navigation Items
-// 8 items: Talent, Employers, Partners (orgs), Providers (individuals), High School, College, Events, Resources
+// 9 items: Talent, Employers, Partners, Providers, High School, College, Events, News & Insights, About
+// type: 'mega' = full mega menu on hover | type: 'link' = simple direct link (no dropdown)
 // Items with 'link' property will be clickable links that also have dropdown menus on hover
 // featureFlagId maps to feature flags in config for progressive release
 const NAV_ITEMS = [
@@ -361,7 +345,8 @@ const NAV_ITEMS = [
   { id: 'highschool', label: 'High School', menu: HIGH_SCHOOL_MENU, type: 'mega' },
   { id: 'college', label: 'College', menu: COLLEGE_MENU, type: 'mega' },
   { id: 'events', label: 'Events', menu: EVENTS_MENU, type: 'mega', link: '/events' },
-  { id: 'resources', label: 'Resources', menu: RESOURCES_MENU, type: 'dropdown' },
+  { id: 'news', label: 'News & Insights', type: 'link', link: '/blog', menu: { title: 'News & Insights', sections: [] } },
+  { id: 'about', label: 'About', type: 'link', link: '/about', menu: { title: 'About', sections: [] } },
 ];
 
 // ===========================================
@@ -450,65 +435,7 @@ const MegaMenu: React.FC<{
   );
 };
 
-// ===========================================
-// DROPDOWN MENU COMPONENT
-// ===========================================
-const DropdownMenu: React.FC<{
-  menu: typeof RESOURCES_MENU;
-  onClose: () => void;
-}> = ({ menu, onClose }) => {
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = dropdownRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const parentRect = el.parentElement?.getBoundingClientRect();
-    if (rect.right > window.innerWidth - 8) {
-      el.style.right = `-${window.innerWidth - 8 - (parentRect?.right ?? 0)}px`;
-    }
-    if (rect.left < 8) {
-      el.style.right = 'auto';
-      el.style.left = `-${(parentRect?.left ?? 0) - 8}px`;
-    }
-  }, []);
-
-  return (
-  <div
-    ref={dropdownRef}
-    className="absolute right-0 mt-2 w-[400px] bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-scale-in"
-    onMouseLeave={onClose}
-  >
-    <div className="p-4 grid grid-cols-2 gap-4 divide-x divide-gray-700/50">
-      {menu.sections.map((section, idx) => (
-        <div key={idx} className={idx > 0 ? 'pl-4' : ''}>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-            {section.title}
-          </h4>
-          <div className="space-y-1">
-            {section.items.map((item, itemIdx) => (
-              <Link
-                key={itemIdx}
-                to={item.path}
-                onClick={onClose}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all group"
-              >
-                <span className="text-lg">{item.icon}</span>
-                <div>
-                  <p className="text-sm font-medium text-white group-hover:text-yellow-400 transition-colors">
-                    {item.label}
-                  </p>
-                  <p className="text-xs text-gray-500">{item.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-  );
-};
+// DropdownMenu removed — Resources menu redistributed to other sections
 
 // ===========================================
 // MOBILE MENU COMPONENT
@@ -600,7 +527,23 @@ const MobileMenu: React.FC<{
 
         {/* Navigation Sections */}
         <div className="p-4 space-y-2">
-          {navItems.map((item) => (
+          {navItems.map((item) => {
+            // Simple link items render as non-expandable rows
+            if (item.type === 'link' && item.link) {
+              return (
+                <Link
+                  key={item.id}
+                  to={item.link}
+                  onClick={onClose}
+                  className="block p-4 border border-gray-800 rounded-xl text-white font-medium hover:bg-gray-800/50 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              );
+            }
+
+            // Mega menu items render as expandable accordions
+            return (
             <div key={item.id} className="border border-gray-800 rounded-xl overflow-hidden">
               <button
                 onClick={() => toggleSection(item.id)}
@@ -642,7 +585,8 @@ const MobileMenu: React.FC<{
                 </div>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* User Section */}
@@ -722,19 +666,22 @@ export const Header: React.FC = () => {
     highschool: 'forStudents', // High school students
     college: 'forCollegeStudents', // College students - separate feature flag
     events: 'events',
-    resources: 'resources',
   };
 
   // Filter navigation items and their sections/items based on feature flags
   const filteredNavItems = useMemo(() => {
     return NAV_ITEMS
       .filter(item => {
+        // Link-type items are always shown (no feature flag)
+        if (item.type === 'link') return true;
         // Check if the entire menu is enabled
         const flagKey = navIdToFlagKey[item.id];
         if (!flagKey) return true;
         return navigationFlags[flagKey].status === 'enabled';
       })
       .map(item => {
+        // Link-type items have no sections to filter
+        if (item.type === 'link') return item;
         // Deep filter sections and items within each menu
         const flagKey = navIdToFlagKey[item.id];
         if (!flagKey) return item;
@@ -746,13 +693,16 @@ export const Header: React.FC = () => {
         const filteredSections = originalMenu.sections
           .map((section, sectionIdx) => {
             const flagSection = flags.sections[sectionIdx];
-            if (!flagSection || flagSection.status !== 'enabled') {
+            // New sections added beyond original flag config → show by default
+            if (!flagSection) return section;
+            if (flagSection.status !== 'enabled') {
               return null;
             }
 
             const filteredItems = section.items.filter((_, itemIdx) => {
               const flagItem = flagSection.items[itemIdx];
-              return flagItem && flagItem.status === 'enabled';
+              // New items added beyond original flag config → show by default
+              return !flagItem || flagItem.status === 'enabled';
             });
 
             if (filteredItems.length === 0) return null;
@@ -774,8 +724,8 @@ export const Header: React.FC = () => {
         };
       })
       .filter(item => {
-        // Remove menus that have no sections left
-        return item.menu.sections.length > 0;
+        // Link-type items always pass through; remove menus that have no sections left
+        return item.type === 'link' || item.menu.sections.length > 0;
       });
   }, [navigationFlags]);
 
@@ -843,7 +793,27 @@ export const Header: React.FC = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
-              {filteredNavItems.map((item) => (
+              {filteredNavItems.map((item) => {
+                // Simple link items (News & Insights, About)
+                if (item.type === 'link') {
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.link!}
+                      className={cn(
+                        'px-3 py-2 rounded-lg text-sm transition-all',
+                        item.id === 'about'
+                          ? 'text-gray-500 hover:text-gray-300 font-normal'
+                          : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+
+                // Mega menu items
+                return (
                 <div
                   key={item.id}
                   className="relative"
@@ -851,11 +821,10 @@ export const Header: React.FC = () => {
                   onMouseLeave={handleMenuLeave}
                 >
                   {item.link ? (
-                    // Nav item with direct link - clicking goes to landing page, hovering shows menu
                     <Link
                       to={item.link}
                       className={cn(
-                        'px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1',
+                        'px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1',
                         activeMenu === item.id
                           ? 'bg-white/10 text-white'
                           : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -874,10 +843,9 @@ export const Header: React.FC = () => {
                       </svg>
                     </Link>
                   ) : (
-                    // Nav item without link - just opens dropdown on hover/click
                     <button
                       className={cn(
-                        'px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1',
+                        'px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1',
                         activeMenu === item.id
                           ? 'bg-white/10 text-white'
                           : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -897,16 +865,12 @@ export const Header: React.FC = () => {
                     </button>
                   )}
 
-                  {/* Render appropriate menu type */}
-                  {activeMenu === item.id && (
-                    item.type === 'mega' ? (
-                      <MegaMenu menu={item.menu as typeof TALENT_MENU} onClose={() => setActiveMenu(null)} />
-                    ) : (
-                      <DropdownMenu menu={item.menu as typeof RESOURCES_MENU} onClose={() => setActiveMenu(null)} />
-                    )
+                  {activeMenu === item.id && item.type === 'mega' && (
+                    <MegaMenu menu={item.menu as typeof TALENT_MENU} onClose={() => setActiveMenu(null)} />
                   )}
                 </div>
-              ))}
+                );
+              })}
             </nav>
 
             {/* Right side */}
