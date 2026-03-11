@@ -101,7 +101,6 @@ const SecurityCenterTab: React.FC<SecurityCenterTabProps> = ({ initialSubTab = '
   const [breakerLoading, setBreakerLoading] = useState<string | null>(null);
   const [breakerMessage, setBreakerMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [tripReason, setTripReason] = useState('');
-  const [resetNotes, setResetNotes] = useState('');
   const [tripTarget, setTripTarget] = useState<ClearanceDomain | null>(null);
 
   const refreshBreakerStatuses = useCallback(() => {
