@@ -764,7 +764,9 @@ const ChallengeDetailPage: React.FC = () => {
                   </div>
                   {challenge.slackChannelId && (
                     <a
-                      href="#"
+                      href={`https://app.slack.com/client/${challenge.slackChannelId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-2 py-2 text-blue-400 hover:text-blue-300"
                     >
                       <Slack className="w-4 h-4" />

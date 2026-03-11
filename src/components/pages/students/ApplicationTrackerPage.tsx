@@ -7,6 +7,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface Application {
@@ -630,6 +631,8 @@ const ApplicationDetail: React.FC<{
   onBack: () => void;
   onUpdate: (app: Application) => void;
 }> = ({ application: app, onBack, onUpdate }) => {
+  const { info } = useNotifications();
+
   const toggleRequirement = (reqId: string) => {
     const updatedReqs = app.requirements.map(r => {
       if (r.id === reqId) {
@@ -763,7 +766,10 @@ const ApplicationDetail: React.FC<{
             Mark as Submitted
           </button>
         )}
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('School info editing coming soon! For now, track changes in your application notes.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Edit School Info
         </button>
       </div>

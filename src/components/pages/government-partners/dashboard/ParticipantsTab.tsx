@@ -23,6 +23,7 @@ import {
   Download
 } from 'lucide-react';
 import { getProgramParticipants, getWorkforcePrograms } from '@/services/governmentPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { ProgramParticipant, WorkforceProgram, GovernmentPartnerTier } from '@/types/governmentPartner';
 
 // ===========================================
@@ -218,6 +219,14 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
   const [editingParticipant, setEditingParticipant] = useState<ProgramParticipant | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
 
+  // Escape key handling for modals
+  const closeAnyModal = () => {
+    if (selectedParticipant) setSelectedParticipant(null);
+    else if (showEditModal) { setShowEditModal(false); setEditingParticipant(null); }
+    else if (showAddModal) setShowAddModal(false);
+  };
+  useEscapeKey(closeAnyModal, !!selectedParticipant || showAddModal || showEditModal);
+
   // Add participant form
   const [addForm, setAddForm] = useState({
     firstName: '',
@@ -295,6 +304,20 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
   };
 
   const handleExport = () => {
+    const headers = ['First Name', 'Last Name', 'Email', 'Status', 'Program', 'Veteran', 'Enrollment Date', 'Training Hours', 'Placed', 'Wage Gain'];
+    const rows = filteredParticipants.map(p => [
+      p.firstName, p.lastName, p.email || '', p.status, getProgramName(p.programId),
+      p.veteranStatus ? 'Yes' : 'No', p.enrollmentDate, p.trainingHoursCompleted,
+      p.placed ? 'Yes' : 'No', p.wageGain || 0
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'participants-export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
     showNotification('Participant data exported successfully', 'info');
   };
 

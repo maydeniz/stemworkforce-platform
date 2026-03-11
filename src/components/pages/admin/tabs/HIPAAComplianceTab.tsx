@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
-  Heart, AlertTriangle, Shield, Users, FileText, Clock, CheckCircle,
-  XCircle, Eye, RefreshCw, Search, Bell, GraduationCap, Lock, AlertCircle
+  Heart, Shield, FileText, CheckCircle,
+  XCircle, RefreshCw, GraduationCap, Lock, AlertCircle
 } from 'lucide-react';
 
 // =====================================================
@@ -67,7 +66,7 @@ const HIPAAComplianceTab: React.FC = () => {
   const [overrides, setOverrides] = useState<PHIAccessOverride[]>([]);
   const [breaches, setBreaches] = useState<BreachIncident[]>([]);
   const [trainingRecords, setTrainingRecords] = useState<TrainingRecord[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [_searchQuery] = useState('');
 
   // Stats
   const [stats, setStats] = useState({
@@ -137,9 +136,11 @@ const HIPAAComplianceTab: React.FC = () => {
 
   const updateOverrideStatus = async (id: string, status: string) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const updates: any = { status };
       if (status === 'approved') {
         updates.approved_at = new Date().toISOString();
+        updates.approved_by = user?.id;
       }
       await supabase
         .from('phi_access_overrides')

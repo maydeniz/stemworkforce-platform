@@ -16,6 +16,7 @@ import {
   Wrench,
   Zap
 } from 'lucide-react';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { MunicipalityPartnerTier, DepartmentType } from '@/types/municipalityPartner';
 
 interface DepartmentsTabProps {
@@ -87,6 +88,14 @@ const twColor: Record<string, { bg: string; text: string }> = {
 
 export const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ partnerId: _partnerId, tier: _tier }) => {
   const [selectedDept, setSelectedDept] = useState<DepartmentData | null>(null);
+  const [notification, setNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showNotification = (message: string) => {
+    setNotification({ message, visible: true });
+    setTimeout(() => setNotification({ message: '', visible: false }), 3000);
+  };
+
+  useEscapeKey(() => setSelectedDept(null), !!selectedDept);
 
   const totalVacancies = sampleDepartments.reduce((sum, d) => sum + (d.authorizedPositions - d.filledPositions), 0);
   const totalRetiring = sampleDepartments.reduce((sum, d) => sum + d.retirementEligible5Years, 0);
@@ -94,6 +103,14 @@ export const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ partnerId: _part
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      {notification.visible && (
+        <div className="fixed top-6 right-6 z-[60] flex items-center gap-2 px-4 py-3 bg-teal-500/20 border border-teal-500/30 text-teal-400 rounded-lg shadow-lg">
+          <Target className="w-4 h-4" />
+          {notification.message}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">Department Workforce Needs</h2>
@@ -303,7 +320,7 @@ export const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ partnerId: _part
             </div>
             <div className="p-6 border-t border-slate-800 flex justify-end gap-3">
               <button onClick={() => setSelectedDept(null)} className="px-4 py-2 text-gray-400">Close</button>
-              <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Edit Needs</button>
+              <button onClick={() => showNotification('Opening department needs editor...')} className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Edit Needs</button>
             </div>
           </motion.div>
         </div>

@@ -3,12 +3,14 @@
 // ===========================================
 
 import React, { lazy, Suspense, useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, NotificationProvider, BillingProvider, ThemeProvider, FeatureProvider } from '@/contexts';
 import { Layout, MinimalLayout, LayoutLight } from '@/components/layout';
 import { PageLoader, ErrorBoundary } from '@/components/common';
+import { FeatureRoute } from '@/components/common/FeatureRoute';
 import { QueryProvider } from '@/lib/queryClient';
 import { useAuth } from '@/contexts';
+import { useDemo } from '@/contexts/DemoContext';
 import { supabase } from '@/lib/supabase';
 
 // Lazy load pages for code splitting
@@ -27,6 +29,7 @@ const PricingPage = lazy(() => import('@/components/pages/PricingPage'));
 const DashboardPage = lazy(() => import('@/components/pages/DashboardPage'));
 const LoginPage = lazy(() => import('@/components/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/components/pages/RegisterPage'));
+const DemoLoginPage = lazy(() => import('@/components/pages/DemoLoginPage'));
 const AuthCallbackPage = lazy(() => import('@/components/pages/AuthCallbackPage'));
 const NotFoundPage = lazy(() => import('@/components/pages/NotFoundPage'));
 const EducationProviderPortal = lazy(() => import('@/components/pages/EducationProviderPortal'));
@@ -61,6 +64,10 @@ const EducationPartnersResourcesPage = lazy(() => import('@/components/pages/edu
 // Partner Organization pages - lazy loaded
 const NationalLabsPartnerPage = lazy(() => import('@/components/pages/partners/NationalLabsPartnerPage'));
 const GovernmentPartnersPage = lazy(() => import('@/components/pages/partners/GovernmentPartnersPage'));
+const GovernmentPartnerDashboard = lazy(() => import('@/components/pages/government-partners/GovernmentPartnerDashboard'));
+const GovernmentPartnerOnboardingPage = lazy(() => import('@/components/pages/government-partners/GovernmentPartnerOnboardingPage'));
+const ClearedEmployerPage = lazy(() => import('@/components/pages/employer/ClearedEmployerPage'));
+const StateWorkforceDashboard = lazy(() => import('@/components/pages/state-workforce/StateWorkforceDashboard'));
 const IndustryPartnersPage = lazy(() => import('@/components/pages/partners/IndustryPartnersPage'));
 const NonprofitPartnersPage = lazy(() => import('@/components/pages/partners/NonprofitPartnersPage'));
 
@@ -86,6 +93,7 @@ const ManufacturingConsultingPage = lazy(() => import('@/components/pages/consul
 const AdminDashboard = lazy(() => import('@/components/pages/admin/AdminDashboard'));
 const BillingDashboard = lazy(() => import('@/components/pages/billing/BillingDashboard'));
 const AdvertisingDashboard = lazy(() => import('@/components/pages/advertising/AdvertisingDashboard'));
+const AdvertiserDashboard = lazy(() => import('@/components/pages/advertising/AdvertiserDashboard'));
 const MarketplaceDashboard = lazy(() => import('@/components/pages/marketplace/MarketplaceDashboard'));
 
 // Workforce Services pages - lazy loaded
@@ -98,6 +106,7 @@ const ImmigrationServicesPage = lazy(() => import('@/components/pages/services/I
 const OutplacementServicesPage = lazy(() => import('@/components/pages/services/OutplacementServicesPage'));
 
 // Student pages - lazy loaded
+const StudentsLandingPage = lazy(() => import('@/components/pages/students/StudentsLandingPage'));
 const EssayCoachPage = lazy(() => import('@/components/pages/students/EssayCoachPage'));
 const ResearchWriterPage = lazy(() => import('@/components/pages/students/ResearchWriterPage'));
 const WhySchoolPage = lazy(() => import('@/components/pages/students/WhySchoolPage'));
@@ -216,12 +225,20 @@ const CollegeLandingPage = lazy(() => import('@/components/pages/CollegeLandingP
 const ClearanceGuideLandingPage = lazy(() => import('@/components/pages/ClearanceGuideLandingPage'));
 const MentorshipLandingPage = lazy(() => import('@/components/pages/MentorshipPage'));
 
+// Clearance Readiness & FSO Portal pages - lazy loaded
+const ClearanceReadinessAssessmentPage = lazy(() => import('@/components/pages/ClearanceReadinessAssessmentPage'));
+const ClearanceIntelligencePage = lazy(() => import('@/components/pages/ClearanceIntelligencePage'));
+const NISPOMComplianceAssistantPage = lazy(() => import('@/components/pages/NISPOMComplianceAssistantPage'));
+
 // Challenges pages - lazy loaded
 const ChallengesPage = lazy(() => import('@/components/pages/challenges/ChallengesPage'));
 const ChallengeDetailPage = lazy(() => import('@/components/pages/challenges/ChallengeDetailPage'));
 const CreateChallengePage = lazy(() => import('@/components/pages/challenges/CreateChallengePage'));
 const PostChallengePage = lazy(() => import('@/components/pages/challenges/PostChallengePage'));
 const SolveChallengePage = lazy(() => import('@/components/pages/challenges/SolveChallengePage'));
+const FederalChallengesHubPage = lazy(() => import('@/components/pages/challenges/federal/FederalChallengesHubPage'));
+const FederalChallengeDetailPage = lazy(() => import('@/components/pages/challenges/federal/FederalChallengeDetailPage'));
+const FederalChallengePostPage = lazy(() => import('@/components/pages/challenges/federal/FederalChallengePostPage'));
 
 // Federation pages - lazy loaded
 const FederatedListingsPage = lazy(() => import('@/components/federation/FederatedListingsPage'));
@@ -272,10 +289,16 @@ const FacultyEmailGuidePage = lazy(() => import('@/components/pages/college/Facu
 interface ProtectedRouteProps {
   children: React.ReactNode;
   roles?: string[];
+  /** L4 FIX: When true, demo-mode users are redirected to /dashboard.
+   *  Apply to all routes that perform write operations (form submissions, etc.)
+   *  so a demo JWT cannot be used to submit real data. */
+  noDemo?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles, noDemo }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const { isDemoMode } = useDemo();
+  const location = useLocation();
   const [userRole, setUserRole] = useState<string | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
 
@@ -342,7 +365,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={`/login?returnTo=${encodeURIComponent(location.pathname)}`} replace />;
+  }
+
+  // L4: Block demo users from write-protected routes — demo JWTs are real
+  // Supabase sessions and would allow submitting real data if unchecked.
+  if (noDemo && isDemoMode) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   // If roles are required but user has no role or wrong role, redirect to dashboard
@@ -764,6 +793,14 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/employers/cleared"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ClearedEmployerPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="/partners/industry"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -802,6 +839,16 @@ const AppRoutes: React.FC = () => {
           element={
             <Suspense fallback={<PageLoader />}>
               <ApprenticeshipPartnershipsPage />
+            </Suspense>
+          }
+        />
+
+        {/* Students Hub */}
+        <Route
+          path="/students"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <StudentsLandingPage />
             </Suspense>
           }
         />
@@ -1218,6 +1265,32 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/challenges/federal"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FederalChallengesHubPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/challenges/federal/post"
+          element={
+            <ProtectedRoute noDemo>
+              <Suspense fallback={<PageLoader />}>
+                <FederalChallengePostPage />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/federal/:slug"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <FederalChallengeDetailPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="/challenges/solve"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -1436,6 +1509,42 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/clearance-readiness"
+          element={
+            <ProtectedRoute roles={['employer', 'admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN']}>
+              <FeatureRoute featureId="clearance-readiness" fallbackPath="/dashboard">
+                <Suspense fallback={<PageLoader />}>
+                  <ClearanceReadinessAssessmentPage />
+                </Suspense>
+              </FeatureRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clearance-intelligence"
+          element={
+            <ProtectedRoute roles={['employer', 'admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN']}>
+              <FeatureRoute featureId="clearance-intelligence" fallbackPath="/dashboard">
+                <Suspense fallback={<PageLoader />}>
+                  <ClearanceIntelligencePage />
+                </Suspense>
+              </FeatureRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/nispom-compliance"
+          element={
+            <ProtectedRoute roles={['employer', 'admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN']}>
+              <FeatureRoute featureId="nispom-compliance" fallbackPath="/dashboard">
+                <Suspense fallback={<PageLoader />}>
+                  <NISPOMComplianceAssistantPage />
+                </Suspense>
+              </FeatureRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/mentorship"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -1479,6 +1588,15 @@ const AppRoutes: React.FC = () => {
 
         {/* Counselor Portal */}
         <Route path="/counselor" element={<Suspense fallback={<PageLoader />}><CounselorDashboard /></Suspense>} />
+
+        {/* Government Partner Pages */}
+        <Route path="/government-partner-onboarding" element={<Suspense fallback={<PageLoader />}><GovernmentPartnerOnboardingPage /></Suspense>} />
+        <Route path="/government-partner-dashboard" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><GovernmentPartnerDashboard /></Suspense></ProtectedRoute>} />
+        <Route path="/dashboard/government" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><GovernmentPartnerDashboard /></Suspense></ProtectedRoute>} />
+
+        {/* State Workforce Dashboard */}
+        <Route path="/state-workforce-dashboard" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><StateWorkforceDashboard /></Suspense></ProtectedRoute>} />
+        <Route path="/dashboard/state-workforce" element={<ProtectedRoute><Suspense fallback={<PageLoader />}><StateWorkforceDashboard /></Suspense></ProtectedRoute>} />
 
         {/* Municipality Partner Pages */}
         <Route path="/municipality-partner-apply" element={<Suspense fallback={<PageLoader />}><MunicipalityPartnersPage /></Suspense>} />
@@ -1592,6 +1710,16 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
+        path="/advertiser"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <AdvertiserDashboard />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin/marketplace"
         element={
           <ProtectedRoute roles={['admin', 'super_admin', 'SUPER_ADMIN', 'PLATFORM_ADMIN', 'CONTENT_ADMIN']}>
@@ -1621,6 +1749,14 @@ const AppRoutes: React.FC = () => {
               <RegisterPage />
             </Suspense>
           </MinimalLayout>
+        }
+      />
+      <Route
+        path="/demo"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <DemoLoginPage />
+          </Suspense>
         }
       />
       <Route

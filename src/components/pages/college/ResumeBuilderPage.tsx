@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   FileText,
@@ -170,6 +171,7 @@ const ACTION_VERBS = [
 // COMPONENTS
 // ===========================================
 const ResumeBuilderPage: React.FC = () => {
+  const { info, success } = useNotifications();
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'templates' | 'ats' | 'tips'>('templates');
 
@@ -200,11 +202,11 @@ const ResumeBuilderPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => info('Resume upload is coming soon! We\'re building AI-powered resume analysis.')} className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   <Upload className="w-5 h-5" />
                   Upload Resume
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => setActiveTab('templates')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <FileText className="w-5 h-5" />
                   Start from Template
                 </button>
@@ -297,7 +299,7 @@ const ResumeBuilderPage: React.FC = () => {
                       <div className="w-2 h-2 rounded-full bg-green-500" />
                       <span className="text-sm text-green-400">{template.atsScore}% ATS Score</span>
                     </div>
-                    <button className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                    <button onClick={() => info('Template preview is coming soon!')} className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
                       Preview <Eye className="w-4 h-4" />
                     </button>
                   </div>
@@ -307,7 +309,7 @@ const ResumeBuilderPage: React.FC = () => {
 
             {selectedTemplate && (
               <div className="mt-8 flex justify-center">
-                <button className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => info('Template editor is coming soon! We\'re building an interactive resume builder.')} className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   Use This Template
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -384,11 +386,11 @@ const ResumeBuilderPage: React.FC = () => {
                 <div className="mt-6 pt-6 border-t border-gray-800">
                   <h4 className="font-medium text-white mb-3">Portfolio Links</h4>
                   <div className="space-y-2">
-                    <button className="w-full flex items-center gap-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-left transition-colors">
+                    <button onClick={() => info('GitHub integration is coming soon!')} className="w-full flex items-center gap-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-left transition-colors">
                       <Github className="w-5 h-5 text-gray-400" />
                       <span className="text-gray-300">Connect GitHub</span>
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-left transition-colors">
+                    <button onClick={() => info('LinkedIn integration is coming soon!')} className="w-full flex items-center gap-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-left transition-colors">
                       <Linkedin className="w-5 h-5 text-blue-400" />
                       <span className="text-gray-300">Connect LinkedIn</span>
                     </button>
@@ -443,6 +445,7 @@ const ResumeBuilderPage: React.FC = () => {
                 {ACTION_VERBS.map(verb => (
                   <span
                     key={verb}
+                    onClick={() => { navigator.clipboard.writeText(verb); success('Copied "' + verb + '" to clipboard!'); }}
                     className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-sm cursor-pointer hover:bg-blue-500/20 transition-colors"
                   >
                     {verb}
@@ -498,7 +501,7 @@ const ResumeBuilderPage: React.FC = () => {
             Join 50,000+ students who've landed interviews at top tech companies using our tools.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button onClick={() => info('Resume builder is coming soon! We\'re building an interactive editor.')} className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
               <FileText className="w-5 h-5" />
               Create Resume Now
             </button>

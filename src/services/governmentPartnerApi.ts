@@ -94,6 +94,42 @@ export async function updateGovernmentPartner(
   }
 }
 
+export async function createGovernmentPartner(
+  partner: Omit<GovernmentPartner, 'id' | 'createdAt' | 'updatedAt'>
+): Promise<GovernmentPartner | null> {
+  try {
+    const { data, error } = await supabase
+      .from('government_partners')
+      .insert({
+        user_id: partner.userId,
+        agency_name: partner.agencyName,
+        agency_type: partner.agencyType,
+        agency_level: partner.agencyLevel,
+        agency_code: partner.agencyCode,
+        city: partner.city,
+        state: partner.state,
+        region: partner.region,
+        tier: partner.tier || 'basic',
+        status: partner.status || 'pending',
+        primary_contact_name: partner.primaryContactName,
+        primary_contact_email: partner.primaryContactEmail,
+        primary_contact_phone: partner.primaryContactPhone,
+        primary_contact_title: partner.primaryContactTitle,
+        jurisdiction: partner.jurisdiction,
+        covered_population: partner.coveredPopulation,
+        annual_budget: partner.annualBudget,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return transformPartnerFromDB(data);
+  } catch (error) {
+    console.error('Error creating government partner:', error);
+    return null;
+  }
+}
+
 // ===========================================
 // WORKFORCE PROGRAM OPERATIONS
 // ===========================================

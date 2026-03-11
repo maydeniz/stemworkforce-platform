@@ -510,7 +510,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
                   </div>
                   {tier !== 'research' && (
                     <div className="pt-4 border-t border-slate-600">
-                      <p className="text-slate-400 text-sm">Next billing date: February 15, 2024</p>
+                      <p className="text-slate-400 text-sm">Next billing date: February 15, 2025</p>
                     </div>
                   )}
                 </div>
@@ -547,9 +547,9 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
                   ) : (
                     <div className="space-y-2">
                       {[
-                        { date: 'Jan 15, 2024', amount: '$2,499.00', status: 'Paid' },
-                        { date: 'Dec 15, 2023', amount: '$2,499.00', status: 'Paid' },
-                        { date: 'Nov 15, 2023', amount: '$2,499.00', status: 'Paid' },
+                        { date: 'Jan 15, 2025', amount: '$2,499.00', status: 'Paid' },
+                        { date: 'Dec 15, 2024', amount: '$2,499.00', status: 'Paid' },
+                        { date: 'Nov 15, 2024', amount: '$2,499.00', status: 'Paid' },
                       ].map((invoice, index) => (
                         <div
                           key={index}

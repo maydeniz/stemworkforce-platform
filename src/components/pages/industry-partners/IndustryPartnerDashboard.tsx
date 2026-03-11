@@ -20,6 +20,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   getIndustryPartner,
   getJobPostings,
@@ -39,6 +40,7 @@ import UniversityRelationsTab from './dashboard/UniversityRelationsTab';
 import BillingTab from './dashboard/BillingTab';
 import SettingsTab from './dashboard/SettingsTab';
 import WorkforceMapWidget from '@/components/shared/WorkforceMapWidget';
+import { UsageMeter, FeatureGate } from '@/components/common';
 
 // ===========================================
 // TYPES
@@ -173,43 +175,68 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         </motion.div>
       </div>
 
+      {/* Usage Meters */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <UsageMeter
+          used={3}
+          limit={5}
+          label="Job Postings"
+          upgradeLink="/pricing"
+          colorScheme="blue"
+        />
+        <UsageMeter
+          used={0}
+          limit={0}
+          label="Event Sponsorships"
+          upgradeLink="/pricing"
+          colorScheme="emerald"
+        />
+      </div>
+
       {/* Application Funnel */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-gray-900 border border-gray-800 rounded-xl p-6"
+      <FeatureGate
+        isUnlocked={false}
+        feature="Advanced Analytics"
+        requiredTier="Growth"
+        upgradeLink="/pricing"
       >
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">Application Funnel</h3>
-          <button
-            onClick={() => onTabChange('pipeline')}
-            className="text-sm text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
-          >
-            View Pipeline <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="space-y-4">
-          {[
-            { stage: 'Total Applications', count: metrics.totalApplications, width: '100%', color: 'bg-gray-600' },
-            { stage: 'Screened', count: metrics.candidatesByStage.screened, width: '45%', color: 'bg-blue-500' },
-            { stage: 'Interviewing', count: metrics.candidatesByStage.interviewing, width: '25%', color: 'bg-purple-500' },
-            { stage: 'Offered', count: metrics.candidatesByStage.offered, width: '8%', color: 'bg-amber-500' },
-            { stage: 'Hired', count: metrics.hiresYTD, width: '5%', color: 'bg-emerald-500' }
-          ].map((item, idx) => (
-            <div key={idx} className="flex items-center gap-4">
-              <span className="text-sm text-gray-400 w-32">{item.stage}</span>
-              <div className="flex-1 bg-gray-800 rounded-full h-3">
-                <div
-                  className={`${item.color} h-3 rounded-full transition-all`}
-                  style={{ width: item.width }}
-                />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gray-900 border border-gray-800 rounded-xl p-6"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-white">Application Funnel</h3>
+            <button
+              onClick={() => onTabChange('pipeline')}
+              className="text-sm text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+            >
+              View Pipeline <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-4">
+            {[
+              { stage: 'Total Applications', count: metrics.totalApplications, width: '100%', color: 'bg-gray-600' },
+              { stage: 'Screened', count: metrics.candidatesByStage.screened, width: '45%', color: 'bg-blue-500' },
+              { stage: 'Interviewing', count: metrics.candidatesByStage.interviewing, width: '25%', color: 'bg-purple-500' },
+              { stage: 'Offered', count: metrics.candidatesByStage.offered, width: '8%', color: 'bg-amber-500' },
+              { stage: 'Hired', count: metrics.hiresYTD, width: '5%', color: 'bg-emerald-500' }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-4">
+                <span className="text-sm text-gray-400 w-32">{item.stage}</span>
+                <div className="flex-1 bg-gray-800 rounded-full h-3">
+                  <div
+                    className={`${item.color} h-3 rounded-full transition-all`}
+                    style={{ width: item.width }}
+                  />
+                </div>
+                <span className="text-sm text-white w-16 text-right">{item.count.toLocaleString()}</span>
               </div>
-              <span className="text-sm text-white w-16 text-right">{item.count.toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </FeatureGate>
 
       {/* Two Column Layout */}
       <div className="grid md:grid-cols-2 gap-6">
@@ -382,6 +409,7 @@ const TABS: TabConfig[] = [
 // ===========================================
 
 const IndustryPartnerDashboard: React.FC = () => {
+  const { info } = useNotifications();
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -649,7 +677,7 @@ const IndustryPartnerDashboard: React.FC = () => {
               variant="full"
               showFilters={true}
               industryFilter={partnerInfo.industry}
-              onStateSelect={(state) => console.log('Selected state:', state)}
+              onStateSelect={(state) => info(`Viewing workforce data for ${state.name || state.abbreviation}. Detailed state analytics coming soon.`)}
             />
           </div>
         )}

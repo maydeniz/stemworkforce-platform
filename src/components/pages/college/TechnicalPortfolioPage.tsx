@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Github,
   ExternalLink,
@@ -145,6 +146,7 @@ const PORTFOLIO_TIPS = [
 const TechnicalPortfolioPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'showcase' | 'ideas' | 'tips'>('showcase');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const { info } = useNotifications();
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -183,11 +185,11 @@ const TechnicalPortfolioPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => info('Project editor is coming soon! We\'re building an interactive portfolio builder.')} className="px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   <Plus className="w-5 h-5" />
                   Add Project
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => info('GitHub import is coming soon!')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <Github className="w-5 h-5" />
                   Import from GitHub
                 </button>
@@ -333,7 +335,7 @@ const TechnicalPortfolioPage: React.FC = () => {
               ))}
 
               {/* Add Project Card */}
-              <button className="bg-gray-900/30 rounded-xl border-2 border-dashed border-gray-700 hover:border-violet-500/50 transition-colors p-8 flex flex-col items-center justify-center min-h-[300px] group">
+              <button onClick={() => info('Project editor is coming soon! We\'re building an interactive portfolio builder.')} className="bg-gray-900/30 rounded-xl border-2 border-dashed border-gray-700 hover:border-violet-500/50 transition-colors p-8 flex flex-col items-center justify-center min-h-[300px] group">
                 <div className="w-16 h-16 rounded-full bg-gray-800 group-hover:bg-violet-500/10 flex items-center justify-center mb-4 transition-colors">
                   <Plus className="w-8 h-8 text-gray-500 group-hover:text-violet-400 transition-colors" />
                 </div>
@@ -399,7 +401,7 @@ const TechnicalPortfolioPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <button className="w-full py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                  <button onClick={() => info('Project starter kits are coming soon!')} className="w-full py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
                     <Play className="w-4 h-4" />
                     Start This Project
                   </button>
@@ -459,7 +461,7 @@ const TechnicalPortfolioPage: React.FC = () => {
             Get feedback from industry professionals and stand out from other candidates.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button onClick={() => info('AI portfolio review is coming soon!')} className="px-8 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
               <Sparkles className="w-5 h-5" />
               Get AI Feedback
             </button>

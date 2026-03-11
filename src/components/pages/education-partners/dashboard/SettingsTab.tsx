@@ -222,8 +222,8 @@ const SettingsTab: React.FC<SettingsTabProps> = ({
     setGeneratingKey(true);
     // Simulate API key generation
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const newKey = `ep_live_${Array.from({ length: 32 }, () =>
-      Math.random().toString(36).charAt(2)
+    const newKey = `ep_live_${Array.from(crypto.getRandomValues(new Uint8Array(32)), b =>
+      b.toString(36).padStart(2, '0').charAt(0)
     ).join('')}`;
     setApiKey(newKey);
     setGeneratingKey(false);
@@ -892,7 +892,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-lg mx-4" onClick={e => e.stopPropagation()}>
             <h3 className="text-xl font-bold text-white mb-4">Cancel Subscription?</h3>
             <p className="text-gray-400 mb-4">
-              You will be downgraded to the free Starter plan. You will lose access to premium features including event hosting, advanced analytics, and API access.
+              You will be downgraded to the free Community plan. You will lose access to premium features including event hosting, advanced analytics, and API access.
             </p>
             <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg mb-4">
               <p className="text-sm text-amber-400">Your current billing period will remain active until the end date.</p>

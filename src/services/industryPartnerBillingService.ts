@@ -1,9 +1,11 @@
 // ===========================================
 // Industry Partner Billing Service
-// Placeholder Stripe integration for employer subscriptions
+// Stripe integration for industry-partner subscriptions.
+// Pricing data is imported from the unified config in @/config/pricing.
 // ===========================================
 
 import { supabase } from '@/lib/supabase';
+import { getPersonaTiers, ANNUAL_DISCOUNT_PCT, type PricingTier as UnifiedPricingTier } from '@/config/pricing';
 import type { PartnerTier } from '@/types/industryPartner';
 
 // ===========================================
@@ -82,106 +84,50 @@ export interface IndustryInvoice {
 }
 
 // ===========================================
-// PRICING TIERS CONFIGURATION
+// PRICING TIERS (derived from unified config)
 // ===========================================
 
-export const INDUSTRY_PRICING_TIERS: IndustryPricingTier[] = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    stripePriceId: 'price_industry_starter_placeholder',
-    price: 0,
+/**
+ * Convert a unified PricingTier to the industry-partner-specific shape
+ * expected by consumers of this service.
+ */
+function toLocalTier(t: UnifiedPricingTier): IndustryPricingTier {
+  // Build a human-readable feature list from the boolean feature flags
+  const featureLabels: string[] = Object.entries(t.features)
+    .filter(([, enabled]) => enabled)
+    .map(([key]) =>
+      key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (c) => c.toUpperCase())
+    );
+
+  return {
+    id: t.tierKey as PartnerTier,
+    name: t.name,
+    stripePriceId: t.stripe_price_id_monthly ?? '',
+    price: t.price_monthly,
     interval: 'month',
-    description: 'Basic talent access',
-    features: [
-      'Post up to 5 jobs',
-      'Basic candidate search',
-      'Company profile page',
-      'Access to talent directory',
-      'Email support'
-    ],
+    description: t.description,
+    features: featureLabels,
     limits: {
-      maxJobs: 5,
-      maxFeaturedJobs: 0,
-      maxInternshipPrograms: 0,
-      maxApprenticeshipPrograms: 0,
-      hasCareerFairAccess: false,
-      hasAdvancedCandidateMatching: false,
-      hasUniversityRelations: false,
-      hasAdvancedAnalytics: false,
-      hasApiAccess: false,
-      hasDedicatedSupport: false,
-      hasEmployerBranding: false
+      maxJobs: t.limits.maxJobPostings ?? 0,
+      maxFeaturedJobs: t.limits.maxChallengesPerYear ?? 0,
+      maxInternshipPrograms: t.limits.maxPrograms ?? 0,
+      maxApprenticeshipPrograms: t.features.apprenticeshipPrograms ? (t.limits.maxPrograms ?? 0) : 0,
+      hasCareerFairAccess: t.features.coHostEvents ?? false,
+      hasAdvancedCandidateMatching: t.features.talentPipelineAccess ?? false,
+      hasUniversityRelations: t.features.coHostEvents ?? false,
+      hasAdvancedAnalytics: t.features.advancedAnalytics ?? false,
+      hasApiAccess: t.features.apiAccess ?? false,
+      hasDedicatedSupport: t.features.prioritySupport ?? false,
+      hasEmployerBranding: t.features.partnerProfile ?? false,
     },
-    popular: false
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    stripePriceId: 'price_industry_growth_monthly_placeholder',
-    price: 1499,
-    interval: 'month',
-    description: 'Build your talent pipeline',
-    features: [
-      'Unlimited job postings',
-      'Advanced candidate matching',
-      'Internship program hosting (5 programs)',
-      'Career fair participation',
-      'Employer branding tools',
-      'Featured job listings (5)',
-      'Dedicated recruiter support',
-      'Analytics dashboard'
-    ],
-    limits: {
-      maxJobs: -1, // unlimited
-      maxFeaturedJobs: 5,
-      maxInternshipPrograms: 5,
-      maxApprenticeshipPrograms: 0,
-      hasCareerFairAccess: true,
-      hasAdvancedCandidateMatching: true,
-      hasUniversityRelations: true,
-      hasAdvancedAnalytics: true,
-      hasApiAccess: false,
-      hasDedicatedSupport: true,
-      hasEmployerBranding: true
-    },
-    highlighted: true,
-    popular: true
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    stripePriceId: 'price_industry_enterprise_placeholder',
-    price: -1, // Custom pricing
-    interval: 'month',
-    description: 'Strategic workforce partner',
-    features: [
-      'Everything in Growth',
-      'Unlimited internship programs',
-      'Apprenticeship program management',
-      'DOL compliance support',
-      'Curriculum advisory access',
-      'Event sponsorship priority',
-      'API integrations (ATS, HRIS)',
-      'Executive partnership reviews',
-      'Dedicated account manager'
-    ],
-    limits: {
-      maxJobs: -1,
-      maxFeaturedJobs: -1,
-      maxInternshipPrograms: -1, // unlimited
-      maxApprenticeshipPrograms: -1, // unlimited
-      hasCareerFairAccess: true,
-      hasAdvancedCandidateMatching: true,
-      hasUniversityRelations: true,
-      hasAdvancedAnalytics: true,
-      hasApiAccess: true,
-      hasDedicatedSupport: true,
-      hasEmployerBranding: true
-    },
-    popular: false
-  }
-];
+    highlighted: t.highlighted,
+    popular: t.highlighted,
+  };
+}
+
+export const INDUSTRY_PRICING_TIERS: IndustryPricingTier[] = getPersonaTiers('industry_partner').map(toLocalTier);
 
 // ===========================================
 // BILLING SERVICE FUNCTIONS
@@ -506,7 +452,7 @@ export function calculateAnnualSavings(tierId: PartnerTier): { monthlyTotal: num
   }
 
   const monthlyTotal = tier.price * 12;
-  const annualTotal = Math.round(tier.price * 12 * 0.83); // ~17% discount for annual
+  const annualTotal = Math.round(tier.price * 12 * (1 - ANNUAL_DISCOUNT_PCT / 100));
   const savings = monthlyTotal - annualTotal;
 
   return { monthlyTotal, annualTotal, savings };

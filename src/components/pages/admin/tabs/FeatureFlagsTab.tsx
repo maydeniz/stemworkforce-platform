@@ -89,6 +89,7 @@ const FeatureFlagsTab = () => {
     forProviders: false,
     forStudents: false,
     forCollegeStudents: false,
+    challenges: false,
     events: false,
     resources: false,
   });
@@ -220,7 +221,7 @@ const FeatureFlagsTab = () => {
               <Handshake size={20} className="text-violet-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold">6</p>
+              <p className="text-2xl font-bold">{Object.keys(navigationFlags).length}</p>
               <p className="text-sm text-slate-400">Navigation Menus</p>
             </div>
           </div>

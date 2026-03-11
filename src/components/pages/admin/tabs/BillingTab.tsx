@@ -306,14 +306,14 @@ const EXPENSE_CATEGORIES: ExpenseCategory[] = [
 ];
 
 const SAMPLE_INVOICES: Invoice[] = [
-  { id: '1', number: 'INV-2025-0342', customer: 'Lockheed Martin', customerType: 'employer', amount: 2999, status: 'paid', dueDate: '2025-01-15', paidDate: '2025-01-12', source: 'Enterprise Plan' },
-  { id: '2', number: 'INV-2025-0341', customer: 'Sandia National Labs', customerType: 'employer', amount: 1999, status: 'paid', dueDate: '2025-01-10', paidDate: '2025-01-08', source: 'Professional Plan' },
+  { id: '1', number: 'INV-2025-0342', customer: 'Lockheed Martin', customerType: 'employer', amount: 1999, status: 'paid', dueDate: '2025-01-15', paidDate: '2025-01-12', source: 'Mission Control' },
+  { id: '2', number: 'INV-2025-0341', customer: 'Sandia National Labs', customerType: 'employer', amount: 499, status: 'paid', dueDate: '2025-01-10', paidDate: '2025-01-08', source: 'Talent Engine' },
   { id: '3', number: 'INV-2025-0340', customer: 'MIT', customerType: 'education', amount: 999, status: 'sent', dueDate: '2025-01-20', source: 'Institution Plan' },
-  { id: '4', number: 'INV-2025-0339', customer: 'Northrop Grumman', customerType: 'employer', amount: 2999, status: 'overdue', dueDate: '2025-01-05', source: 'Enterprise Plan' },
-  { id: '5', number: 'INV-2025-0338', customer: 'NVIDIA', customerType: 'employer', amount: 2999, status: 'paid', dueDate: '2025-01-01', paidDate: '2024-12-28', source: 'Enterprise Plan' },
+  { id: '4', number: 'INV-2025-0339', customer: 'Northrop Grumman', customerType: 'employer', amount: 1999, status: 'overdue', dueDate: '2025-01-05', source: 'Mission Control' },
+  { id: '5', number: 'INV-2025-0338', customer: 'NVIDIA', customerType: 'employer', amount: 1999, status: 'paid', dueDate: '2025-01-01', paidDate: '2024-12-28', source: 'Mission Control' },
   { id: '6', number: 'INV-2025-0337', customer: 'STEM Career Fair 2025', customerType: 'event', amount: 12500, status: 'partial', dueDate: '2025-01-25', source: 'Event Sponsorship' },
-  { id: '7', number: 'INV-2025-0336', customer: 'SpaceX', customerType: 'employer', amount: 2999, status: 'sent', dueDate: '2025-01-28', source: 'Enterprise Plan' },
-  { id: '8', number: 'INV-2025-0335', customer: 'IBM Quantum', customerType: 'employer', amount: 1999, status: 'draft', dueDate: '2025-02-01', source: 'Professional Plan' },
+  { id: '7', number: 'INV-2025-0336', customer: 'SpaceX', customerType: 'employer', amount: 1999, status: 'sent', dueDate: '2025-01-28', source: 'Mission Control' },
+  { id: '8', number: 'INV-2025-0335', customer: 'IBM Quantum', customerType: 'employer', amount: 499, status: 'draft', dueDate: '2025-02-01', source: 'Talent Engine' },
 ];
 
 const SAMPLE_GRANTS: Grant[] = [
@@ -576,6 +576,12 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedFee, setSelectedFee] = useState<ServiceFee | null>(null);
   const [showNewFeeModal, setShowNewFeeModal] = useState(false);
+  const [showToast, setShowToast] = useState('');
+
+  const triggerToast = (msg: string) => {
+    setShowToast(msg);
+    setTimeout(() => setShowToast(''), 2500);
+  };
 
   const filteredFees = selectedCategory === 'all'
     ? SAMPLE_SERVICE_FEES
@@ -609,6 +615,12 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
 
   return (
     <div className="space-y-6">
+      {/* Toast */}
+      {showToast && (
+        <div className="fixed top-6 right-6 z-[60] bg-emerald-500 text-white px-5 py-3 rounded-lg shadow-lg text-sm font-medium animate-pulse">
+          {showToast}
+        </div>
+      )}
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {SERVICE_FEE_CATEGORIES.map((category) => {
@@ -948,7 +960,10 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
                 >
                   Cancel
                 </button>
-                <button className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <button
+                  onClick={() => { setShowEditModal(false); triggerToast('Fee saved successfully'); }}
+                  className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
                   <Save size={18} />
                   Save Changes
                 </button>
@@ -1082,7 +1097,10 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
                 >
                   Cancel
                 </button>
-                <button className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <button
+                  onClick={() => { setShowNewFeeModal(false); triggerToast('Fee saved successfully'); }}
+                  className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
                   <Plus size={18} />
                   Create Fee
                 </button>
@@ -1102,7 +1120,7 @@ const ServiceFeesTab: React.FC<{ formatCurrency: (amount: number) => string }> =
 const BillingTab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState('overview');
   const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [, setShowInvoiceModal] = useState(false);
+  const [_showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   // Calculate totals
   const totalRevenue = REVENUE_STREAMS.reduce((sum, stream) => sum + stream.amount, 0);

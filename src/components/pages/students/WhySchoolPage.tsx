@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface School {
@@ -223,6 +224,8 @@ const SchoolDashboard: React.FC<{
   onSelectSchool: (school: School) => void;
   onAddSchool: () => void;
 }> = ({ schools, profile, onSelectSchool, onAddSchool }) => {
+  const { info } = useNotifications();
+
   return (
     <div className="space-y-8">
       {/* Your Profile Summary */}
@@ -232,7 +235,10 @@ const SchoolDashboard: React.FC<{
             <span>👤</span>
             Your Profile
           </h3>
-          <button className="text-sm text-cyan-400 hover:text-cyan-300">
+          <button
+            onClick={() => info('Profile editing coming soon! Add a new school to update your preferences.')}
+            className="text-sm text-cyan-400 hover:text-cyan-300"
+          >
             Edit Profile
           </button>
         </div>

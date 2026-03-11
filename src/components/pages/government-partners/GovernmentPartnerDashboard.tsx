@@ -19,7 +19,10 @@ import {
   DollarSign,
   Award,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Globe,
+  Shield,
+  FlaskConical,
 } from 'lucide-react';
 import { useAuth } from '@/contexts';
 import {
@@ -46,12 +49,15 @@ import { EmployersTab } from './dashboard/EmployersTab';
 import { ComplianceTab } from './dashboard/ComplianceTab';
 import { AnalyticsTab } from './dashboard/AnalyticsTab';
 import { SettingsTab } from './dashboard/SettingsTab';
+import PolicyImpactTab from './dashboard/PolicyImpactTab';
+import CrossAgencyTab from './dashboard/CrossAgencyTab';
+import ClearancePipelineTab from './dashboard/ClearancePipelineTab';
 
 // ===========================================
 // TYPES
 // ===========================================
 
-type DashboardTab = 'overview' | 'programs' | 'participants' | 'employers' | 'compliance' | 'analytics' | 'settings';
+type DashboardTab = 'overview' | 'programs' | 'participants' | 'employers' | 'compliance' | 'analytics' | 'policy_impact' | 'cross_agency' | 'clearance_pipeline' | 'settings';
 
 // ===========================================
 // SAMPLE DATA
@@ -728,6 +734,9 @@ const GovernmentPartnerDashboard: React.FC = () => {
     { id: 'employers' as const, label: 'Employers', icon: Building2 },
     { id: 'compliance' as const, label: 'Compliance', icon: FileText },
     { id: 'analytics' as const, label: 'Analytics', icon: BarChart3 },
+    { id: 'policy_impact' as const, label: 'Policy Impact', icon: FlaskConical },
+    { id: 'cross_agency' as const, label: 'Cross-Agency', icon: Globe },
+    { id: 'clearance_pipeline' as const, label: 'Clearance Pipeline', icon: Shield },
     { id: 'settings' as const, label: 'Settings', icon: Settings }
   ];
 
@@ -815,40 +824,58 @@ const GovernmentPartnerDashboard: React.FC = () => {
             reports={reports}
           />
         )}
-        {activeTab === 'programs' && partnerInfo && (
+        {activeTab === 'programs' && (
           <ProgramsTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
           />
         )}
-        {activeTab === 'participants' && partnerInfo && (
+        {activeTab === 'participants' && (
           <ParticipantsTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
           />
         )}
-        {activeTab === 'employers' && partnerInfo && (
+        {activeTab === 'employers' && (
           <EmployersTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
           />
         )}
-        {activeTab === 'compliance' && partnerInfo && (
+        {activeTab === 'compliance' && (
           <ComplianceTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
           />
         )}
-        {activeTab === 'analytics' && partnerInfo && (
+        {activeTab === 'analytics' && (
           <AnalyticsTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
           />
         )}
-        {activeTab === 'settings' && partnerInfo && (
+        {activeTab === 'policy_impact' && (
+          <PolicyImpactTab
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
+          />
+        )}
+        {activeTab === 'cross_agency' && (
+          <CrossAgencyTab
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
+          />
+        )}
+        {activeTab === 'clearance_pipeline' && (
+          <ClearancePipelineTab
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
+          />
+        )}
+        {activeTab === 'settings' && (
           <SettingsTab
-            partnerId={partnerInfo.id}
-            tier={partnerInfo.tier}
+            partnerId={partnerInfo?.id || 'sample'}
+            tier={partnerInfo?.tier || 'basic'}
             partner={partnerInfo}
           />
         )}

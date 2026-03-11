@@ -40,8 +40,9 @@ const SettingsTab = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    // Simulate save
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // TODO: Wire to supabase.from('platform_settings').upsert() when ready
+    console.info('[Settings] Save requested — pending backend integration');
+    await new Promise(resolve => setTimeout(resolve, 500));
     setSaving(false);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
@@ -166,7 +167,7 @@ const GeneralSettings = () => {
             <label className="block text-sm text-slate-400 mb-1.5">Support Email</label>
             <input
               type="email"
-              defaultValue="support@stemworkforce.com"
+              defaultValue="support@stemworkforce.net"
               className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
             />
           </div>
@@ -459,7 +460,7 @@ const IntegrationsSettings = () => {
             <div className="flex gap-2">
               <input
                 type="password"
-                defaultValue="sk_live_xxxxxxxxxxxx"
+                defaultValue="••••••••••••••••"
                 className="flex-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-emerald-500 font-mono"
                 readOnly
               />
@@ -775,8 +776,8 @@ const DeveloperSettings = () => {
   ];
 
   const webhooks = [
-    { url: 'https://api.example.com/webhooks/stemworkforce', events: ['user.created', 'job.posted'], status: 'active' },
-    { url: 'https://slack.example.com/hooks/jobs', events: ['application.submitted'], status: 'active' },
+    { url: 'https://your-api.example.com/webhooks', events: ['user.created', 'job.posted'], status: 'active' },
+    { url: 'https://hooks.slack.com/your-workspace', events: ['application.submitted'], status: 'active' },
   ];
 
   return (
@@ -800,7 +801,7 @@ const DeveloperSettings = () => {
                 <p className="font-medium text-sm">{apiKey.name}</p>
                 <div className="flex items-center gap-4 mt-1">
                   <code className="text-xs font-mono text-slate-400">
-                    {showKey ? 'sk_prod_AbCdEf123456789' : apiKey.key}
+                    {showKey ? 'sk_prod_••••••••••••••••' : apiKey.key}
                   </code>
                   <button
                     onClick={() => setShowKey(!showKey)}
@@ -894,21 +895,21 @@ const DeveloperSettings = () => {
         </h4>
         <div className="flex gap-3">
           <a
-            href="#"
+            href="/docs"
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition-colors"
           >
             <ExternalLink size={16} />
             API Reference
           </a>
           <a
-            href="#"
+            href="/docs"
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition-colors"
           >
             <ExternalLink size={16} />
             SDK Downloads
           </a>
           <a
-            href="#"
+            href="/docs"
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition-colors"
           >
             <ExternalLink size={16} />

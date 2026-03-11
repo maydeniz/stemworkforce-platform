@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/common/Button';
@@ -10,6 +10,7 @@ interface RegistrationSuccessScreenProps {
 }
 
 const RegistrationSuccessScreen: React.FC<RegistrationSuccessScreenProps> = ({ email }) => {
+  const navigate = useNavigate();
   return (
     <div className="text-center py-8">
       {/* Animated checkmark */}
@@ -35,11 +36,9 @@ const RegistrationSuccessScreen: React.FC<RegistrationSuccessScreenProps> = ({ e
           <br />
           Click the link to activate your account.
         </p>
-        <Link to="/login">
-          <Button variant="secondary" size="lg">
-            Back to Sign In
-          </Button>
-        </Link>
+        <Button variant="secondary" size="lg" onClick={() => navigate('/login')}>
+          Back to Sign In
+        </Button>
       </motion.div>
     </div>
   );

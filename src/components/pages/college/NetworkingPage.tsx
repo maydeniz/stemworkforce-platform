@@ -4,7 +4,8 @@
 // ===========================================
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Linkedin,
@@ -131,6 +132,8 @@ const NETWORKING_TIPS: ConnectionTip[] = [
 // ===========================================
 const NetworkingPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'linkedin' | 'outreach' | 'events'>('linkedin');
+  const { info, success } = useNotifications();
+  const navigate = useNavigate();
 
   const completedCount = LINKEDIN_CHECKLIST.filter(item => item.completed).length;
   const profileScore = Math.round((completedCount / LINKEDIN_CHECKLIST.length) * 100);
@@ -159,11 +162,11 @@ const NetworkingPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => setActiveTab('linkedin')} className="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   <Linkedin className="w-5 h-5" />
                   Optimize LinkedIn
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => navigate('/college/mentorship')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <Users className="w-5 h-5" />
                   Find Mentors
                 </button>
@@ -354,7 +357,7 @@ const NetworkingPage: React.FC = () => {
                   <div className="p-4 bg-gray-800/50 rounded-lg text-gray-300 text-sm mb-4 whitespace-pre-wrap">
                     {template.template}
                   </div>
-                  <button className="text-sky-400 hover:text-sky-300 text-sm font-medium flex items-center gap-1">
+                  <button onClick={() => { navigator.clipboard.writeText(template.template); success('Template copied to clipboard!'); }} className="text-sky-400 hover:text-sky-300 text-sm font-medium flex items-center gap-1">
                     Copy Template <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -389,7 +392,7 @@ const NetworkingPage: React.FC = () => {
                 <h2 className="text-2xl font-bold text-white">Upcoming Networking Events</h2>
                 <p className="text-gray-400 mt-1">Connect with professionals and expand your network</p>
               </div>
-              <button className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors">
+              <button onClick={() => info('Full events directory is coming soon!')} className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors">
                 Browse All Events
               </button>
             </div>
@@ -426,7 +429,7 @@ const NetworkingPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <button className="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button onClick={() => info('Event registration is coming soon! Check back for updates.')} className="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-sm font-medium transition-colors">
                     Register Now
                   </button>
                 </div>
@@ -445,7 +448,7 @@ const NetworkingPage: React.FC = () => {
                     Get matched with industry professionals for 1-on-1 informational interviews.
                     15-30 minute conversations scheduled at your convenience.
                   </p>
-                  <button className="px-6 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors">
+                  <button onClick={() => info('Virtual coffee chat matching is coming soon!')} className="px-6 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors">
                     Request a Coffee Chat
                   </button>
                 </div>

@@ -1,18 +1,13 @@
 /**
  * Workforce Data Service
- * Fetches real workforce data from BLS OEWS API with fallback to demo data.
+ * Reads workforce data from Supabase cache with fallback to demo data.
  *
- * Data flow: Cache (24h) → BLS OEWS API (batched, 1 request per state) → Demo data
+ * Data flow: Supabase cache (populated by workforce-data-sync edge function) → Demo data
+ * BLS API calls happen server-side only (edge function) to protect the API key.
  */
 
 import { supabase } from '@/lib/supabase';
-import {
-  INDUSTRY_SOC_MAPPING,
-  buildSeriesIdsForState,
-  parseSeriesResponse,
-  type SOCDataPoint,
-} from './blsSeriesConfig';
-// Projections data is used by blsSeriesConfig.ts for growth rates
+import { INDUSTRY_SOC_MAPPING } from './blsSeriesConfig';
 
 // Types for workforce data
 export interface StateWorkforceData {
@@ -72,119 +67,9 @@ const STATE_NAMES: Record<string, string> = {
 // Cache duration in milliseconds (24 hours)
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
-/**
- * Fetch OEWS occupation data from BLS API v2 for a single state.
- * Sends one batched request with all ~40 series IDs (under the 50-series limit).
- * Returns a Map of SOC code → { employment, medianWage }.
- */
-async function fetchOEWSData(
-  stateCode: string,
-  industries: string[]
-): Promise<Map<string, SOCDataPoint>> {
-  const blsApiKey = import.meta.env.VITE_BLS_API_KEY;
-
-  if (!blsApiKey) {
-    console.warn('BLS API key not configured, using demo data');
-    return new Map();
-  }
-
-  const fips = STATE_FIPS[stateCode];
-  if (!fips) {
-    console.warn(`No FIPS code for state: ${stateCode}`);
-    return new Map();
-  }
-
-  const { seriesIds, socCodeMap } = buildSeriesIdsForState(fips, industries);
-
-  if (seriesIds.length === 0) {
-    return new Map();
-  }
-
-  try {
-    const currentYear = new Date().getFullYear();
-
-    const response = await fetch('https://api.bls.gov/publicAPI/v2/timeseries/data/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        seriesid: seriesIds,
-        startyear: currentYear - 2,
-        endyear: currentYear,
-        registrationkey: blsApiKey,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`BLS API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const result = parseSeriesResponse(data, socCodeMap);
-
-    console.log(
-      `BLS OEWS fetch for ${stateCode}: ${seriesIds.length} series requested, ` +
-      `${result.size} SOC codes returned`
-    );
-
-    return result;
-  } catch (error) {
-    console.error(`Error fetching OEWS data for ${stateCode}:`, error);
-    return new Map();
-  }
-}
-
-/**
- * Aggregate SOC-level OEWS data into the platform's industry-level IndustryData format.
- * Uses real employment/wage data where available, projections for growth rates,
- * and demo data for fields BLS doesn't provide (skills, employers, hubs).
- */
-function aggregateToIndustries(
-  socDataMap: Map<string, SOCDataPoint>,
-  industries: string[],
-  stateCode: string
-): IndustryData[] {
-  return industries.map(industry => {
-    const mapping = INDUSTRY_SOC_MAPPING[industry];
-    if (!mapping) return generateDemoData(stateCode, industry);
-
-    let totalEmployment = 0;
-    let weightedWageSum = 0;
-    let socCodesWithData = 0;
-
-    for (const soc of mapping.socCodes) {
-      const data = socDataMap.get(soc.code);
-      if (data && data.employment > 0) {
-        totalEmployment += data.employment;
-        weightedWageSum += data.medianWage * data.employment;
-        socCodesWithData++;
-      }
-    }
-
-    // If we got real data for at least one SOC code, use it
-    if (socCodesWithData > 0) {
-      const avgWage = Math.round(weightedWageSum / totalEmployment);
-
-      // Use hardcoded BLS projections for growth rate (national-level)
-      const growthRate = mapping.projectedGrowth;
-
-      // Fill non-BLS fields from demo data (skills, employers, hubs)
-      const demoData = generateDemoData(stateCode, industry);
-
-      return {
-        industry,
-        totalJobs: totalEmployment,
-        averageSalary: avgWage,
-        jobGrowthRate: growthRate,
-        topSkills: demoData.topSkills,
-        topEmployers: demoData.topEmployers,
-        majorHubs: demoData.majorHubs,
-      };
-    }
-
-    // No real data for this industry — fall back entirely to demo
-    return generateDemoData(stateCode, industry);
-  });
-}
+// NOTE: BLS API calls are handled server-side by the workforce-data-sync edge function.
+// The frontend reads only from the Supabase cache (workforce_data_cache table).
+// This prevents exposing the BLS API key in the browser bundle.
 
 /**
  * Get cached data from Supabase
@@ -373,35 +258,21 @@ function generateDemoData(stateCode: string, industry: string): IndustryData {
 
 /**
  * Main function to get workforce data for a state.
- * Tries: 1) Cache 2) BLS OEWS API (single batched request) 3) Demo data
+ * Reads from Supabase cache (populated by workforce-data-sync edge function).
+ * Falls back to demo data if cache is empty.
  */
 export async function getWorkforceData(stateCode: string, industries?: string[]): Promise<StateWorkforceData> {
   const targetIndustries = industries || Object.keys(INDUSTRY_SOC_MAPPING);
 
-  // Try to get cached data first
+  // Read from Supabase cache (populated server-side by the edge function)
   const cachedData = await getCachedData(stateCode);
   if (cachedData) {
-    console.log(`Using cached data for ${stateCode}`);
     return cachedData;
   }
 
-  // Try to fetch fresh data from BLS OEWS API (single batched call for all industries)
-  let industryData: IndustryData[];
-  let dataSource: 'live' | 'demo' = 'demo';
-
-  try {
-    const socDataMap = await fetchOEWSData(stateCode, targetIndustries);
-
-    if (socDataMap.size > 0) {
-      industryData = aggregateToIndustries(socDataMap, targetIndustries, stateCode);
-      dataSource = 'live';
-    } else {
-      industryData = targetIndustries.map(ind => generateDemoData(stateCode, ind));
-    }
-  } catch (error) {
-    console.error(`BLS fetch failed for ${stateCode}:`, error);
-    industryData = targetIndustries.map(ind => generateDemoData(stateCode, ind));
-  }
+  // No cached data — generate demo data as fallback
+  // Run the workforce-data-sync edge function to populate real data
+  const industryData = targetIndustries.map(ind => generateDemoData(stateCode, ind));
 
   const result: StateWorkforceData = {
     stateCode,
@@ -410,8 +281,8 @@ export async function getWorkforceData(stateCode: string, industries?: string[])
     lastUpdated: new Date().toISOString(),
   };
 
-  // Cache the results
-  await cacheData(stateCode, industryData, dataSource);
+  // Cache demo data so subsequent requests are fast
+  await cacheData(stateCode, industryData, 'demo');
 
   return result;
 }
@@ -488,18 +359,21 @@ export async function getNationalIndustryStats(industry: string): Promise<{
 }
 
 /**
- * Check if real data is available (API key configured)
+ * Check if real data is available.
+ * Real data is populated by the workforce-data-sync edge function (server-side).
+ * Returns true optimistically — actual data source is determined per-state from cache.
  */
 export function isRealDataAvailable(): boolean {
-  return !!import.meta.env.VITE_BLS_API_KEY;
+  // Real data availability depends on whether the edge function has run.
+  // The frontend can't check server-side env vars, so we return true
+  // and let the cache check determine the actual data source.
+  return true;
 }
 
 /**
- * Get data source status
+ * Get data source status.
+ * Actual source ('live' or 'demo') is stored per-state in the cache.
  */
 export function getDataSourceStatus(): 'live' | 'cached' | 'demo' {
-  if (!import.meta.env.VITE_BLS_API_KEY) {
-    return 'demo';
-  }
-  return 'live';
+  return 'cached';
 }

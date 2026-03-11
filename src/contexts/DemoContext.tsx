@@ -28,23 +28,24 @@ const DemoContext = createContext<DemoContextType>({
 
 export const useDemo = () => useContext(DemoContext);
 
-// Demo account routes (public info only — NO passwords)
-const DEMO_ROUTES: Record<string, string> = {
-  employer: '/employer',
-  education_partner: '/education-partner',
-  national_labs: '/national-labs',
-  federal_agency: '/government-partner',
-  industry_nonprofit: '/industry-partner',
-  high_school: '/student/high-school',
-  college_student: '/student/college',
-  service_provider: '/provider',
-  event_organizer: '/event-organizer',
+// Demo account roles and their dashboard routes
+const DEMO_ACCOUNTS: Record<string, { label: string; route: string; icon: string; group: string }> = {
+  high_school:        { label: 'High School Student', route: '/dashboard', icon: '🎓', group: 'Students' },
+  college_student:    { label: 'College Student', route: '/dashboard', icon: '🎯', group: 'Students' },
+  jobseeker:          { label: 'Job Seeker', route: '/dashboard', icon: '💼', group: 'Individuals' },
+  employer:           { label: 'Employer', route: '/employer', icon: '🏗️', group: 'Organizations' },
+  education_partner:  { label: 'Education Partner', route: '/education-partner', icon: '📚', group: 'Partners' },
+  federal_agency:     { label: 'Federal Agency', route: '/government-partner', icon: '🏛️', group: 'Partners' },
+  state_agency:       { label: 'State & Local Agency', route: '/dashboard', icon: '🗺️', group: 'Partners' },
+  national_labs:      { label: 'National Laboratory', route: '/national-labs', icon: '⚛️', group: 'Partners' },
+  industry_partner:   { label: 'Industry Partner', route: '/industry-partner', icon: '🏢', group: 'Partners' },
+  nonprofit:          { label: 'Nonprofit Organization', route: '/nonprofit-partner', icon: '💚', group: 'Partners' },
+  service_provider:   { label: 'Service Provider', route: '/provider', icon: '⭐', group: 'Organizations' },
+  admin:              { label: 'Platform Admin', route: '/admin', icon: '🛡️', group: 'Admin' },
 };
 
-// Export for DemoBanner and DemoLandingPage
-export const DEMO_ROLES = Object.fromEntries(
-  Object.entries(DEMO_ROUTES).map(([key, route]) => [key, { route }])
-);
+// Export for DemoBanner, DemoLandingPage, and DemoLoginPage
+export const DEMO_ROLES = DEMO_ACCOUNTS;
 
 export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -52,8 +53,9 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(false);
 
   const loginAsRole = useCallback(async (role: string): Promise<string> => {
-    const route = DEMO_ROUTES[role];
-    if (!route) throw new Error(`Unknown demo role: ${role}`);
+    const account = DEMO_ACCOUNTS[role];
+    if (!account) throw new Error(`Unknown demo role: ${role}`);
+    const route = account.route;
 
     // Sign out first to clear any existing session
     await supabase.auth.signOut();

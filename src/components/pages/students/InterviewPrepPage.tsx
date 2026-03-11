@@ -8,6 +8,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ExpertQASection from '@/components/shared/ExpertQASection';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface InterviewSession {
@@ -617,16 +618,18 @@ const InterviewSimulator: React.FC<{
 }> = ({ session, onComplete, onQuit }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [responseTime, setResponseTime] = useState(0);
   const [responses, setResponses] = useState<QuestionResponse[]>([]);
   const [showTips, setShowTips] = useState(true);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const { info } = useNotifications();
 
   const questions = QUESTION_BANK.slice(0, 8);
   const currentQuestion = questions[currentQuestionIndex];
 
   useEffect(() => {
-    if (isRecording) {
+    if (isRecording && !isPaused) {
       timerRef.current = setInterval(() => {
         setResponseTime(prev => prev + 1);
       }, 1000);
@@ -640,7 +643,7 @@ const InterviewSimulator: React.FC<{
         clearInterval(timerRef.current);
       }
     };
-  }, [isRecording]);
+  }, [isRecording, isPaused]);
 
   const handleStartResponse = () => {
     setIsRecording(true);
@@ -798,11 +801,41 @@ const InterviewSimulator: React.FC<{
 
       {/* Quick Controls */}
       <div className="flex justify-between">
-        <button className="text-sm text-gray-500 hover:text-gray-300">
+        <button
+          onClick={() => {
+            if (currentQuestionIndex < questions.length - 1) {
+              setCurrentQuestionIndex(prev => prev + 1);
+              setIsRecording(false);
+              setIsPaused(false);
+              setResponseTime(0);
+              info('Question skipped. Moving to the next one.');
+            } else {
+              info('This is the last question. Finish your response to complete the session.');
+            }
+          }}
+          className="text-sm text-gray-500 hover:text-gray-300"
+        >
           Skip Question
         </button>
-        <button className="text-sm text-gray-500 hover:text-gray-300">
-          Pause Session
+        <button
+          onClick={() => {
+            if (isRecording) {
+              setIsPaused(prev => {
+                const willPause = !prev;
+                if (willPause) {
+                  info('Session paused. Click to resume.');
+                } else {
+                  info('Session resumed.');
+                }
+                return willPause;
+              });
+            } else {
+              info('Start recording a response first, then you can pause.');
+            }
+          }}
+          className="text-sm text-gray-500 hover:text-gray-300"
+        >
+          {isPaused ? 'Resume Session' : 'Pause Session'}
         </button>
       </div>
     </div>
@@ -817,6 +850,8 @@ const SessionReview: React.FC<{
   onBack: () => void;
   onPracticeAgain: () => void;
 }> = ({ session, onBack, onPracticeAgain }) => {
+  const { info } = useNotifications();
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-emerald-400';
     if (score >= 60) return 'text-amber-400';
@@ -933,13 +968,13 @@ const SessionReview: React.FC<{
           Practice Again
         </button>
         <button
-          onClick={() => alert('Counselor sharing coming soon!')}
+          onClick={() => info('Counselor sharing coming soon! You can screenshot your results to share.')}
           className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all cursor-pointer"
         >
           Share with Counselor
         </button>
         <button
-          onClick={() => alert('Report download coming soon!')}
+          onClick={() => info('Report download coming soon! Your results are saved in this session.')}
           className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all cursor-pointer"
         >
           Download Report

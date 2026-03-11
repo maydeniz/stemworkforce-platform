@@ -78,7 +78,7 @@ export const EMAIL_TEMPLATES = {
 class EmailNotificationService {
   private isInitialized = false;
   private _apiKey: string | null = null; // Prefixed with _ as placeholder for future Stripe integration
-  private defaultFromEmail = 'noreply@stemworkforce.org';
+  private defaultFromEmail = 'noreply@stemworkforce.net';
   private defaultFromName = 'STEM Workforce Platform';
 
   /**
@@ -289,7 +289,7 @@ export const emailService = new EmailNotificationService();
 if (typeof window !== 'undefined') {
   emailService.initialize({
     apiKey: 'placeholder_api_key',
-    fromEmail: 'noreply@stemworkforce.org',
+    fromEmail: 'noreply@stemworkforce.net',
     fromName: 'STEM Workforce Platform'
   });
 }

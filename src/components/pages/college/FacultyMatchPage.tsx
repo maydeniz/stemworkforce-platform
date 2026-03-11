@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Users,
   Search,
@@ -163,6 +164,7 @@ const FacultyMatchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
   const [showEmailTemplates, setShowEmailTemplates] = useState(false);
+  const { info, success } = useNotifications();
 
   const filteredFaculty = FACULTY.filter(f => {
     const matchesSearch =
@@ -323,11 +325,11 @@ const FacultyMatchPage: React.FC = () => {
                   </div>
 
                   <div className="flex gap-3 mt-4">
-                    <button className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <button onClick={() => { setShowEmailTemplates(true); info('Check the email templates in the sidebar to draft your message.'); }} className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
                       <Mail className="w-4 h-4" />
                       Draft Email
                     </button>
-                    <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700 flex items-center gap-2">
+                    <button onClick={() => info('Lab website links are coming soon! Search for "' + faculty.name + ' lab" to find their page.')} className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700 flex items-center gap-2">
                       <ExternalLink className="w-4 h-4" />
                       Lab Website
                     </button>
@@ -351,7 +353,7 @@ const FacultyMatchPage: React.FC = () => {
                     <div key={i} className="p-3 bg-gray-800/50 rounded-lg">
                       <h4 className="font-medium text-white text-sm mb-2">{template.title}</h4>
                       <p className="text-xs text-gray-400 line-clamp-3">{template.body.substring(0, 150)}...</p>
-                      <button className="text-indigo-400 text-xs mt-2 hover:text-indigo-300">
+                      <button onClick={() => { navigator.clipboard.writeText(template.body); success('Email template copied to clipboard!'); }} className="text-indigo-400 text-xs mt-2 hover:text-indigo-300">
                         Copy Template
                       </button>
                     </div>

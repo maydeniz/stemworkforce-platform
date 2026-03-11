@@ -2,7 +2,7 @@
 // Input Components
 // ===========================================
 
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 import { cn } from '@/utils/helpers';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -15,7 +15,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, leftIcon, rightIcon, className, id, ...props }, ref) => {
-    const inputId = id || `input-${Math.random().toString(36).slice(2)}`;
+    const generatedId = useId();
+    const inputId = id || generatedId;
 
     return (
       <div className="w-full">
@@ -155,7 +156,8 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, options, className, id, ...props }, ref) => {
-    const selectId = id || `select-${Math.random().toString(36).slice(2)}`;
+    const generatedId = useId();
+    const selectId = id || generatedId;
 
     return (
       <div className="w-full">
@@ -211,7 +213,8 @@ interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, className, id, ...props }, ref) => {
-    const checkboxId = id || `checkbox-${Math.random().toString(36).slice(2)}`;
+    const generatedId = useId();
+    const checkboxId = id || generatedId;
 
     return (
       <label

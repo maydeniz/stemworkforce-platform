@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Users,
@@ -130,6 +131,7 @@ const MENTORSHIP_BENEFITS = [
 // COMPONENT
 // ===========================================
 const MentorshipPage: React.FC = () => {
+  const { info } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExpertise, setSelectedExpertise] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -315,10 +317,10 @@ const MentorshipPage: React.FC = () => {
               </div>
 
               <div className="flex gap-3 mt-4">
-                <button className="flex-1 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-sm font-medium transition-colors">
+                <button onClick={() => info('Mentorship matching is coming soon! We\'re building a platform to connect you with mentors.')} className="flex-1 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-sm font-medium transition-colors">
                   Request Mentorship
                 </button>
-                <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700">
+                <button onClick={() => info('Mentor profiles are coming soon!')} className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700">
                   View Profile
                 </button>
               </div>
@@ -355,7 +357,7 @@ const MentorshipPage: React.FC = () => {
             Share your experience and help the next generation of STEM professionals.
             Mentoring is rewarding and looks great on your profile.
           </p>
-          <button className="px-8 py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-medium transition-colors">
+          <button onClick={() => info('Mentor registration is coming soon!')} className="px-8 py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-medium transition-colors">
             Become a Mentor
           </button>
         </div>

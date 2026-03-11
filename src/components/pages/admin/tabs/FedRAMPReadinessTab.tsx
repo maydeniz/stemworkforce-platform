@@ -1,10 +1,8 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Shield, CheckCircle, XCircle, AlertTriangle, Clock, FileText,
-  Server, Lock, Eye, RefreshCw, Download, ExternalLink, ChevronRight,
-  Activity, Database, Globe, Key, Users, Cpu, HardDrive, Network,
-  Building, Award, TrendingUp, AlertCircle, Info
+  Shield, CheckCircle, AlertTriangle, Clock, FileText,
+  Server, Lock, Download, ExternalLink,
+  Key, Award, AlertCircle, Info
 } from 'lucide-react';
 
 // =====================================================

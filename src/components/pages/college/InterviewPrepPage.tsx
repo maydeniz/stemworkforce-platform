@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Video,
@@ -197,6 +198,7 @@ const STAR_METHOD = [
 // COMPONENT
 // ===========================================
 const InterviewPrepPage: React.FC = () => {
+  const { info } = useNotifications();
   const [selectedType, setSelectedType] = useState<string>('behavioral');
   const [activeTab, setActiveTab] = useState<'practice' | 'companies' | 'tips'>('practice');
 
@@ -224,11 +226,11 @@ const InterviewPrepPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => info('AI practice sessions are coming soon! We\'re building an interactive interview simulator.')} className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   <Play className="w-5 h-5" />
                   Start Practice Session
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => info('Mock interview scheduling is coming soon!')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <Calendar className="w-5 h-5" />
                   Schedule Mock Interview
                 </button>
@@ -344,7 +346,7 @@ const InterviewPrepPage: React.FC = () => {
                     </div>
                     <h3 className="text-lg text-white">{q.question}</h3>
                   </div>
-                  <button className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+                  <button onClick={() => info('Interactive practice mode is coming soon!')} className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                     <Play className="w-4 h-4" />
                     Practice
                   </button>
@@ -362,7 +364,7 @@ const InterviewPrepPage: React.FC = () => {
             ))}
 
             <div className="text-center pt-4">
-              <button className="text-purple-400 hover:text-purple-300 font-medium flex items-center gap-2 mx-auto">
+              <button onClick={() => info('Full question bank is coming soon! We\'re adding 2,500+ practice questions.')} className="text-purple-400 hover:text-purple-300 font-medium flex items-center gap-2 mx-auto">
                 View All Questions <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -406,7 +408,7 @@ const InterviewPrepPage: React.FC = () => {
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-800">
                   <span className="text-sm text-gray-400">{company.tipCount} tips & insights</span>
-                  <button className="text-purple-400 hover:text-purple-300 text-sm font-medium flex items-center gap-1">
+                  <button onClick={() => info('Company interview guides are coming soon!')} className="text-purple-400 hover:text-purple-300 text-sm font-medium flex items-center gap-1">
                     View Guide <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -503,7 +505,7 @@ const InterviewPrepPage: React.FC = () => {
             Schedule a mock interview with industry professionals or practice with our AI interviewer.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button onClick={() => info('AI mock interviews are coming soon! We\'re building a real-time interview simulator.')} className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
               <Video className="w-5 h-5" />
               Start AI Mock Interview
             </button>

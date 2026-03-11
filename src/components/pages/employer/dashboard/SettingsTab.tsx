@@ -90,7 +90,7 @@ const SettingsTab: React.FC = () => {
             <textarea defaultValue="Leading defense and technology company specializing in AI, cybersecurity, and advanced computing solutions for national security applications." rows={3} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500/50 resize-none" />
           </div>
         </div>
-        <button onClick={() => triggerToast('Company profile saved successfully!')} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={() => { /* TODO: Wire to supabase.from('organizations').update() */ triggerToast('Company profile saved successfully!'); }} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Save className="w-4 h-4" /> Save Changes
         </button>
       </motion.div>

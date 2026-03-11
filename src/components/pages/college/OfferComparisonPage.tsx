@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import {
   Scale,
   DollarSign,
@@ -90,7 +91,8 @@ const SAMPLE_OFFERS: Offer[] = [
 // ===========================================
 const OfferComparisonPage: React.FC = () => {
   const [offers] = useState<Offer[]>(SAMPLE_OFFERS);
-  const [_showAddForm, _setShowAddForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -146,13 +148,31 @@ const OfferComparisonPage: React.FC = () => {
         {/* Add Offer Button */}
         <div className="flex justify-end mb-8">
           <button
-            onClick={() => _setShowAddForm(true)}
+            onClick={() => setShowAddForm(true)}
             className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
           >
             <Plus className="w-5 h-5" />
             Add Offer
           </button>
         </div>
+
+        {/* Add Offer Form Placeholder */}
+        {showAddForm && (
+          <div className="mb-8 bg-gray-900/50 rounded-xl border border-indigo-500/30 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">Add New Offer</h3>
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Close
+              </button>
+            </div>
+            <p className="text-gray-400">
+              Custom offer entry form is coming soon! For now, compare the sample offers above.
+            </p>
+          </div>
+        )}
 
         {/* Comparison Table */}
         {offers.length > 0 ? (
@@ -394,7 +414,7 @@ const OfferComparisonPage: React.FC = () => {
             <h3 className="text-xl font-semibold text-white mb-2">No offers to compare yet</h3>
             <p className="text-gray-400 mb-6">Add your job offers to compare them side-by-side</p>
             <button
-              onClick={() => _setShowAddForm(true)}
+              onClick={() => setShowAddForm(true)}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium inline-flex items-center gap-2 transition-colors"
             >
               <Plus className="w-5 h-5" />

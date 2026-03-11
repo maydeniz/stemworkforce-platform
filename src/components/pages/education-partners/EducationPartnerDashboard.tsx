@@ -24,6 +24,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { getPartnerPrograms, type PartnerProgram } from '@/services/educationPartnerApi';
 import { PRICING_TIERS, type PartnerSubscription } from '@/services/partnerBillingService';
+import { UsageMeter, FeatureGate } from '@/components/common';
 
 // Import Tab Components
 import ProgramsTab from './dashboard/ProgramsTab';
@@ -154,6 +155,17 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ stats, programs, employers, e
             <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
           </motion.div>
         ))}
+      </div>
+
+      {/* Usage Meter */}
+      <div className="max-w-sm">
+        <UsageMeter
+          used={3}
+          limit={5}
+          label="Program Listings"
+          upgradeLink="/pricing"
+          colorScheme="emerald"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -662,10 +674,17 @@ const EducationPartnerDashboard: React.FC = () => {
           />
         )}
         {activeTab === 'outcomes' && (
-          <OutcomesTab
-            partnerId={partnerInfo.id}
-            programs={programs.map(p => ({ id: p.id, name: p.name }))}
-          />
+          <FeatureGate
+            isUnlocked={false}
+            feature="Outcome Tracking & Reports"
+            requiredTier="Growth"
+            upgradeLink="/pricing"
+          >
+            <OutcomesTab
+              partnerId={partnerInfo.id}
+              programs={programs.map(p => ({ id: p.id, name: p.name }))}
+            />
+          </FeatureGate>
         )}
         {activeTab === 'billing' && (
           <BillingTab

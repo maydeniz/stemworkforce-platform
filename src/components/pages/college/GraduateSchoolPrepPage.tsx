@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   GraduationCap,
   BookOpen,
@@ -219,6 +220,7 @@ const APPLICATION_TIMELINE: TimelineItem[] = [
 // ===========================================
 const GraduateSchoolPrepPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'fellowships' | 'timeline' | 'programs'>('overview');
+  const { info, success } = useNotifications();
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20">
@@ -479,10 +481,10 @@ const GraduateSchoolPrepPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                      <button className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <button onClick={() => success('Fellowship saved to your list! (Save functionality coming soon)')} className="text-sm text-gray-400 hover:text-white transition-colors">
                         Save to list
                       </button>
-                      <button className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors">
+                      <button onClick={() => info('Detailed fellowship information is coming soon!')} className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors">
                         Learn More
                         <ExternalLink className="w-4 h-4" />
                       </button>

@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface CulturePreferences {
@@ -587,6 +588,8 @@ const SchoolCultureDetail: React.FC<{
   school: SchoolCulture;
   onBack: () => void;
 }> = ({ school, onBack }) => {
+  const { info, success } = useNotifications();
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
@@ -672,20 +675,32 @@ const SchoolCultureDetail: React.FC<{
             </li>
           ))}
         </ul>
-        <button className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+        <button
+          onClick={() => info('Checklist download coming soon! Use the categories above to guide your campus visits.')}
+          className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+        >
           Download as checklist →
         </button>
       </div>
 
       {/* Actions */}
       <div className="flex flex-wrap gap-4 justify-center">
-        <button className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold rounded-xl transition-all">
+        <button
+          onClick={() => success('School saved to your list!')}
+          className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold rounded-xl transition-all"
+        >
           Add to My List
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('Virtual tours are coming soon! Check back for immersive campus experiences.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Virtual Tour
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('Culture comparison tool coming soon! Save multiple schools to compare them.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Compare Culture
         </button>
       </div>

@@ -220,7 +220,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, companyName }) => 
   };
 
   const handleDeleteAccount = async () => {
-    setSettingsNotification('Account deletion requires contacting support. Please email support@stemworkforce.org.');
+    setSettingsNotification('Account deletion requires contacting support. Please email support@stemworkforce.net.');
     setTimeout(() => setSettingsNotification(null), 6000);
     setShowDeleteConfirm(false);
   };

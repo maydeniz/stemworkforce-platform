@@ -4,7 +4,8 @@
 // ===========================================
 
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Microscope,
   Building2,
@@ -189,6 +190,8 @@ const ResearchOpportunitiesPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedCitizenship, setSelectedCitizenship] = useState<string>('all');
   const [showHousingOnly, setShowHousingOnly] = useState(false);
+  const { info, success } = useNotifications();
+  const navigate = useNavigate();
 
   const filteredPrograms = useMemo(() => {
     return RESEARCH_PROGRAMS.filter(program => {
@@ -321,7 +324,7 @@ const ResearchOpportunitiesPage: React.FC = () => {
               <p className="text-gray-400 mt-1">{filteredPrograms.length} programs found</p>
             </div>
             <div className="flex gap-2">
-              <button className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors">
+              <button onClick={() => info('Advanced filtering options are coming soon!')} className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors">
                 <Filter className="w-5 h-5" />
               </button>
             </div>
@@ -408,11 +411,11 @@ const ResearchOpportunitiesPage: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                    <button className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors">
+                    <button onClick={() => success('Program saved! (Save functionality coming soon)')} className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors">
                       <Star className="w-4 h-4" />
                       Save
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition-colors">
+                    <button onClick={() => info('Detailed program information is coming soon!')} className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition-colors">
                       Learn More
                       <ExternalLink className="w-4 h-4" />
                     </button>
@@ -535,7 +538,7 @@ const ResearchOpportunitiesPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">Template 1 of 5</span>
-                <button className="text-cyan-400 hover:text-cyan-300">View all templates</button>
+                <button onClick={() => navigate('/college/faculty-email-guide')} className="text-cyan-400 hover:text-cyan-300">View all templates</button>
               </div>
             </div>
           </div>

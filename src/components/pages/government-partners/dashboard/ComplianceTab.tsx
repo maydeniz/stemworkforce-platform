@@ -23,6 +23,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { getComplianceReports, getWorkforcePrograms } from '@/services/governmentPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { ComplianceReport, WorkforceProgram, GovernmentPartnerTier } from '@/types/governmentPartner';
 
 // ===========================================
@@ -206,6 +207,16 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({ partnerId, tier: _
     dueDate: '',
     preparedBy: ''
   });
+
+  // Escape key handling for modals
+  const closeAnyModal = () => {
+    if (showReportPreview) { setShowReportPreview(false); setPreviewReport(null); }
+    else if (showSubmitConfirm) { setShowSubmitConfirm(false); setSubmittingReport(null); }
+    else if (selectedReport) setSelectedReport(null);
+    else if (showEditModal) { setShowEditModal(false); setEditingReport(null); }
+    else if (showCreateModal) setShowCreateModal(false);
+  };
+  useEscapeKey(closeAnyModal, !!selectedReport || showCreateModal || showEditModal || showSubmitConfirm || showReportPreview);
 
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });

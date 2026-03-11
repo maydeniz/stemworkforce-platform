@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle2, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
@@ -19,6 +20,8 @@ interface PersonalInfoStepProps {
   onBack: () => void;
   isLastStep: boolean;
   loading: boolean;
+  acceptedTerms?: boolean;
+  onAcceptedTermsChange?: (accepted: boolean) => void;
 }
 
 const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
@@ -28,6 +31,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   onBack,
   isLastStep,
   loading,
+  acceptedTerms,
+  onAcceptedTermsChange,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -83,7 +88,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             label="First name"
             value={data.firstName}
             onChange={(e) => update('firstName', e.target.value)}
-            placeholder="John"
+            placeholder="First"
+            autoComplete="given-name"
             leftIcon={<User className="w-4 h-4" />}
             error={errors.firstName}
             required
@@ -93,7 +99,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             label="Last name"
             value={data.lastName}
             onChange={(e) => update('lastName', e.target.value)}
-            placeholder="Doe"
+            placeholder="Last"
+            autoComplete="family-name"
             leftIcon={<User className="w-4 h-4" />}
             error={errors.lastName}
             required
@@ -109,6 +116,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           onChange={(e) => update('email', e.target.value)}
           onBlur={() => setEmailTouched(true)}
           placeholder="you@example.com"
+          autoComplete="email"
           leftIcon={<Mail className="w-4 h-4" />}
           rightIcon={
             emailTouched && data.email && isEmailValid ? (
@@ -127,8 +135,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             type={showPassword ? 'text' : 'password'}
             value={data.password}
             onChange={(e) => update('password', e.target.value)}
-            onBlur={() => {}}
             placeholder="Create a strong password"
+            autoComplete="new-password"
             leftIcon={<Lock className="w-4 h-4" />}
             rightIcon={
               <button
@@ -136,7 +144,6 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                 onClick={() => setShowPassword(!showPassword)}
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -156,6 +163,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           onChange={(e) => update('confirmPassword', e.target.value)}
           onBlur={() => setConfirmTouched(true)}
           placeholder="Re-enter your password"
+          autoComplete="new-password"
           leftIcon={<Lock className="w-4 h-4" />}
           rightIcon={
             <button
@@ -163,7 +171,6 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               onClick={() => setShowConfirm(!showConfirm)}
               className="text-gray-400 hover:text-white transition-colors"
               aria-label={showConfirm ? 'Hide password' : 'Show password'}
-              tabIndex={-1}
             >
               {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -177,6 +184,29 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           required
           disabled={loading}
         />
+
+        {/* Terms of Service */}
+        {isLastStep && (
+          <label className="flex items-start gap-3 cursor-pointer mt-2">
+            <input
+              type="checkbox"
+              checked={acceptedTerms || false}
+              onChange={(e) => onAcceptedTermsChange?.(e.target.checked)}
+              className="w-4 h-4 mt-0.5 rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+              disabled={loading}
+            />
+            <span className="text-sm text-gray-400 leading-snug">
+              I agree to the{' '}
+              <Link to="/terms" target="_blank" className="text-indigo-400 hover:text-indigo-300 underline">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link to="/privacy" target="_blank" className="text-indigo-400 hover:text-indigo-300 underline">
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
+        )}
       </div>
 
       {/* Navigation */}

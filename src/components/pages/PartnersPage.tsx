@@ -154,7 +154,7 @@ const partnerTypes = {
 // Pricing tiers for partners
 const pricingTiers = {
   starter: {
-    name: 'Starter',
+    name: 'Launchpad',
     price: 'Free',
     period: 'forever',
     description: 'Perfect for getting started',
@@ -169,8 +169,8 @@ const pricingTiers = {
     popular: false
   },
   professional: {
-    name: 'Professional',
-    price: '$299',
+    name: 'Talent Engine',
+    price: '$499',
     period: '/month',
     description: 'For growing organizations',
     features: [
@@ -187,7 +187,7 @@ const pricingTiers = {
     popular: true
   },
   enterprise: {
-    name: 'Enterprise',
+    name: 'Mission Control',
     price: 'Custom',
     period: 'pricing',
     description: 'For large organizations',

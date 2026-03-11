@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
-  ShieldCheck, FileText, Users, Clock, AlertTriangle, CheckCircle,
-  XCircle, Eye, Download, Trash2, RefreshCw, Search, Filter,
-  Calendar, Bell, Lock, Globe, Building
+  ShieldCheck, FileText, Clock, AlertTriangle, CheckCircle,
+  Eye, Download, Trash2, RefreshCw, Search,
+  Lock, Building
 } from 'lucide-react';
 
 // =====================================================
@@ -82,7 +81,7 @@ const PrivacyComplianceTab: React.FC = () => {
   const [dpas, setDpas] = useState<DataProcessingAgreement[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [selectedDSR, setSelectedDSR] = useState<DataSubjectRequest | null>(null);
+  const [_selectedDSR, setSelectedDSR] = useState<DataSubjectRequest | null>(null);
 
   // Stats
   const [stats, setStats] = useState({

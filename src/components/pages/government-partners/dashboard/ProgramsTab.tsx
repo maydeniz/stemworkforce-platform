@@ -23,6 +23,7 @@ import {
   FileText
 } from 'lucide-react';
 import { getWorkforcePrograms } from '@/services/governmentPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { WorkforceProgram, GovernmentPartnerTier, ProgramFilters } from '@/types/governmentPartner';
 
 // ===========================================
@@ -212,9 +213,34 @@ export const ProgramsTab: React.FC<ProgramsTabProps> = ({ partnerId, tier: _tier
     industryFocus: ''
   });
 
+  // Escape key handling for modals
+  const closeAnyModal = () => {
+    if (selectedProgram) setSelectedProgram(null);
+    else if (showEditModal) { setShowEditModal(false); setEditingProgram(null); }
+    else if (showCreateModal) setShowCreateModal(false);
+  };
+  useEscapeKey(closeAnyModal, !!selectedProgram || showCreateModal || showEditModal);
+
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleExportPrograms = () => {
+    const headers = ['Name', 'Type', 'Status', 'Compliance', 'Enrolled', 'Target', 'Completed', 'Placed', 'Budget', 'Spent', 'Remaining'];
+    const rows = filteredPrograms.map(p => [
+      `"${p.name}"`, p.programType, p.status, p.complianceStatus, p.currentEnrollment, p.enrollmentTarget,
+      p.completedCount, p.placedCount, p.totalBudget, p.spentToDate, p.budgetRemaining
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'programs-export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification('Programs exported successfully');
   };
 
   useEffect(() => {
@@ -378,6 +404,13 @@ export const ProgramsTab: React.FC<ProgramsTabProps> = ({ partnerId, tier: _tier
           >
             <Filter className="w-4 h-4" />
             Filters
+          </button>
+          <button
+            onClick={handleExportPrograms}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <FileText className="w-4 h-4" />
+            Export
           </button>
           <button
             onClick={() => setShowCreateModal(true)}

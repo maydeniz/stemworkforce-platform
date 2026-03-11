@@ -1,7 +1,14 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Shield, Users, Lock, Globe, Zap, Settings, AlertTriangle, CheckCircle, XCircle, Clock, RefreshCw, Trash2, Eye, Ban, Search } from 'lucide-react';
+import { Shield, Users, Globe, Zap, Settings, AlertTriangle, XCircle, RefreshCw, Trash2, Ban, Search, Lock, Unlock, RadioTower } from 'lucide-react';
+import {
+  getAllBreakerStatuses,
+  tripBreaker,
+  resetBreaker,
+  tripAllCritical,
+  DOMAIN_SEVERITY,
+  type ClearanceDomain,
+} from '@/services/clearanceCircuitBreaker';
 
 // =====================================================
 // SECURITY CENTER TAB - OWASP & SOC 2 Compliant
@@ -70,10 +77,15 @@ interface SecurityHeader {
   updated_at: string;
 }
 
-type SecuritySubTab = 'sessions' | 'failed-logins' | 'ip-rules' | 'rate-limits' | 'headers';
+type SecuritySubTab = 'sessions' | 'failed-logins' | 'ip-rules' | 'rate-limits' | 'headers' | 'circuit-breaker';
 
-const SecurityCenterTab: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<SecuritySubTab>('sessions');
+interface SecurityCenterTabProps {
+  /** When navigated from "Circuit Breaker" menu item, open that sub-tab directly. */
+  initialSubTab?: SecuritySubTab;
+}
+
+const SecurityCenterTab: React.FC<SecurityCenterTabProps> = ({ initialSubTab = 'sessions' }) => {
+  const [activeSubTab, setActiveSubTab] = useState<SecuritySubTab>(initialSubTab);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [failedLogins, setFailedLogins] = useState<FailedLoginAttempt[]>([]);
@@ -83,6 +95,51 @@ const SecurityCenterTab: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddIPModal, setShowAddIPModal] = useState(false);
   const [showAddRateLimitModal, setShowAddRateLimitModal] = useState(false);
+
+  // Circuit breaker state
+  const [breakerStatuses, setBreakerStatuses] = useState(getAllBreakerStatuses());
+  const [breakerLoading, setBreakerLoading] = useState<string | null>(null);
+  const [breakerMessage, setBreakerMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [tripReason, setTripReason] = useState('');
+  const [resetNotes, setResetNotes] = useState('');
+  const [tripTarget, setTripTarget] = useState<ClearanceDomain | null>(null);
+
+  const refreshBreakerStatuses = useCallback(() => {
+    setBreakerStatuses(getAllBreakerStatuses());
+  }, []);
+
+  const handleTripBreaker = async (domain: ClearanceDomain, reason: string) => {
+    setBreakerLoading(domain);
+    setBreakerMessage(null);
+    const result = await tripBreaker(domain, reason);
+    setBreakerMessage({ type: result.success ? 'success' : 'error', text: result.message });
+    refreshBreakerStatuses();
+    setBreakerLoading(null);
+    setTripTarget(null);
+    setTripReason('');
+  };
+
+  const handleResetBreaker = async (domain: ClearanceDomain, notes: string) => {
+    setBreakerLoading(domain);
+    setBreakerMessage(null);
+    const result = await resetBreaker(domain, notes);
+    setBreakerMessage({ type: result.success ? 'success' : 'error', text: result.message });
+    refreshBreakerStatuses();
+    setBreakerLoading(null);
+    setResetNotes('');
+  };
+
+  const handleTripAllCritical = async () => {
+    setBreakerLoading('ALL');
+    setBreakerMessage(null);
+    const result = await tripAllCritical('Emergency: admin-initiated full isolation');
+    setBreakerMessage({
+      type: result.tripped.length > 0 ? 'success' : 'error',
+      text: `Tripped ${result.tripped.length} domain(s). Failed: ${result.failed.length}.`,
+    });
+    refreshBreakerStatuses();
+    setBreakerLoading(null);
+  };
 
   // Stats
   const [stats, setStats] = useState({
@@ -225,12 +282,21 @@ const SecurityCenterTab: React.FC = () => {
     return 'Just now';
   };
 
+  const openBreakers = breakerStatuses.filter(b => b.state === 'open').length;
+
   const subTabs = [
     { id: 'sessions', label: 'Active Sessions', icon: Users, count: stats.activeSessions },
     { id: 'failed-logins', label: 'Failed Logins', icon: AlertTriangle, count: stats.failedLoginsToday },
     { id: 'ip-rules', label: 'IP Access Rules', icon: Globe, count: ipRules.length },
     { id: 'rate-limits', label: 'Rate Limiting', icon: Zap, count: rateLimits.length },
     { id: 'headers', label: 'Security Headers', icon: Settings, count: securityHeaders.length },
+    {
+      id: 'circuit-breaker',
+      label: 'Circuit Breakers',
+      icon: RadioTower,
+      count: openBreakers,
+      alert: openBreakers > 0,
+    },
   ];
 
   return (
@@ -307,25 +373,31 @@ const SecurityCenterTab: React.FC = () => {
       {/* Sub-tabs */}
       <div className="border-b border-slate-800">
         <div className="flex gap-1 overflow-x-auto">
-          {subTabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveSubTab(tab.id as SecuritySubTab)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
-                activeSubTab === tab.id
-                  ? 'text-emerald-500 border-b-2 border-emerald-500'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-              <span className={`px-2 py-0.5 rounded-full text-xs ${
-                activeSubTab === tab.id ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
+          {subTabs.map((tab) => {
+            const hasAlert = (tab as any).alert;
+            const isActive = activeSubTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveSubTab(tab.id as SecuritySubTab)}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                  isActive
+                    ? hasAlert ? 'text-red-400 border-b-2 border-red-500' : 'text-emerald-500 border-b-2 border-emerald-500'
+                    : hasAlert ? 'text-red-400 hover:text-red-300' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+                <span className={`px-2 py-0.5 rounded-full text-xs ${
+                  hasAlert
+                    ? 'bg-red-500/20 text-red-400 animate-pulse'
+                    : isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -699,9 +771,278 @@ const SecurityCenterTab: React.FC = () => {
                 )}
               </div>
             )}
+
+            {/* ── Circuit Breaker Panel ───────────────────────────────── */}
+            {activeSubTab === 'circuit-breaker' && (
+              <div className="space-y-4">
+                {/* Header */}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-white font-semibold flex items-center gap-2">
+                      <RadioTower className="w-5 h-5 text-amber-400" />
+                      Clearance Data Circuit Breakers
+                    </h3>
+                    <p className="text-slate-400 text-sm mt-0.5">
+                      Emergency kill-switch for cleared employee data domains (NIST 800-53 IR-4).
+                      Tripping a breaker blocks all frontend access to that domain immediately.
+                      Server-side RLS enforcement requires admin role.
+                    </p>
+                  </div>
+                  <button
+                    onClick={refreshBreakerStatuses}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-lg transition-colors"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh
+                  </button>
+                </div>
+
+                {/* Feedback message */}
+                {breakerMessage && (
+                  <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${
+                    breakerMessage.type === 'success'
+                      ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                      : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                  }`}>
+                    {breakerMessage.type === 'success'
+                      ? <Shield className="w-4 h-4 flex-shrink-0" />
+                      : <AlertTriangle className="w-4 h-4 flex-shrink-0" />}
+                    {breakerMessage.text}
+                  </div>
+                )}
+
+                {/* Emergency: Trip all critical */}
+                {openBreakers === 0 && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-red-400 font-semibold text-sm">Emergency Isolation</p>
+                      <p className="text-slate-400 text-xs mt-0.5">
+                        Trip all critical + high severity breakers simultaneously (breach response).
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleTripAllCritical}
+                      disabled={breakerLoading === 'ALL'}
+                      className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                      <Lock className="w-4 h-4" />
+                      {breakerLoading === 'ALL' ? 'Isolating…' : 'Isolate All Critical'}
+                    </button>
+                  </div>
+                )}
+
+                {/* Domain rows */}
+                <div className="space-y-2">
+                  {breakerStatuses.map((status) => {
+                    const isOpen = status.state === 'open';
+                    const severity = DOMAIN_SEVERITY[status.domain];
+                    const severityColors: Record<string, string> = {
+                      critical: 'text-red-400 bg-red-500/10',
+                      high: 'text-orange-400 bg-orange-500/10',
+                      medium: 'text-amber-400 bg-amber-500/10',
+                      low: 'text-slate-400 bg-slate-500/10',
+                    };
+                    const isLoading = breakerLoading === status.domain;
+
+                    return (
+                      <div
+                        key={status.domain}
+                        className={`rounded-xl border p-4 transition-colors ${
+                          isOpen
+                            ? 'bg-red-500/10 border-red-500/30'
+                            : 'bg-slate-900 border-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isOpen ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
+                            <div className="min-w-0">
+                              <p className="text-white text-sm font-mono font-semibold truncate">{status.domain}</p>
+                              {isOpen && (
+                                <p className="text-red-400 text-xs mt-0.5 truncate">
+                                  Opened {status.openedAt ? new Date(status.openedAt).toLocaleString() : 'unknown'} — {status.reason}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${severityColors[severity]}`}>
+                              {severity}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                              isOpen
+                                ? 'bg-red-500/20 text-red-400'
+                                : 'bg-emerald-500/20 text-emerald-400'
+                            }`}>
+                              {isOpen ? 'OPEN' : 'closed'}
+                            </span>
+
+                            {status.domain !== 'fso_audit_log' && (
+                              isOpen ? (
+                                <button
+                                  onClick={() => {
+                                    const notes = window.prompt('Resolution notes (required):');
+                                    if (notes) handleResetBreaker(status.domain, notes);
+                                  }}
+                                  disabled={isLoading}
+                                  className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50"
+                                >
+                                  <Unlock className="w-3.5 h-3.5" />
+                                  {isLoading ? 'Resetting…' : 'Reset'}
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => setTripTarget(status.domain)}
+                                  disabled={isLoading}
+                                  className="flex items-center gap-1 px-3 py-1.5 bg-slate-700 hover:bg-red-600/80 text-slate-300 hover:text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50"
+                                >
+                                  <Lock className="w-3.5 h-3.5" />
+                                  {isLoading ? 'Tripping…' : 'Trip'}
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <p className="text-xs text-slate-600 mt-2">
+                  Frontend breaker state is stored in localStorage + module memory for instant UX effect.
+                  Server-side enforcement via <code className="text-slate-500">clearance_circuit_breakers</code> table (migration 064+068) is the authoritative kill-switch.
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>
+
+      {/* Trip Breaker Confirmation Modal */}
+      {tripTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-slate-900 border border-red-500/40 rounded-xl p-6 w-full max-w-md space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-red-500/20">
+                <Lock className="w-6 h-6 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-bold">Trip Circuit Breaker</h3>
+                <p className="text-slate-400 text-sm font-mono">{tripTarget}</p>
+              </div>
+            </div>
+            <p className="text-slate-300 text-sm">
+              This will immediately block all frontend access to <strong className="text-white">{tripTarget}</strong> data.
+              Pair with server-side revocation for full isolation.
+            </p>
+            <div>
+              <label className="block text-slate-400 text-sm mb-1.5">Reason <span className="text-red-400">*</span></label>
+              <textarea
+                value={tripReason}
+                onChange={(e) => setTripReason(e.target.value)}
+                placeholder="Describe the security incident or reason for isolation…"
+                rows={3}
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:border-red-500 resize-none"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-1">
+              <button
+                onClick={() => { setTripTarget(null); setTripReason(''); }}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => tripReason.trim() && handleTripBreaker(tripTarget, tripReason.trim())}
+                disabled={!tripReason.trim() || breakerLoading === tripTarget}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                {breakerLoading === tripTarget ? 'Tripping…' : 'Confirm Trip'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add IP Rule Modal */}
+      {showAddIPModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md space-y-4">
+            <h3 className="text-white font-semibold text-lg">Add IP Rule</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">CIDR / IP Pattern</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 192.168.1.0/24"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Action</label>
+                <select className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500">
+                  <option value="allow">Allow</option>
+                  <option value="block">Block</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowAddIPModal(false)}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Rate Limit Modal */}
+      {showAddRateLimitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md space-y-4">
+            <h3 className="text-white font-semibold text-lg">Add Rate Limit</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Endpoint Pattern</label>
+                <input
+                  type="text"
+                  placeholder="e.g. /api/v1/*"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Request Limit</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 100"
+                  min={1}
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Window</label>
+                <select className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500">
+                  <option value="minute">Per Minute</option>
+                  <option value="hour">Per Hour</option>
+                  <option value="day">Per Day</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowAddRateLimitModal(false)}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

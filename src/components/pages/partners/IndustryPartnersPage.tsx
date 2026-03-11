@@ -283,11 +283,12 @@ const IndustryPartnersPage: React.FC = () => {
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
-              <Link to="#features">
-                <button className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all">
-                  Explore Benefits
-                </button>
-              </Link>
+              <button
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all"
+              >
+                Explore Benefits
+              </button>
             </motion.div>
 
             {/* Stats */}
@@ -429,7 +430,7 @@ const IndustryPartnersPage: React.FC = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <Link to="/events/sponsor">
+            <Link to="/partner-apply?type=industry">
               <button className="px-6 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold rounded-xl border border-emerald-500/30 transition-all">
                 View Sponsorship Packages
               </button>

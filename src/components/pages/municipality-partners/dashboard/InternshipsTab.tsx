@@ -20,6 +20,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { getInternshipPrograms } from '@/services/municipalityPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { InternshipProgram, MunicipalityPartnerTier, InternshipProgramType, ProgramStatus } from '@/types/municipalityPartner';
 
 // ===========================================
@@ -213,6 +214,14 @@ export const InternshipsTab: React.FC<InternshipsTabProps> = ({ partnerId, tier:
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [selectedProgram, setSelectedProgram] = useState<InternshipProgram | null>(null);
+  const [notification, setNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showNotification = (message: string) => {
+    setNotification({ message, visible: true });
+    setTimeout(() => setNotification({ message: '', visible: false }), 3000);
+  };
+
+  useEscapeKey(() => setSelectedProgram(null), !!selectedProgram);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -247,13 +256,24 @@ export const InternshipsTab: React.FC<InternshipsTabProps> = ({ partnerId, tier:
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      {notification.visible && (
+        <div className="fixed top-6 right-6 z-[60] flex items-center gap-2 px-4 py-3 bg-teal-500/20 border border-teal-500/30 text-teal-400 rounded-lg shadow-lg">
+          <CheckCircle className="w-4 h-4" />
+          {notification.message}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">Internship Programs</h2>
           <p className="text-gray-400 text-sm">Manage SYEP, college pathways, and youth employment programs</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
+        <button
+          onClick={() => showNotification('Create program form opening...')}
+          className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+        >
           <Plus className="w-4 h-4" />
           Create Program
         </button>
@@ -594,7 +614,10 @@ export const InternshipsTab: React.FC<InternshipsTabProps> = ({ partnerId, tier:
                 >
                   Close
                 </button>
-                <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
+                <button
+                  onClick={() => showNotification('Opening edit form...')}
+                  className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+                >
                   Edit Program
                 </button>
               </div>

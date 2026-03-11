@@ -27,6 +27,9 @@ interface TrainingProvider {
   accreditation: string[];
   wioa_approved: boolean;
   ita_eligible: boolean;
+  website?: string;
+  phone?: string;
+  email?: string;
 }
 
 interface TrainingProgram {
@@ -59,6 +62,9 @@ const SAMPLE_PROVIDERS: TrainingProvider[] = [
     accreditation: ['Regional Accreditation', 'ACBSP', 'ABET'],
     wioa_approved: true,
     ita_eligible: true,
+    website: 'https://metrocommunity.edu',
+    phone: '(202) 555-0101',
+    email: 'workforce@metrocommunity.edu',
     programs: [
       {
         id: 'cna',
@@ -622,18 +628,24 @@ const TrainingProviderSearchPage: React.FC = () => {
                       {/* Provider Contact */}
                       <div className="mt-6 pt-6 border-t border-slate-700 flex items-center justify-between">
                         <div className="flex items-center gap-4 text-sm text-slate-400">
-                          <a href="#" className="flex items-center gap-1 hover:text-white">
-                            <Globe className="w-4 h-4" />
-                            Website
-                          </a>
-                          <a href="#" className="flex items-center gap-1 hover:text-white">
-                            <Phone className="w-4 h-4" />
-                            (555) 123-4567
-                          </a>
-                          <a href="#" className="flex items-center gap-1 hover:text-white">
-                            <Mail className="w-4 h-4" />
-                            Email
-                          </a>
+                          {provider.website && (
+                            <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-white">
+                              <Globe className="w-4 h-4" />
+                              Website
+                            </a>
+                          )}
+                          {provider.phone && (
+                            <a href={`tel:${provider.phone}`} className="flex items-center gap-1 hover:text-white">
+                              <Phone className="w-4 h-4" />
+                              {provider.phone}
+                            </a>
+                          )}
+                          {provider.email && (
+                            <a href={`mailto:${provider.email}`} className="flex items-center gap-1 hover:text-white">
+                              <Mail className="w-4 h-4" />
+                              Email
+                            </a>
+                          )}
                         </div>
                         <Link
                           to={`/workforce/provider/${provider.id}`}

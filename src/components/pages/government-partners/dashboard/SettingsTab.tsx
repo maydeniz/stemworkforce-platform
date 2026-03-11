@@ -22,6 +22,7 @@ import {
   Building,
   Plus
 } from 'lucide-react';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { GovernmentPartner, GovernmentPartnerTier, AgencyType, AgencyLevel } from '@/types/governmentPartner';
 
 // ===========================================
@@ -41,8 +42,8 @@ type SettingsSection = 'organization' | 'contact' | 'billing' | 'notifications' 
 // ===========================================
 
 const tierConfig: Record<GovernmentPartnerTier, { label: string; color: string; icon: React.ElementType; price: string }> = {
-  basic: { label: 'Basic Partner', color: 'slate', icon: Building, price: 'Free' },
-  standard: { label: 'Standard Partner', color: 'blue', icon: Zap, price: '$1,999/mo' },
+  basic: { label: 'Agency Starter', color: 'slate', icon: Building, price: 'Free' },
+  standard: { label: 'Government Partner', color: 'blue', icon: Zap, price: '$4,999/mo' },
   enterprise: { label: 'Enterprise', color: 'purple', icon: Crown, price: 'Custom' },
 };
 
@@ -131,6 +132,15 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
 
   // Invite form
   const [inviteForm, setInviteForm] = useState({ email: '', role: 'Program Manager' });
+
+  // Escape key handling for modals
+  const closeAnyModal = () => {
+    if (showTeamMemberModal) setShowTeamMemberModal(null);
+    else if (showSecurityModal) setShowSecurityModal(null);
+    else if (showInviteModal) setShowInviteModal(false);
+    else if (showUpgradeModal) setShowUpgradeModal(false);
+  };
+  useEscapeKey(closeAnyModal, showUpgradeModal || showInviteModal || !!showSecurityModal || !!showTeamMemberModal);
 
   const showNotification = (message: string) => {
     setNotification({ message, visible: true });
@@ -462,9 +472,9 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier, partn
                   <h3 className="text-lg font-semibold text-white mb-4">Billing History</h3>
                   <div className="bg-gray-800 rounded-lg divide-y divide-gray-700">
                     {[
-                      { date: 'Dec 1, 2024', amount: 1999, status: 'Paid' },
-                      { date: 'Nov 1, 2024', amount: 1999, status: 'Paid' },
-                      { date: 'Oct 1, 2024', amount: 1999, status: 'Paid' },
+                      { date: 'Dec 1, 2025', amount: 1999, status: 'Paid' },
+                      { date: 'Nov 1, 2025', amount: 1999, status: 'Paid' },
+                      { date: 'Oct 1, 2025', amount: 1999, status: 'Paid' },
                     ].map((invoice, idx) => (
                       <div key={idx} className="flex items-center justify-between p-4">
                         <div>

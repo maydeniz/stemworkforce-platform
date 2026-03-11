@@ -334,7 +334,7 @@ We reserve the right to assume exclusive defense and control of any matter subje
     title: '12. Dispute Resolution',
     icon: Gavel,
     content: `12.1 Informal Resolution
-Before filing any formal legal action, you agree to attempt to resolve disputes informally by contacting us at legal@stemworkforce.org. We will attempt to resolve disputes within 30 days.
+Before filing any formal legal action, you agree to attempt to resolve disputes informally by contacting us at legal@stemworkforce.net. We will attempt to resolve disputes within 30 days.
 
 12.2 Arbitration Agreement
 PLEASE READ THIS SECTION CAREFULLY. IT AFFECTS YOUR LEGAL RIGHTS.
@@ -349,7 +349,7 @@ Arbitration shall be conducted by the American Arbitration Association (AAA) und
 YOU AND STEMWORKFORCE AGREE TO RESOLVE DISPUTES ONLY ON AN INDIVIDUAL BASIS AND NOT AS PART OF ANY CLASS, CONSOLIDATED, OR REPRESENTATIVE ACTION. If this waiver is found unenforceable, the arbitration agreement shall be void.
 
 12.4 Opt-Out
-You may opt out of the arbitration agreement by sending written notice to legal@stemworkforce.org within 30 days of creating your account. The notice must include your name, email, and a clear statement of your intent to opt out.
+You may opt out of the arbitration agreement by sending written notice to legal@stemworkforce.net within 30 days of creating your account. The notice must include your name, email, and a clear statement of your intent to opt out.
 
 12.5 Governing Law
 These Terms shall be governed by the laws of the State of Delaware and applicable federal law, without regard to conflict of law principles.
@@ -367,7 +367,7 @@ These Terms are effective when you first access the Service and continue until t
 13.2 Termination by You
 You may terminate your account at any time by:
 • Using the account deletion feature in your settings
-• Contacting support@stemworkforce.org
+• Contacting support@stemworkforce.net
 
 13.3 Termination by Us
 We may suspend or terminate your account immediately, with or without notice, if:
@@ -440,21 +440,21 @@ These Terms are written in English. Any translations are provided for convenienc
     content: `For questions about these Terms of Service, please contact us:
 
 Legal Department
-Email: legal@stemworkforce.org
+Email: legal@stemworkforce.net
 
 Privacy Inquiries
-Email: privacy@stemworkforce.org
+Email: privacy@stemworkforce.net
 
 General Support
-Email: support@stemworkforce.org
+Email: support@stemworkforce.net
 
 Mailing Address
 STEMWorkforce, Inc.
 Washington, DC, USA
 
-For California residents: If you have a disability and need these Terms in an alternative format, please contact accessibility@stemworkforce.org.
+For California residents: If you have a disability and need these Terms in an alternative format, please contact accessibility@stemworkforce.net.
 
-For EU residents: You may contact our EU representative for GDPR inquiries at gdpr@stemworkforce.org.`
+For EU residents: You may contact our EU representative for GDPR inquiries at gdpr@stemworkforce.net.`
   },
 ];
 
@@ -573,21 +573,21 @@ export default function TermsOfServicePage() {
             <div className="grid md:grid-cols-3 gap-6 text-sm">
               <div>
                 <p className="text-slate-400 mb-1">Legal Department</p>
-                <a href="mailto:legal@stemworkforce.org" className="text-blue-400 hover:text-blue-300">
-                  legal@stemworkforce.org
+                <a href="mailto:legal@stemworkforce.net" className="text-blue-400 hover:text-blue-300">
+                  legal@stemworkforce.net
                 </a>
               </div>
               <div>
                 <p className="text-slate-400 mb-1">Arbitration Opt-Out</p>
                 <p className="text-slate-300 text-xs">Within 30 days of account creation</p>
-                <a href="mailto:legal@stemworkforce.org?subject=Arbitration%20Opt-Out" className="text-blue-400 hover:text-blue-300">
-                  legal@stemworkforce.org
+                <a href="mailto:legal@stemworkforce.net?subject=Arbitration%20Opt-Out" className="text-blue-400 hover:text-blue-300">
+                  legal@stemworkforce.net
                 </a>
               </div>
               <div>
                 <p className="text-slate-400 mb-1">General Support</p>
-                <a href="mailto:support@stemworkforce.org" className="text-blue-400 hover:text-blue-300">
-                  support@stemworkforce.org
+                <a href="mailto:support@stemworkforce.net" className="text-blue-400 hover:text-blue-300">
+                  support@stemworkforce.net
                 </a>
               </div>
             </div>

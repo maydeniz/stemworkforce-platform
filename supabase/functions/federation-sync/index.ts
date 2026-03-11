@@ -73,6 +73,7 @@ interface APIConfig {
   };
   stemFilters?: STEMFilterConfig;
   organizationFilter?: string;
+  keyword?: string;
 }
 
 interface RSSConfig {
@@ -423,19 +424,39 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate: only allow service_role or a matching secret
+    const authHeader = req.headers.get('authorization') || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+
+    if (!token || token !== serviceRoleKey) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      serviceRoleKey
     );
 
-    const { source_id, sync_job_id, action } = await req.json();
+    const body = await req.json();
+    const { source_id, sync_job_id, action } = body;
 
     if (action === 'sync_all') {
-      // Sync all active sources
-      const { data: sources, error } = await supabase
+      // Sync active sources in batches to avoid Deno Deploy timeout (150s).
+      // Accepts optional `batch_size` (default 5) and `offset` (default 0)
+      // so callers can page through all sources across multiple invocations.
+      const batchSize = body.batch_size ?? 5;
+      const offset = body.offset ?? 0;
+
+      const { data: sources, error, count } = await supabase
         .from('federated_sources')
-        .select('*')
-        .eq('status', 'active');
+        .select('*', { count: 'exact' })
+        .eq('status', 'active')
+        .order('last_sync_at', { ascending: true, nullsFirst: true })
+        .range(offset, offset + batchSize - 1);
 
       if (error) throw error;
 
@@ -443,6 +464,24 @@ serve(async (req) => {
       for (const source of sources || []) {
         try {
           const result = await syncSource(supabase, source);
+
+          // Update source metadata inline (avoids the separate update that crashed before)
+          const now = new Date().toISOString();
+          const updatePayload: Record<string, unknown> = {
+            last_sync_at: now,
+            sync_error_count: result.errors.length,
+            total_items_synced: result.itemsFetched,
+            updated_at: now,
+          };
+          // Only set last_successful_sync_at on success (avoid undefined overwriting a real value)
+          if (result.errors.length === 0) {
+            updatePayload.last_successful_sync_at = now;
+          }
+          await supabase
+            .from('federated_sources')
+            .update(updatePayload)
+            .eq('id', source.id);
+
           results.push({ sourceId: source.id, sourceName: source.name, ...result });
         } catch (err) {
           results.push({
@@ -453,8 +492,16 @@ serve(async (req) => {
         }
       }
 
+      const totalSources = count ?? 0;
+      const nextOffset = offset + batchSize;
+      const hasMore = nextOffset < totalSources;
+
       return new Response(
-        JSON.stringify({ success: true, results }),
+        JSON.stringify({
+          success: true,
+          results,
+          pagination: { offset, batchSize, totalSources, hasMore, nextOffset: hasMore ? nextOffset : null },
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -489,7 +536,7 @@ serve(async (req) => {
       await supabase
         .from('sync_jobs')
         .update({
-          status: result.errors.length > 0 ? 'completed' : 'completed',
+          status: result.errors.length > 0 ? 'completed_with_errors' : 'completed',
           completed_at: new Date().toISOString(),
           items_fetched: result.itemsFetched,
           items_created: result.itemsCreated,
@@ -502,15 +549,19 @@ serve(async (req) => {
     }
 
     // Update source metadata
+    const now = new Date().toISOString();
+    const sourceUpdate: Record<string, unknown> = {
+      last_sync_at: now,
+      sync_error_count: result.errors.length,
+      total_items_synced: result.itemsFetched,
+      updated_at: now,
+    };
+    if (result.errors.length === 0) {
+      sourceUpdate.last_successful_sync_at = now;
+    }
     await supabase
       .from('federated_sources')
-      .update({
-        last_sync_at: new Date().toISOString(),
-        last_successful_sync_at: result.errors.length === 0 ? new Date().toISOString() : undefined,
-        sync_error_count: result.errors.length > 0 ? supabase.sql`sync_error_count + 1` : 0,
-        total_items_synced: result.itemsFetched,
-        updated_at: new Date().toISOString(),
-      })
+      .update(sourceUpdate)
       .eq('id', source_id);
 
     return new Response(
@@ -592,43 +643,62 @@ async function syncSource(supabase: ReturnType<typeof createClient>, source: Fed
     }
     console.log(`Processing ${filteredItems.length} STEM-relevant items from ${source.name}`);
 
-    // Process each STEM-filtered item
-    for (const item of filteredItems) {
-      try {
-        const existingItem = await checkExistingItem(supabase, source.id, item.externalId);
+    // Batch upsert: build all payloads, then send in one DB call per chunk.
+    // Supabase/PostgREST handles bulk upsert natively.
+    const UPSERT_CHUNK = 200; // rows per upsert call — safe for PostgREST
+    const payloads = filteredItems.map(item => buildUpsertPayload(item, source));
 
-        if (existingItem) {
-          // Update existing
-          await updateListing(supabase, existingItem.id, item, source);
-          result.itemsUpdated++;
-        } else {
-          // Create new
-          await createListing(supabase, item, source);
-          result.itemsCreated++;
-        }
+    for (let i = 0; i < payloads.length; i += UPSERT_CHUNK) {
+      const chunk = payloads.slice(i, i + UPSERT_CHUNK);
+      try {
+        const { error } = await supabase
+          .from('federated_listings')
+          .upsert(chunk, { onConflict: 'source_id,external_id' });
+
+        if (error) throw error;
+        result.itemsCreated += chunk.length; // can't distinguish create vs update cheaply
       } catch (err) {
-        result.itemsFailed++;
-        result.errors.push({
-          timestamp: new Date().toISOString(),
-          type: 'save',
-          message: err.message,
-          itemId: item.externalId,
-        });
+        // If the bulk fails, fall back to one-by-one so we know which items fail
+        for (const payload of chunk) {
+          try {
+            const { error } = await supabase
+              .from('federated_listings')
+              .upsert(payload, { onConflict: 'source_id,external_id' });
+            if (error) throw error;
+            result.itemsCreated++;
+          } catch (innerErr) {
+            result.itemsFailed++;
+            result.errors.push({
+              timestamp: new Date().toISOString(),
+              type: 'save',
+              message: innerErr.message,
+              itemId: payload.external_id,
+            });
+          }
+        }
       }
     }
 
-    // Mark expired items
-    const fetchedIds = items.map(i => i.externalId);
+    // Mark expired items — only if we fetched items successfully
+    // Use parameterized filter to prevent SQL injection via external IDs
+    const fetchedIds = filteredItems.map(i => i.externalId);
     if (fetchedIds.length > 0) {
-      const { count } = await supabase
-        .from('federated_listings')
-        .update({ status: 'removed' })
-        .eq('source_id', source.id)
-        .eq('status', 'active')
-        .not('external_id', 'in', `(${fetchedIds.join(',')})`)
-        .select('*', { count: 'exact', head: true });
+      // Sanitize IDs: strip any characters that aren't alphanumeric, dash, or underscore
+      const safeIds = fetchedIds
+        .filter(id => typeof id === 'string' && id.length > 0)
+        .map(id => id.replace(/[^a-zA-Z0-9_\-\.]/g, ''));
 
-      result.itemsRemoved = count || 0;
+      if (safeIds.length > 0) {
+        const { count } = await supabase
+          .from('federated_listings')
+          .update({ status: 'removed' })
+          .eq('source_id', source.id)
+          .eq('status', 'active')
+          .not('external_id', 'in', `(${safeIds.join(',')})`)
+          .select('*', { count: 'exact', head: true });
+
+        result.itemsRemoved = count || 0;
+      }
     }
   } catch (err) {
     result.errors.push({
@@ -705,7 +775,8 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
           config.paginationConfig,
           page,
           config.stemFilters,
-          config.organizationFilter
+          config.organizationFilter,
+          config.keyword
         );
         console.log(`Fetching: ${url}`);
 
@@ -724,6 +795,10 @@ async function fetchFromAPI(source: FederatedSource): Promise<FetchedItem[]> {
 
         for (const result of results) {
           const item = transformAPIResult(result, source, endpoint.type as FetchedItem['contentType'], config.responseMapping);
+          if (!item.externalId) {
+            console.warn(`Skipping item with no externalId: "${item.title}"`);
+            continue;
+          }
           items.push(item);
         }
 
@@ -753,7 +828,8 @@ function buildAPIUrl(
   pagination: APIConfig['paginationConfig'],
   page: number,
   stemFilters?: STEMFilterConfig,
-  organizationFilter?: string
+  organizationFilter?: string,
+  keyword?: string
 ): string {
   // Fix URL construction: ensure baseUrl path is preserved
   // new URL('/Search', 'https://data.usajobs.gov/api') would drop /api
@@ -768,6 +844,7 @@ function buildAPIUrl(
       url.searchParams.set(pagination.limitParam, String(pagination.maxItemsPerPage));
     } else if (pagination.type === 'offset') {
       const offset = (page - 1) * pagination.maxItemsPerPage;
+      url.searchParams.set('offset', String(offset));
       url.searchParams.set(pagination.limitParam, String(pagination.maxItemsPerPage));
     }
   }
@@ -777,6 +854,12 @@ function buildAPIUrl(
     if (organizationFilter) {
       url.searchParams.set('Organization', organizationFilter);
       console.log(`USAJobs: Filtering by organization "${organizationFilter}"`);
+    }
+
+    // Keyword filter (for lab-specific searches, e.g. "Oak Ridge National Laboratory")
+    if (keyword) {
+      url.searchParams.set('Keyword', keyword);
+      console.log(`USAJobs: Filtering by keyword "${keyword}"`);
     }
 
     // STEM occupation code filter (for the main USAJOBS source)
@@ -834,7 +917,7 @@ function transformAPIResult(
   }
 
   return {
-    externalId: String(getValue(mapping.id as string) || Math.random()),
+    externalId: String(getValue(mapping.id as string) || ''),
     title: String(getValue(mapping.title as string) || 'Untitled'),
     description: getValue(mapping.description as string) as string | undefined,
     sourceUrl: String(getValue(mapping.url as string) || source.website),
@@ -876,7 +959,9 @@ async function fetchFromGreenhouse(source: FederatedSource): Promise<FetchedItem
     throw new Error(`Greenhouse board token not configured for ${source.name}`);
   }
 
-  const url = `https://api.greenhouse.io/v1/boards/${boardToken}/jobs?content=true`;
+  // Omit content=true to avoid oversized responses (SpaceX alone is >10MB with content).
+  // We get title, location, departments, pay ranges, and URL without it.
+  const url = `https://api.greenhouse.io/v1/boards/${boardToken}/jobs`;
   console.log(`Greenhouse: Fetching from ${url}`);
 
   const response = await fetch(url, {
@@ -926,14 +1011,19 @@ async function fetchFromGreenhouse(source: FederatedSource): Promise<FetchedItem
     // Extract departments as tags
     const departments = (job.departments || []).map(d => d.name);
 
-    // Strip HTML from content for description
-    const description = job.content ? stripHtml(job.content).substring(0, 2000) : undefined;
+    // Content is omitted from the API call to avoid oversized responses.
+    // Use departments + title as a brief description fallback.
+    const description = job.content
+      ? stripHtml(job.content).substring(0, 2000)
+      : departments.length > 0
+        ? `${job.title} — ${departments.join(', ')} at ${source.name}`
+        : `${job.title} at ${source.name}`;
 
     items.push({
       externalId: String(job.id),
       title: job.title,
       description,
-      shortDescription: description ? description.substring(0, 200) : undefined,
+      shortDescription: description.substring(0, 200),
       sourceUrl: job.absolute_url,
       organizationName: source.name,
       location: job.location?.name,
@@ -1108,6 +1198,10 @@ async function fetchFromRSS(source: FederatedSource): Promise<FetchedItem[]> {
     for (let i = 0; i < Math.min(feedItems.length, config.maxItems || 100); i++) {
       const feedItem = feedItems[i];
       const item = transformRSSItem(feedItem, source, config);
+      if (!item.externalId) {
+        console.warn(`Skipping RSS item with no ID: "${item.title}"`);
+        continue;
+      }
       items.push(item);
     }
   } catch (err) {
@@ -1139,7 +1233,7 @@ function transformRSSItem(
   }
 
   // Extract guid/id
-  const guid = getElementText('guid') || getElementText('id') || Math.random().toString();
+  const guid = getElementText('guid') || getElementText('id') || '';
 
   // Extract link
   let link = getElementText('link');
@@ -1167,6 +1261,50 @@ function transformRSSItem(
 // ===========================================
 // DATABASE OPERATIONS
 // ===========================================
+
+/**
+ * Build the upsert payload for a single listing.
+ * Pure function — no DB calls. Used by the batch upsert loop.
+ */
+function buildUpsertPayload(item: FetchedItem, source: FederatedSource) {
+  return {
+    source_id: source.id,
+    external_id: item.externalId,
+    content_type: item.contentType,
+    title: item.title,
+    description: item.description,
+    short_description: item.shortDescription || (item.description ? item.description.substring(0, 200) : null),
+    source_url: item.sourceUrl,
+    source_name: source.name,
+    attribution_html: source.attribution_required ? source.attribution_text : null,
+    organization_name: item.organizationName,
+    organization_logo_url: item.organizationLogoUrl,
+    organization_type: source.type,
+    location: item.location,
+    city: item.city,
+    state: item.state,
+    country: item.country || 'USA',
+    is_remote: item.isRemote || false,
+    industries: item.industries || source.industries || [],
+    skills: item.skills || [],
+    tags: item.tags || [],
+    clearance_required: item.clearanceRequired,
+    job_type: item.jobType,
+    salary_min: item.salaryMin,
+    salary_max: item.salaryMax,
+    salary_currency: item.salaryCurrency || 'USD',
+    salary_period: item.salaryPeriod,
+    prize_amount: item.prizeAmount,
+    registration_deadline: item.registrationDeadline,
+    submission_deadline: item.submissionDeadline,
+    event_date: item.eventDate,
+    event_end_date: item.eventEndDate,
+    posted_at: item.postedAt,
+    expires_at: item.expiresAt,
+    status: 'active',
+    last_updated_at: new Date().toISOString(),
+  };
+}
 
 async function checkExistingItem(
   supabase: ReturnType<typeof createClient>,

@@ -210,7 +210,30 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ partnerId, tier: _ti
             </button>
           ))}
           <button
-            onClick={() => showNotification('Analytics report exported successfully')}
+            onClick={() => {
+              const headers = ['Metric', 'Value'];
+              const rows = [
+                ['Total Economic Impact', `$${(metrics.totalEconomicImpact / 1000000).toFixed(1)}M`],
+                ['ROI Ratio', `${metrics.roiRatio}:1`],
+                ['Placement Rate', `${metrics.overallPlacementRate}%`],
+                ['Average Wage Gain', `$${metrics.averageWageGain.toLocaleString()}`],
+                ['Jobs Created', latestImpact.jobsCreated.toLocaleString()],
+                ['Jobs Retained', latestImpact.jobsRetained.toLocaleString()],
+                ['Total Wages Generated', `$${(latestImpact.totalWagesGenerated / 1000000).toFixed(1)}M`],
+                ['Federal Tax Impact', `$${(latestImpact.federalTaxImpact / 1000000).toFixed(1)}M`],
+                ['Cost per Placement', `$${(latestImpact.costPerPlacement || 0).toLocaleString()}`],
+                ['Cost per Credential', `$${(latestImpact.costPerCredential || 0).toLocaleString()}`]
+              ];
+              const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+              const blob = new Blob([csv], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'analytics-report.csv';
+              a.click();
+              URL.revokeObjectURL(url);
+              showNotification('Analytics report exported successfully');
+            }}
             className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors ml-2"
           >
             <Download className="w-4 h-4" />

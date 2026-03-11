@@ -17,6 +17,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { getRecruitingEvents } from '@/services/industryPartnerApi';
+import { useNotifications } from '@/contexts/NotificationContext';
 import type { RecruitingEvent, EventType, PartnerTier } from '@/types/industryPartner';
 
 // ===========================================
@@ -147,6 +148,8 @@ const EventsTab: React.FC<EventsTabProps> = ({ partnerId, tier }) => {
   const [registrationLoading, setRegistrationLoading] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [showTierGateModal, setShowTierGateModal] = useState(false);
+  const [eventName, setEventName] = useState('');
+  const { info, warning } = useNotifications();
 
   useEffect(() => {
     loadEvents();
@@ -486,6 +489,8 @@ const EventsTab: React.FC<EventsTabProps> = ({ partnerId, tier }) => {
                   <label className="block text-sm text-gray-400 mb-1">Event Name</label>
                   <input
                     type="text"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
                     placeholder="e.g., Engineering Info Session"
                     className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500"
                   />
@@ -524,8 +529,13 @@ const EventsTab: React.FC<EventsTabProps> = ({ partnerId, tier }) => {
                 </button>
                 <button
                   onClick={() => {
+                    if (!eventName.trim()) {
+                      warning('Please enter an event name before submitting.');
+                      return;
+                    }
+                    info('Event creation is coming soon! Your events will be managed through our integrated platform.');
                     setShowCreateEventModal(false);
-                    setNotification('Event created successfully! It will appear in your events list shortly.');
+                    setEventName('');
                   }}
                   className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg"
                 >
@@ -545,7 +555,10 @@ const EventsTab: React.FC<EventsTabProps> = ({ partnerId, tier }) => {
             <p className="text-gray-400 mb-6">Event hosting requires a Growth or Enterprise plan. Upgrade your plan to create and host recruiting events on the platform.</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setShowTierGateModal(false)} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
-              <button onClick={() => setShowTierGateModal(false)} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">View Plans</button>
+              <button onClick={() => {
+                info('Contact your account manager to upgrade your plan for full event management features.');
+                setShowTierGateModal(false);
+              }} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">View Plans</button>
             </div>
           </div>
         </div>

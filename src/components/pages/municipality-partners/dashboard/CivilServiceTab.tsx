@@ -16,6 +16,7 @@ import {
   Target,
   Award
 } from 'lucide-react';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { MunicipalityPartnerTier } from '@/types/municipalityPartner';
 
 interface CivilServiceTabProps {
@@ -107,6 +108,14 @@ const twColor: Record<string, { bg: string; text: string }> = {
 export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _partnerId, tier: _tier }) => {
   const [selectedExam, setSelectedExam] = useState<ExamData | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('');
+  const [notification, setNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showNotification = (message: string) => {
+    setNotification({ message, visible: true });
+    setTimeout(() => setNotification({ message: '', visible: false }), 3000);
+  };
+
+  useEscapeKey(() => setSelectedExam(null), !!selectedExam);
 
   const filteredExams = filterStatus
     ? sampleExams.filter(e => e.status === filterStatus)
@@ -116,18 +125,33 @@ export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _pa
     openExams: sampleExams.filter(e => e.status === 'open' || e.status === 'upcoming').length,
     activeLists: sampleExams.filter(e => e.status === 'list_active').length,
     linkedParticipants: sampleExams.reduce((sum, e) => sum + e.linkedParticipants, 0),
-    avgPassRate: sampleExams.filter(e => e.passersCount && e.applicantsCount)
-      .reduce((sum, e) => sum + ((e.passersCount || 0) / (e.applicantsCount || 1)) * 100, 0) / 3
+    avgPassRate: (() => {
+      const examsWithPassData = sampleExams.filter(e => e.passersCount && e.applicantsCount);
+      return examsWithPassData.length > 0
+        ? Math.round(examsWithPassData.reduce((sum, e) => sum + ((e.passersCount || 0) / (e.applicantsCount || 1)) * 100, 0) / examsWithPassData.length)
+        : 0;
+    })()
   };
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      {notification.visible && (
+        <div className="fixed top-6 right-6 z-[60] flex items-center gap-2 px-4 py-3 bg-teal-500/20 border border-teal-500/30 text-teal-400 rounded-lg shadow-lg">
+          <CheckCircle className="w-4 h-4" />
+          {notification.message}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">Civil Service Exams</h2>
           <p className="text-gray-400 text-sm">Track exams, eligible lists, and linked program participants</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+        <button
+          onClick={() => showNotification('Add exam form opening...')}
+          className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
+        >
           <Plus className="w-4 h-4" />
           Add Exam
         </button>
@@ -316,7 +340,7 @@ export const CivilServiceTab: React.FC<CivilServiceTabProps> = ({ partnerId: _pa
             </div>
             <div className="p-6 border-t border-slate-800 flex justify-end gap-3">
               <button onClick={() => setSelectedExam(null)} className="px-4 py-2 text-gray-400">Close</button>
-              <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Manage Exam</button>
+              <button onClick={() => showNotification('Opening exam management...')} className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Manage Exam</button>
             </div>
           </motion.div>
         </div>

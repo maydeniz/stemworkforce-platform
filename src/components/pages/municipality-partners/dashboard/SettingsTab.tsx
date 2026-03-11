@@ -25,6 +25,7 @@ import {
   Zap,
   FileText
 } from 'lucide-react';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { MunicipalityPartnerTier, MunicipalityPartner } from '@/types/municipalityPartner';
 
 interface SettingsTabProps {
@@ -96,12 +97,34 @@ const tierFeatures = {
   }
 };
 
-export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId, tier }) => {
+export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId, tier }) => {
   const [activeSection, setActiveSection] = useState<'organization' | 'team' | 'integrations' | 'notifications' | 'billing'>('organization');
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEscapeKey(() => setShowInviteModal(false), showInviteModal);
 
   const currentPlan = tierFeatures[tier];
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { updateMunicipalityPartner } = await import('@/services/municipalityPartnerApi');
+      // Gather form values from the DOM (inputs use defaultValue)
+      const orgNameInput = document.querySelector<HTMLInputElement>('input[type="text"][class*="bg-slate-800"]');
+      if (orgNameInput) {
+        await updateMunicipalityPartner(partnerId, {
+          municipalityName: orgNameInput.value,
+        });
+      }
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Error saving municipality settings:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const sections = [
     { key: 'organization', label: 'Organization', icon: Building2 },
@@ -119,9 +142,13 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
           <p className="text-gray-400 text-sm">Manage your organization, team, and integrations</p>
         </div>
         {hasChanges && (
-          <button className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 disabled:opacity-50"
+          >
             <Save className="w-4 h-4" />
-            Save Changes
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         )}
       </div>
@@ -198,10 +225,57 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                   onChange={() => setHasChanges(true)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-teal-500 focus:outline-none"
                 >
-                  <option value="TX">Texas</option>
+                  <option value="AL">Alabama</option>
+                  <option value="AK">Alaska</option>
+                  <option value="AZ">Arizona</option>
+                  <option value="AR">Arkansas</option>
                   <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="DE">Delaware</option>
+                  <option value="DC">District of Columbia</option>
+                  <option value="FL">Florida</option>
+                  <option value="GA">Georgia</option>
+                  <option value="HI">Hawaii</option>
+                  <option value="ID">Idaho</option>
+                  <option value="IL">Illinois</option>
+                  <option value="IN">Indiana</option>
+                  <option value="IA">Iowa</option>
+                  <option value="KS">Kansas</option>
+                  <option value="KY">Kentucky</option>
+                  <option value="LA">Louisiana</option>
+                  <option value="ME">Maine</option>
+                  <option value="MD">Maryland</option>
+                  <option value="MA">Massachusetts</option>
+                  <option value="MI">Michigan</option>
+                  <option value="MN">Minnesota</option>
+                  <option value="MS">Mississippi</option>
+                  <option value="MO">Missouri</option>
+                  <option value="MT">Montana</option>
+                  <option value="NE">Nebraska</option>
+                  <option value="NV">Nevada</option>
+                  <option value="NH">New Hampshire</option>
+                  <option value="NJ">New Jersey</option>
+                  <option value="NM">New Mexico</option>
                   <option value="NY">New York</option>
-                  {/* Add more states */}
+                  <option value="NC">North Carolina</option>
+                  <option value="ND">North Dakota</option>
+                  <option value="OH">Ohio</option>
+                  <option value="OK">Oklahoma</option>
+                  <option value="OR">Oregon</option>
+                  <option value="PA">Pennsylvania</option>
+                  <option value="RI">Rhode Island</option>
+                  <option value="SC">South Carolina</option>
+                  <option value="SD">South Dakota</option>
+                  <option value="TN">Tennessee</option>
+                  <option value="TX">Texas</option>
+                  <option value="UT">Utah</option>
+                  <option value="VT">Vermont</option>
+                  <option value="VA">Virginia</option>
+                  <option value="WA">Washington</option>
+                  <option value="WV">West Virginia</option>
+                  <option value="WI">Wisconsin</option>
+                  <option value="WY">Wyoming</option>
                 </select>
               </div>
               <div>
@@ -461,7 +535,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                   <div className="flex gap-2">
                     <input
                       type="password"
-                      defaultValue="sk_live_xxxxxxxxxxxxxxxxxxxxxxxxxx"
+                      defaultValue="••••••••••••••••"
                       readOnly
                       className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white font-mono text-sm"
                     />
@@ -470,7 +544,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                     </button>
                   </div>
                 </div>
-                <a href="#" className="flex items-center gap-1 text-teal-400 text-sm hover:underline">
+                <a href="/docs" className="flex items-center gap-1 text-teal-400 text-sm hover:underline">
                   View API Documentation
                   <ExternalLink className="w-4 h-4" />
                 </a>
@@ -632,9 +706,9 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
             <h3 className="text-lg font-medium text-white mb-4">Billing History</h3>
             <div className="space-y-3">
               {[
-                { date: '2025-02-01', description: 'Professional Plan - February 2025', amount: '$999.00', status: 'paid' },
-                { date: '2025-01-01', description: 'Professional Plan - January 2025', amount: '$999.00', status: 'paid' },
-                { date: '2024-12-01', description: 'Professional Plan - December 2024', amount: '$999.00', status: 'paid' }
+                { date: '2025-02-01', description: 'Growth Plan - February 2025', amount: '$999.00', status: 'paid' },
+                { date: '2025-01-01', description: 'Growth Plan - January 2025', amount: '$999.00', status: 'paid' },
+                { date: '2024-12-01', description: 'Growth Plan - December 2024', amount: '$999.00', status: 'paid' }
               ].map((invoice, idx) => (
                 <div key={idx} className="flex items-center justify-between py-3 border-b border-slate-800 last:border-0">
                   <div className="flex items-center gap-4">

@@ -25,6 +25,7 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { getEmployerPartnerships, getWorkforcePrograms } from '@/services/governmentPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { EmployerPartnership, WorkforceProgram, GovernmentPartnerTier } from '@/types/governmentPartner';
 
 // ===========================================
@@ -213,9 +214,34 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
     programId: ''
   });
 
+  // Escape key handling for modals
+  const closeAnyModal = () => {
+    if (selectedEmployer) setSelectedEmployer(null);
+    else if (showEditModal) { setShowEditModal(false); setEditingEmployer(null); }
+    else if (showAddModal) setShowAddModal(false);
+  };
+  useEscapeKey(closeAnyModal, !!selectedEmployer || showAddModal || showEditModal);
+
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleExportEmployers = () => {
+    const headers = ['Employer', 'Industry', 'NAICS', 'Contact', 'Email', 'Status', 'Hiring Pledge', 'Hired', 'OJT Slots', 'Apprenticeships'];
+    const rows = filteredEmployers.map(e => [
+      `"${e.employerName}"`, `"${e.industry}"`, e.naicsCode || '', `"${e.contactName}"`, e.contactEmail,
+      e.status, e.hiringPledgeCount || 0, e.hiredToDate, e.ojtSlotsOffered || 0, e.apprenticeshipSlots || 0
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'employers-export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification('Employer data exported successfully');
   };
 
   useEffect(() => {
@@ -398,6 +424,13 @@ export const EmployersTab: React.FC<EmployersTabProps> = ({ partnerId, tier: _ti
           >
             <Filter className="w-4 h-4" />
             Filters
+          </button>
+          <button
+            onClick={handleExportEmployers}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <FileText className="w-4 h-4" />
+            Export
           </button>
           <button
             onClick={() => setShowAddModal(true)}

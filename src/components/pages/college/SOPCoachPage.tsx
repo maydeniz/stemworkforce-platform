@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   FileText,
   Sparkles,
@@ -143,6 +144,7 @@ const COMMON_MISTAKES = [
 const SOPCoachPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'guide' | 'review' | 'examples'>('guide');
   const [sopText, setSOPText] = useState('');
+  const { info } = useNotifications();
 
   const wordCount = sopText.trim() ? sopText.trim().split(/\s+/).length : 0;
 
@@ -169,11 +171,11 @@ const SOPCoachPage: React.FC = () => {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+              <button onClick={() => info('SOP upload is coming soon! For now, paste your text in the feedback tab.')} className="px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                 <Upload className="w-5 h-5" />
                 Upload Your SOP
               </button>
-              <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+              <button onClick={() => setActiveTab('examples')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                 <Eye className="w-5 h-5" />
                 View Examples
               </button>
@@ -297,11 +299,11 @@ const SOPCoachPage: React.FC = () => {
               </div>
 
               <div className="mt-4 flex gap-4">
-                <button className="flex-1 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
+                <button onClick={() => { if (wordCount < 100) { info('Please write at least 100 words to get feedback.'); return; } info('AI feedback analysis is coming soon! The sample feedback shown is a preview.'); }} className="flex-1 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
                   <Sparkles className="w-5 h-5" />
                   Get AI Feedback
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => setSOPText('')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <RefreshCw className="w-5 h-5" />
                   Clear
                 </button>
@@ -421,7 +423,7 @@ const SOPCoachPage: React.FC = () => {
             Get detailed feedback and revision suggestions to make your statement stand out.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button onClick={() => info('Expert SOP review service is coming soon!')} className="px-8 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
               <MessageSquare className="w-5 h-5" />
               Get Expert Review
             </button>

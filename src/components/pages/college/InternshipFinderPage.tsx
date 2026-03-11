@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Search,
   Building2,
@@ -226,6 +227,7 @@ const APPLICATION_TIMELINE: TimelineItem[] = [
 // COMPONENT
 // ===========================================
 const InternshipFinderPage: React.FC = () => {
+  const { info } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     type: 'all',
@@ -456,7 +458,7 @@ const InternshipFinderPage: React.FC = () => {
 
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-800">
                     <span className="text-sm text-gray-500">{internship.field}</span>
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+                    <button onClick={() => info('Direct application links are coming soon! Search for this internship on the company website.')} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                       Apply Now <ExternalLink className="w-4 h-4" />
                     </button>
                   </div>
@@ -536,7 +538,7 @@ const InternshipFinderPage: React.FC = () => {
                 {[
                   { label: 'Resume Tips for Internships', link: '/college/resume-builder' },
                   { label: 'Technical Interview Prep', link: '/college/interview-prep' },
-                  { label: 'First-Year Programs', link: '#' },
+                  { label: 'First-Year Programs', link: '/college/career-launch' },
                 ].map((resource, i) => (
                   <li key={i}>
                     <Link

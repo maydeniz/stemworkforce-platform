@@ -254,10 +254,10 @@ const BillingOverview = ({ stats, loading }: { stats: BillingStats | null; loadi
         </div>
         <div className="space-y-3">
           {[
-            { customer: 'TechCorp Inc.', plan: 'Enterprise', amount: 1999, status: 'paid', date: '2024-12-28' },
-            { customer: 'QuantumLabs', plan: 'Professional', amount: 499, status: 'paid', date: '2024-12-27' },
+            { customer: 'TechCorp Inc.', plan: 'Mission Control', amount: 1999, status: 'paid', date: '2024-12-28' },
+            { customer: 'QuantumLabs', plan: 'Talent Engine', amount: 499, status: 'paid', date: '2024-12-27' },
             { customer: 'BioMed Solutions', plan: 'Institution', amount: 999, status: 'pending', date: '2024-12-27' },
-            { customer: 'John Smith', plan: 'Career Pro', amount: 19.99, status: 'paid', date: '2024-12-26' },
+            { customer: 'John Smith', plan: 'Career Pro', amount: 12.99, status: 'paid', date: '2024-12-26' },
             { customer: 'AI Training Co.', plan: 'Growth', amount: 299, status: 'failed', date: '2024-12-26' },
           ].map((tx, i) => (
             <div key={i} className="flex items-center justify-between py-3 border-b border-slate-800 last:border-0">

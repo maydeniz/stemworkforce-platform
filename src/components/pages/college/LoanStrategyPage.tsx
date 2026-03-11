@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   CreditCard,
   Calculator,
@@ -141,6 +142,7 @@ const LOAN_TIPS: LoanTip[] = [
 // ===========================================
 const LoanStrategyPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'plans' | 'pslf' | 'calculator'>('plans');
+  const { info } = useNotifications();
   const [loanAmount, setLoanAmount] = useState(50000);
   const [interestRate, setInterestRate] = useState(6.5);
   const [income, setIncome] = useState(70000);
@@ -172,11 +174,17 @@ const LoanStrategyPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button
+                  onClick={() => setActiveTab('calculator')}
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+                >
                   <Calculator className="w-5 h-5" />
                   Calculate Payments
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button
+                  onClick={() => setActiveTab('pslf')}
+                  className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700"
+                >
                   <Target className="w-5 h-5" />
                   PSLF Eligibility
                 </button>
@@ -457,7 +465,10 @@ const LoanStrategyPage: React.FC = () => {
             Our financial coaches can help you create a customized student loan repayment strategy.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button
+              onClick={() => info('Free consultation scheduling is coming soon!')}
+              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+            >
               <Calculator className="w-5 h-5" />
               Get Free Consultation
             </button>

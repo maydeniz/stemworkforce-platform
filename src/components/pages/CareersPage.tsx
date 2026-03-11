@@ -502,7 +502,7 @@ const CareersPage: React.FC = () => {
             and we'll keep you in mind for future opportunities.
           </p>
           <a
-            href="mailto:careers@stemworkforce.com"
+            href="mailto:careers@stemworkforce.net"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-medium rounded-xl transition-all"
           >
             Send Us Your Resume
@@ -655,14 +655,14 @@ const CareersPage: React.FC = () => {
                 {/* Apply Button */}
                 <div className="pt-4 border-t border-slate-700/50">
                   <a
-                    href={`mailto:careers@stemworkforce.com?subject=Application: ${selectedJob.title}`}
+                    href={`mailto:careers@stemworkforce.net?subject=Application: ${selectedJob.title}`}
                     className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-medium rounded-xl transition-all"
                   >
                     Apply for this Position
                     <ArrowRight className="w-4 h-4" />
                   </a>
                   <p className="text-center text-sm text-slate-400 mt-3">
-                    Or send your resume to careers@stemworkforce.com
+                    Or send your resume to careers@stemworkforce.net
                   </p>
                 </div>
               </div>

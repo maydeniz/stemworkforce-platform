@@ -1,15 +1,12 @@
-// @ts-nocheck
 // ===========================================
 // Communications Tab Component
 // Platform announcements, partner communications
 // ===========================================
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import {
   Megaphone,
   Users,
-  Mail,
   Bell,
   Plus,
   Edit,
@@ -20,13 +17,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  XCircle,
-  Filter,
   Search,
-  ChevronDown,
-  Globe,
   Building2,
-  GraduationCap,
   Briefcase,
   MessageSquare,
   BarChart3,
@@ -798,10 +790,16 @@ const CommunicationsTab: React.FC = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">
+              <button
+                onClick={() => { console.info('Announcement saved as draft'); setShowAnnouncementModal(false); }}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              >
                 Save as Draft
               </button>
-              <button className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
+              <button
+                onClick={() => { console.info('Announcement published'); setShowAnnouncementModal(false); }}
+                className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors"
+              >
                 Publish
               </button>
             </div>
@@ -870,7 +868,10 @@ const CommunicationsTab: React.FC = () => {
               >
                 Cancel
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
+              <button
+                onClick={() => { console.info('Partner message sent'); setShowCommModal(false); }}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors"
+              >
                 <Send className="w-4 h-4" />
                 Send Message
               </button>

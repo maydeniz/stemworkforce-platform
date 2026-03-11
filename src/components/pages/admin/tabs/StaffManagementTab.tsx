@@ -104,7 +104,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-1',
     user_id: 'user-1',
-    email: 'admin@stemworkforce.com',
+    email: 'admin@stemworkforce.net',
     first_name: 'System',
     last_name: 'Administrator',
     role: SAMPLE_ROLES[0],
@@ -115,7 +115,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-2',
     user_id: 'user-2',
-    email: 'security@stemworkforce.com',
+    email: 'security@stemworkforce.net',
     first_name: 'Sarah',
     last_name: 'Chen',
     role: SAMPLE_ROLES[2],
@@ -126,7 +126,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-3',
     user_id: 'user-3',
-    email: 'billing@stemworkforce.com',
+    email: 'billing@stemworkforce.net',
     first_name: 'Michael',
     last_name: 'Johnson',
     role: SAMPLE_ROLES[4],
@@ -137,7 +137,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-4',
     user_id: 'user-4',
-    email: 'compliance@stemworkforce.com',
+    email: 'compliance@stemworkforce.net',
     first_name: 'Emily',
     last_name: 'Rodriguez',
     role: SAMPLE_ROLES[3],
@@ -148,7 +148,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-5',
     user_id: 'user-5',
-    email: 'support@stemworkforce.com',
+    email: 'support@stemworkforce.net',
     first_name: 'David',
     last_name: 'Kim',
     role: SAMPLE_ROLES[6],
@@ -159,7 +159,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-6',
     user_id: 'user-6',
-    email: 'content@stemworkforce.com',
+    email: 'content@stemworkforce.net',
     first_name: 'Jennifer',
     last_name: 'Martinez',
     role: SAMPLE_ROLES[5],
@@ -170,7 +170,7 @@ const SAMPLE_STAFF: StaffMember[] = [
   {
     id: 'staff-7',
     user_id: 'user-7',
-    email: 'privacy@stemworkforce.com',
+    email: 'privacy@stemworkforce.net',
     first_name: 'Robert',
     last_name: 'Thompson',
     role: SAMPLE_ROLES[7],
@@ -620,6 +620,7 @@ const StaffDirectory: React.FC<{ onInvite: () => void; onAddStaff: () => void }>
                           </button>
                         )}
                         <button
+                          onClick={() => { if (window.confirm('Remove this staff member?')) { /* TODO: wire to API */ console.info('Staff removal pending API integration'); } }}
                           className="p-2 rounded-lg hover:bg-slate-700 transition-colors text-red-400"
                           title="Remove"
                         >
@@ -701,8 +702,8 @@ const InvitationsSection: React.FC<{ onInvite: () => void }> = ({ onInvite }) =>
   };
 
   const handleResend = async (invitationId: string) => {
-    // Resend invitation logic
-    console.log('Resending invitation:', invitationId);
+    console.info('Resending invitation:', invitationId);
+    /* TODO: Call supabase edge function for email resend */
   };
 
   const handleRevoke = async (invitationId: string) => {

@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface ApplicationReview {
@@ -203,6 +204,7 @@ const ReviewSetup: React.FC<{
   onSchoolChange: (school: string) => void;
   onStart: () => void;
 }> = ({ selectedSchool, onSchoolChange, onStart }) => {
+  const { info } = useNotifications();
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Intro Card */}
@@ -301,7 +303,10 @@ const ReviewSetup: React.FC<{
               <span className="text-amber-400">○</span>
               <span className="text-gray-300">Supplemental Essays</span>
             </div>
-            <button className="text-xs text-indigo-400 hover:text-indigo-300">
+            <button
+              onClick={() => info('Essay import coming soon! For now, paste your essays directly into the text fields.')}
+              className="text-xs text-indigo-400 hover:text-indigo-300"
+            >
               Import →
             </button>
           </div>
@@ -365,6 +370,7 @@ const ReviewResults: React.FC<{
   onStartNew: () => void;
   onUpdateRoadmap: (roadmap: RoadmapItem[]) => void;
 }> = ({ review, onStartNew, onUpdateRoadmap }) => {
+  const { info } = useNotifications();
   const getStrengthLabel = (strength: ApplicationReview['overallStrength']) => {
     switch (strength) {
       case 'competitive': return { label: 'Competitive', color: 'text-emerald-400 bg-emerald-500/20' };
@@ -584,10 +590,16 @@ const ReviewResults: React.FC<{
 
       {/* Actions */}
       <div className="flex flex-wrap gap-4 justify-center">
-        <button className="px-6 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all">
+        <button
+          onClick={() => info('Report download coming soon! Your admissions review results are saved in this session.')}
+          className="px-6 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all"
+        >
           Download Report
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('Counselor sharing coming soon! You can screenshot your results to share with your counselor.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Share with Counselor
         </button>
         <button

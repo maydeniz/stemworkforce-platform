@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Award,
@@ -169,6 +170,7 @@ const NETWORKING_TIPS = [
 // MAIN COMPONENT
 // ===========================================
 const ProfessionalDevelopmentPage: React.FC = () => {
+  const { info } = useNotifications();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
 
@@ -376,7 +378,7 @@ const ProfessionalDevelopmentPage: React.FC = () => {
                   )}
                 </div>
 
-                <button className="w-full flex items-center justify-center gap-2 py-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg transition-colors">
+                <button onClick={() => info('Study guides are coming soon!')} className="w-full flex items-center justify-center gap-2 py-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg transition-colors">
                   View Study Guide
                   <ExternalLink className="w-4 h-4" />
                 </button>

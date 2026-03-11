@@ -1,11 +1,9 @@
-// @ts-nocheck
 // ===========================================
 // Content Management Tab Component
 // Platform content pages and banners
 // ===========================================
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import {
   FileText,
   Flag,
@@ -16,13 +14,10 @@ import {
   EyeOff,
   Save,
   X,
-  Check,
-  Clock,
   Calendar,
   Globe,
   AlertCircle,
   CheckCircle,
-  XCircle,
   Search,
   ExternalLink,
   History,
@@ -36,8 +31,6 @@ import {
   Scale,
   HelpCircle,
   Tag,
-  Layers,
-  Filter,
   Power,
   Wrench,
   RotateCcw,
@@ -919,16 +912,6 @@ const ContentTab: React.FC = () => {
   };
 
   // Get status icon component
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'published': return Globe;
-      case 'draft': return Edit;
-      case 'maintenance': return Wrench;
-      case 'archived': return EyeOff;
-      default: return Globe;
-    }
-  };
-
   const filteredPages = pages.filter((p) => {
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     if (filterCategory !== 'all' && p.category !== filterCategory) return false;

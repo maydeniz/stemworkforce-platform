@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { UsageMeter, FeatureGate, UpgradePrompt } from '@/components/common';
 import { useBilling } from '@/contexts/BillingContext';
 import { AddProgramModal } from '@/components/modals/AddProgramModal';
 import type { ProgramFormData } from '@/types/program';
@@ -657,6 +658,24 @@ const JobSeekerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }>
               ))}
             </div>
 
+            {/* Usage Meters */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <UsageMeter
+                used={7}
+                limit={10}
+                label="Applications This Month"
+                upgradeLink="/pricing"
+                colorScheme="blue"
+              />
+              <UsageMeter
+                used={8}
+                limit={10}
+                label="Saved Jobs"
+                upgradeLink="/pricing"
+                colorScheme="amber"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">🔥 Recommended Jobs</h2>
@@ -708,6 +727,31 @@ const JobSeekerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }>
                 </button>
               </div>
             </div>
+
+            {/* Salary Analytics (gated) */}
+            <FeatureGate
+              isUnlocked={false}
+              feature="Salary Analytics"
+              requiredTier="Career Pro"
+              upgradeLink="/pricing"
+            >
+              <div className="mt-8 bg-gray-900 rounded-2xl border border-gray-800 p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Salary Analytics</h2>
+                <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { label: 'Market Average', value: '$165,000', trend: '+5%' },
+                    { label: 'Your Target Range', value: '$180-220K', trend: '' },
+                    { label: 'Competitiveness', value: '85th %ile', trend: '+12%' },
+                  ].map((stat, i) => (
+                    <div key={i} className="p-4 bg-gray-800 rounded-xl text-center">
+                      <div className="text-xl font-bold text-white">{stat.value}</div>
+                      <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+                      {stat.trend && <div className="text-xs text-green-400 mt-1">{stat.trend}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FeatureGate>
           </>
         )}
 
@@ -1646,16 +1690,16 @@ if (import.meta.env.DEV) console.log('Edu job posted successfully:', newJob);
   const subscriptionPlans = [
     {
       id: 'free',
-      name: 'Free',
+      name: 'Starter',
       price: 0,
       period: 'month',
-      features: ['Up to 3 programs', 'Basic analytics', 'Email support', 'Community access'],
+      features: ['Up to 5 programs', 'Basic analytics', 'Email support', 'Community access'],
       recommended: false,
     },
     {
-      id: 'professional',
-      name: 'Professional',
-      price: 99,
+      id: 'growth',
+      name: 'Growth',
+      price: 499,
       period: 'month',
       features: ['Unlimited programs', 'Advanced analytics', 'Priority support', 'Event management', 'Employer matching', 'Custom branding'],
       recommended: true,
@@ -1663,30 +1707,30 @@ if (import.meta.env.DEV) console.log('Edu job posted successfully:', newJob);
     {
       id: 'enterprise',
       name: 'Enterprise',
-      price: 299,
+      price: 999,
       period: 'month',
-      features: ['Everything in Professional', 'Dedicated account manager', 'API access', 'SSO integration', 'Custom integrations', 'SLA guarantee', 'Bulk data import'],
+      features: ['Everything in Growth', 'Dedicated account manager', 'API access', 'SSO integration', 'Custom integrations', 'SLA guarantee', 'Bulk data import'],
       recommended: false,
     },
   ];
 
   // Current subscription state
   const [currentSubscription, setCurrentSubscription] = useState({
-    planId: 'professional',
-    planName: 'Professional',
+    planId: 'growth',
+    planName: 'Growth',
     status: 'active',
     currentPeriodStart: '2024-12-01',
     currentPeriodEnd: '2025-01-01',
     nextBillingDate: 'Jan 1, 2025',
-    amount: 99,
+    amount: 499,
   });
 
   // Invoices
   const [invoices, _setInvoices] = useState([
-    { id: 'INV-2024-012', date: 'Dec 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - December 2024', paidDate: 'Dec 1, 2024' },
-    { id: 'INV-2024-011', date: 'Nov 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - November 2024', paidDate: 'Nov 1, 2024' },
-    { id: 'INV-2024-010', date: 'Oct 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - October 2024', paidDate: 'Oct 1, 2024' },
-    { id: 'INV-2024-009', date: 'Sep 1, 2024', amount: 99, status: 'paid', description: 'Professional Plan - September 2024', paidDate: 'Sep 1, 2024' },
+    { id: 'INV-2024-012', date: 'Dec 1, 2024', amount: 499, status: 'paid', description: 'Growth Plan - December 2024', paidDate: 'Dec 1, 2024' },
+    { id: 'INV-2024-011', date: 'Nov 1, 2024', amount: 499, status: 'paid', description: 'Growth Plan - November 2024', paidDate: 'Nov 1, 2024' },
+    { id: 'INV-2024-010', date: 'Oct 1, 2024', amount: 499, status: 'paid', description: 'Growth Plan - October 2024', paidDate: 'Oct 1, 2024' },
+    { id: 'INV-2024-009', date: 'Sep 1, 2024', amount: 499, status: 'paid', description: 'Growth Plan - September 2024', paidDate: 'Sep 1, 2024' },
   ]);
 
   // Payment methods
@@ -4226,14 +4270,6 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                 <p className="text-gray-400">Manage postings, review applicants, and track hiring pipeline</p>
               </div>
               <div className="flex items-center gap-3">
-                {subscription && subscription.tier !== 'enterprise' && (
-                  <div className="text-right text-sm">
-                    <div className="text-gray-400">Job Postings</div>
-                    <div className="text-white font-medium">
-                      {jobPostingsUsed} / {currentFeatures.maxJobPostings === Infinity ? '∞' : currentFeatures.maxJobPostings}
-                    </div>
-                  </div>
-                )}
                 <button
                   onClick={handlePostJob}
                   className="px-5 py-2.5 font-semibold rounded-xl"
@@ -4242,6 +4278,31 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                   + Post Opportunity
                 </button>
               </div>
+            </div>
+
+            {/* Usage Meters */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              <UsageMeter
+                label="Job Postings"
+                used={jobPostingsUsed}
+                limit={currentFeatures.maxJobPostings === Infinity ? -1 : currentFeatures.maxJobPostings}
+                upgradeLink="/pricing"
+                colorScheme="amber"
+              />
+              <UsageMeter
+                label="Team Members"
+                used={1}
+                limit={currentFeatures.maxJobPostings === Infinity ? -1 : 5}
+                upgradeLink="/pricing"
+                colorScheme="blue"
+              />
+              <UsageMeter
+                label="Event Sponsorships"
+                used={0}
+                limit={currentFeatures.eventSponsorsPerQuarter === Infinity ? -1 : currentFeatures.eventSponsorsPerQuarter}
+                upgradeLink="/pricing"
+                colorScheme="emerald"
+              />
             </div>
 
             <div className="grid grid-cols-5 gap-4 mb-8">
@@ -4743,6 +4804,12 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
         {activeTab === 'analytics' && (
           <div>
             <h1 className="text-2xl font-bold text-white mb-6">Hiring Analytics</h1>
+            <FeatureGate
+              feature="Advanced Analytics"
+              isUnlocked={canAccessFeature('advancedAnalytics')}
+              requiredTier="Talent Engine"
+              upgradeLink="/pricing"
+            >
             <div className="grid grid-cols-5 gap-4 mb-8">
               {[
                 { label: 'Total Hires (YTD)', value: 18, color: '#10b981' },
@@ -4797,6 +4864,7 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                 </div>
               </div>
             </div>
+            </FeatureGate>
           </div>
         )}
 
@@ -5024,7 +5092,7 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
               {[
                 {
                   id: 'free',
-                  name: 'Starter',
+                  name: 'Launchpad',
                   price: 'Free',
                   period: 'forever',
                   features: ['Up to 3 job postings', 'Basic candidate search', 'Email support', 'Standard job listing'],
@@ -5032,18 +5100,18 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                 },
                 {
                   id: 'professional-monthly',
-                  name: 'Professional',
-                  price: '$299',
+                  name: 'Talent Engine',
+                  price: '$499',
                   period: '/month',
-                  features: ['Up to 25 job postings', 'Advanced analytics', 'Candidate search & filters', 'Event sponsorship (1/quarter)', 'Employer branding page', 'Priority support'],
+                  features: ['Up to 25 job postings', 'Advanced analytics', 'Candidate search & filters', 'Event sponsorship (2/quarter)', 'Employer branding page', 'Priority support'],
                   popular: true,
                   current: subscription?.tier === 'professional',
                 },
                 {
                   id: 'enterprise',
-                  name: 'Enterprise',
-                  price: 'Custom',
-                  period: 'pricing',
+                  name: 'Mission Control',
+                  price: '$1,999',
+                  period: '/month',
                   features: ['Unlimited job postings', 'Full analytics suite', 'Unlimited event sponsorships', 'Dedicated account manager', 'Custom integrations', 'API access'],
                   current: subscription?.tier === 'enterprise',
                 },
@@ -5084,7 +5152,7 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                   <button
                     onClick={() => {
                       if (plan.id === 'enterprise') {
-                        window.location.href = 'mailto:sales@stemworkforce.com?subject=Enterprise%20Inquiry';
+                        window.location.href = 'mailto:sales@stemworkforce.net?subject=Enterprise%20Inquiry';
                       } else if (!plan.current) {
                         subscribeToPlan(plan.id);
                       }
@@ -5120,9 +5188,9 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
                 <tbody>
                   {subscription?.tier !== 'free' ? (
                     [
-                      { date: 'Dec 1, 2024', description: 'Professional Plan - Monthly', amount: '$299.00', status: 'Paid' },
-                      { date: 'Nov 1, 2024', description: 'Professional Plan - Monthly', amount: '$299.00', status: 'Paid' },
-                      { date: 'Oct 1, 2024', description: 'Professional Plan - Monthly', amount: '$299.00', status: 'Paid' },
+                      { date: 'Dec 1, 2024', description: 'Growth Plan - Monthly', amount: '$499.00', status: 'Paid' },
+                      { date: 'Nov 1, 2024', description: 'Growth Plan - Monthly', amount: '$499.00', status: 'Paid' },
+                      { date: 'Oct 1, 2024', description: 'Growth Plan - Monthly', amount: '$499.00', status: 'Paid' },
                     ].map((invoice, i) => (
                       <tr key={i} className="border-b border-gray-800">
                         <td className="p-4 text-gray-300">{invoice.date}</td>
@@ -5173,59 +5241,18 @@ if (import.meta.env.DEV) console.log('Adding new posting to list:', newPosting);
 
       {/* Upgrade Modal */}
       {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-          <div className="w-full max-w-lg bg-gray-900 rounded-3xl border border-gray-800 overflow-hidden">
-            <div className="p-6 border-b border-gray-800">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">✨</span>
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-white">Upgrade to Professional</h2>
-                  <p className="text-sm text-gray-400">Unlock advanced features for your organization</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <div className="text-3xl font-bold text-white mb-1">$299<span className="text-lg text-gray-400 font-normal">/month</span></div>
-                <p className="text-gray-400 text-sm">14-day free trial included</p>
-              </div>
-              <div className="space-y-3 mb-6">
-                {[
-                  'Up to 25 job postings',
-                  'Advanced hiring analytics',
-                  'Candidate search with filters',
-                  'Event sponsorship access (1/quarter)',
-                  'Employer branding page',
-                  'Priority support',
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <span className="w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-xs">✓</span>
-                    <span className="text-gray-300">{feature}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="flex-1 px-4 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700"
-                >
-                  Maybe Later
-                </button>
-                <button
-                  onClick={() => {
-                    subscribeToPlan('professional-monthly');
-                    setShowUpgradeModal(false);
-                  }}
-                  className="flex-1 px-4 py-3 bg-purple-500 text-white rounded-xl font-semibold hover:bg-purple-400"
-                >
-                  Start Free Trial
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <UpgradePrompt
+          feature="Advanced Hiring Tools"
+          currentTier="Launchpad (Free)"
+          requiredTier="Talent Engine"
+          price="$499/mo"
+          variant="modal"
+          onUpgrade={() => {
+            subscribeToPlan('employer_professional');
+            setShowUpgradeModal(false);
+          }}
+          onDismiss={() => setShowUpgradeModal(false)}
+        />
       )}
 
       {/* Enhanced Post Job/Internship Modal */}

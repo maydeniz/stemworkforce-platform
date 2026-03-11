@@ -34,6 +34,7 @@ interface JobData {
   featured: boolean;
   source: string;
   duration?: string;
+  isSample?: boolean;
 }
 
 // Map job industry IDs to AI metrics industry codes
@@ -589,6 +590,7 @@ const JobsPage: React.FC = () => {
           `)
           .eq('status', 'active')
           .in('content_type', ['job', 'internship'])
+          .or(`expires_at.is.null,expires_at.gte.${new Date().toISOString()}`)
           .order('posted_at', { ascending: false })
           .limit(200);
 
@@ -611,7 +613,7 @@ const JobsPage: React.FC = () => {
           type: listing.content_type === 'internship' ? 'internship' : 'job',
           workType: listing.is_remote ? 'remote' : 'onsite',
           clearance: listing.clearance_required || 'none',
-          citizenship: 'us',
+          citizenship: 'any',
           experience: 'mid',
           industry: mapFederatedIndustry(listing.industries),
           orgType: 'federal',
@@ -659,8 +661,10 @@ const JobsPage: React.FC = () => {
   };
 
   // Combine static data + database jobs + federated jobs (USAJobs etc.)
+  // Mark static sample data and push to end of list
   const allOpportunities = useMemo(() => {
-    return [...realJobsData, ...databaseJobs, ...federatedJobs];
+    const sampleJobs = realJobsData.map(job => ({ ...job, isSample: true }));
+    return [...databaseJobs, ...federatedJobs, ...sampleJobs];
   }, [databaseJobs, federatedJobs]);
 
   // Pre-filter by type + industry + orgType to derive dynamic dropdown options
@@ -914,7 +918,7 @@ const JobsPage: React.FC = () => {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">{opp.title}</h3>
                       <p className="text-yellow-500 font-medium">{opp.company}</p>
-                      {'source' in opp && <p className="text-xs text-gray-500 mt-1">Source: {opp.source}</p>}
+                      {opp.isSample && <span className="inline-block px-2 py-0.5 bg-gray-700 text-gray-400 text-xs rounded mt-1">Sample Listing</span>}
                     </div>
                   </div>
                   <button onClick={() => handleSaveJob(opp.id)} className={`p-2 rounded-lg transition-colors ${savedJobs.includes(opp.id) ? 'bg-red-500/20 text-red-400' : 'bg-gray-800 text-gray-400 hover:text-red-400'}`}>{savedJobs.includes(opp.id) ? '❤️' : '🤍'}</button>
@@ -967,7 +971,11 @@ const JobsPage: React.FC = () => {
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-800">
                   <div className="text-sm text-gray-500"><span>📅 {opp.posted}</span><span className="mx-2">•</span><span>👥 {opp.applicants} applicants</span></div>
-                  <button onClick={() => setApplyingTo(opp)} className="px-6 py-2 bg-yellow-500 text-gray-900 rounded-lg font-bold hover:bg-yellow-400 transition-colors flex items-center gap-2">Apply Now →</button>
+                  {opp.source.startsWith('https://') || opp.source.startsWith('http://') ? (
+                    <a href={opp.source} target="_blank" rel="noopener noreferrer" className="px-6 py-2 bg-yellow-500 text-gray-900 rounded-lg font-bold hover:bg-yellow-400 transition-colors flex items-center gap-2 no-underline">Apply Now ↗</a>
+                  ) : (
+                    <button onClick={() => setApplyingTo(opp)} className="px-6 py-2 bg-yellow-500 text-gray-900 rounded-lg font-bold hover:bg-yellow-400 transition-colors flex items-center gap-2">Apply Now →</button>
+                  )}
                 </div>
               </div>
             </div>

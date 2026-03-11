@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   DollarSign,
   MapPin,
@@ -188,8 +189,10 @@ const COST_OF_LIVING: { city: string; index: number; avgRent: number }[] = [
 // COMPONENT
 // ===========================================
 const SalaryNegotiationPage: React.FC = () => {
+  const { info, success } = useNotifications();
   const [selectedRole, setSelectedRole] = useState<string>('Software Engineer');
   const [activeTab, setActiveTab] = useState<'data' | 'scripts' | 'calculator'>('data');
+  const [calcValues, setCalcValues] = useState({ base: '', signing: '', stock: '', bonus: '' });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -225,11 +228,11 @@ const SalaryNegotiationPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button onClick={() => setActiveTab('calculator')} className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
                   <Calculator className="w-5 h-5" />
                   Calculate Your Worth
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button onClick={() => setActiveTab('scripts')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
                   <FileText className="w-5 h-5" />
                   Get Negotiation Scripts
                 </button>
@@ -426,6 +429,8 @@ const SalaryNegotiationPage: React.FC = () => {
                     <input
                       type="number"
                       placeholder="140000"
+                      value={calcValues.base}
+                      onChange={(e) => setCalcValues(prev => ({...prev, base: e.target.value}))}
                       className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
                     />
                   </div>
@@ -438,6 +443,8 @@ const SalaryNegotiationPage: React.FC = () => {
                     <input
                       type="number"
                       placeholder="25000"
+                      value={calcValues.signing}
+                      onChange={(e) => setCalcValues(prev => ({...prev, signing: e.target.value}))}
                       className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
                     />
                   </div>
@@ -450,6 +457,8 @@ const SalaryNegotiationPage: React.FC = () => {
                     <input
                       type="number"
                       placeholder="200000"
+                      value={calcValues.stock}
+                      onChange={(e) => setCalcValues(prev => ({...prev, stock: e.target.value}))}
                       className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
                     />
                   </div>
@@ -460,11 +469,27 @@ const SalaryNegotiationPage: React.FC = () => {
                   <input
                     type="number"
                     placeholder="15"
+                    value={calcValues.bonus}
+                    onChange={(e) => setCalcValues(prev => ({...prev, bonus: e.target.value}))}
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
                   />
                 </div>
 
-                <button className="w-full py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium transition-colors mt-4">
+                <button
+                  onClick={() => {
+                    const base = Number(calcValues.base) || 0;
+                    const signing = Number(calcValues.signing) || 0;
+                    const stock = Number(calcValues.stock) || 0;
+                    const bonus = Number(calcValues.bonus) || 0;
+                    const totalYear1 = base + signing + (stock / 4) + (base * bonus / 100);
+                    if (base === 0) {
+                      info('Please enter at least a base salary to calculate.');
+                      return;
+                    }
+                    success(`Year 1 Total Comp: ${formatCurrency(Math.round(totalYear1))}`);
+                  }}
+                  className="w-full py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium transition-colors mt-4"
+                >
                   Calculate Total Comp
                 </button>
               </div>
@@ -514,7 +539,7 @@ const SalaryNegotiationPage: React.FC = () => {
             Our career advisors have helped students negotiate an average of 15% more in total compensation.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+            <button onClick={() => info('Career advisor matching is coming soon!')} className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
               <MessageSquare className="w-5 h-5" />
               Talk to an Advisor
             </button>

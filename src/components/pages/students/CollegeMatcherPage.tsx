@@ -7,6 +7,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface StudentProfile {
@@ -1121,6 +1122,8 @@ const SchoolDetailModal: React.FC<{
   onToggleSave: () => void;
   onClose: () => void;
 }> = ({ school, isSaved, onToggleSave, onClose }) => {
+  const { info } = useNotifications();
+
   const getTierStyle = (tier: string) => {
     switch (tier) {
       case 'reach': return 'bg-red-500/20 text-red-400';
@@ -1226,7 +1229,10 @@ const SchoolDetailModal: React.FC<{
             >
               {isSaved ? '♥ Saved to List' : '♡ Save to List'}
             </button>
-            <button className="px-6 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all">
+            <button
+              onClick={() => info('School comparison coming soon! Save schools to compare them later.')}
+              className="px-6 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all"
+            >
               Compare
             </button>
           </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { validateEmailDomain } from '@/utils/emailDomain';
@@ -11,8 +11,25 @@ import PersonalInfoStep from './steps/PersonalInfoStep';
 import OrganizationStep from './steps/OrganizationStep';
 import { stepForwardVariants, stepBackwardVariants, stepTransition } from './AuthAnimations';
 
+/** Map pricing page persona query param to a registration role value.
+ *  Values MUST match ROLE_OPTIONS in RoleSelectionStep.tsx */
+const PERSONA_TO_ROLE: Record<string, string> = {
+  jobseeker: 'jobseeker',
+  student_hs: 'student_hs',
+  student_college: 'student_college',
+  student: 'student_college',          // generic "student" defaults to college
+  employer: 'employer',
+  industry_partner: 'partner_industry',
+  education_partner: 'educator',
+  service_provider: 'service_provider',
+  government: 'partner_federal',
+  national_labs: 'partner_lab',
+  nonprofit: 'partner_nonprofit',
+};
+
 const RegisterWizard: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signUp } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -21,8 +38,19 @@ const RegisterWizard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // Form data
-  const [role, setRole] = useState('');
+  // Form data — pre-populate role from ?persona= query param if present
+  const personaParam = searchParams.get('persona');
+  const planParam = searchParams.get('plan');
+  const initialRole = personaParam ? (PERSONA_TO_ROLE[personaParam] || '') : '';
+  const [role, setRole] = useState(initialRole);
+
+  // If persona was pre-selected, skip the role step
+  useEffect(() => {
+    if (initialRole && currentStep === 0) {
+      setDirection('forward');
+      setCurrentStep(1);
+    }
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
   const [personalInfo, setPersonalInfo] = useState({
     firstName: '',
     lastName: '',
@@ -47,9 +75,10 @@ const RegisterWizard: React.FC = () => {
   const [organizationName, setOrganizationName] = useState('');
   const [collegeName, setCollegeName] = useState('');
   const [collegeUnit, setCollegeUnit] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   // Role requires organization step?
-  const isPartnerRole = role.startsWith('partner_') || role === 'educator' || role === 'service_provider';
+  const isPartnerRole = role.startsWith('partner_') || role === 'educator' || role === 'service_provider' || role === 'employer';
   const usesOrgSelector = ['partner_lab', 'partner_federal'].includes(role);
   const totalSteps = isPartnerRole ? 3 : 2;
   const isLastPersonalStep = !isPartnerRole;
@@ -121,12 +150,24 @@ const RegisterWizard: React.FC = () => {
     }
 
     // Validate personal info
+    if (!personalInfo.firstName.trim() || !personalInfo.lastName.trim()) {
+      setError('Please enter your first and last name');
+      return;
+    }
+    if (!personalInfo.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalInfo.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
     if (personalInfo.password.length < 8) {
       setError('Password must be at least 8 characters');
       return;
     }
     if (personalInfo.password !== personalInfo.confirmPassword) {
       setError('Passwords do not match');
+      return;
+    }
+    if (!acceptedTerms) {
+      setError('You must accept the Terms of Service and Privacy Policy');
       return;
     }
 
@@ -149,7 +190,8 @@ const RegisterWizard: React.FC = () => {
       if (result.needsEmailConfirmation) {
         setSuccess(true);
       } else {
-        navigate('/dashboard');
+        // If a plan was pre-selected from pricing page, redirect to billing
+        navigate(planParam ? `/dashboard?plan=${planParam}` : '/dashboard');
       }
     } else {
       setError(result.error || 'Registration failed. Please try again.');
@@ -220,6 +262,8 @@ const RegisterWizard: React.FC = () => {
                 onBack={goBack}
                 isLastStep={isLastPersonalStep}
                 loading={loading}
+                acceptedTerms={acceptedTerms}
+                onAcceptedTermsChange={setAcceptedTerms}
               />
             </motion.div>
           )}

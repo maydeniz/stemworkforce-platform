@@ -1,42 +1,28 @@
-// @ts-nocheck
 // ===========================================
 // Marketplace Providers Tab Component
 // Service Provider Management for Admin
 // ===========================================
 
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import React, { useState } from 'react';
 import {
-  Users,
   Search,
-  Filter,
   Plus,
-  Edit,
-  Trash2,
   Eye,
   CheckCircle,
-  XCircle,
   Clock,
   Star,
   DollarSign,
   Mail,
-  Phone,
   MapPin,
-  Briefcase,
-  Award,
-  Calendar,
   ExternalLink,
   MoreVertical,
   UserCheck,
-  UserX,
   Ban,
   RefreshCw,
   Download,
   Shield,
   TrendingUp,
-  MessageSquare,
   X,
-  ChevronDown,
 } from 'lucide-react';
 
 // Provider categories
@@ -320,7 +306,7 @@ const sampleProviders = [
 
 const MarketplaceProvidersTab: React.FC = () => {
   const [providers, setProviders] = useState(sampleProviders);
-  const [loading, setLoading] = useState(false);
+  const [_loading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -357,14 +343,6 @@ const MarketplaceProvidersTab: React.FC = () => {
       currency: 'USD',
       minimumFractionDigits: 0,
     }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
   };
 
   const getStatusColor = (status: string) => {
@@ -569,7 +547,7 @@ const MarketplaceProvidersTab: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {loading ? (
+            {_loading ? (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
                   Loading providers...
@@ -593,10 +571,10 @@ const MarketplaceProvidersTab: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <p className="font-medium text-white">{provider.name}</p>
                           {provider.is_verified && (
-                            <Shield className="w-4 h-4 text-blue-400" title="Verified" />
+                            <Shield className="w-4 h-4 text-blue-400" aria-label="Verified" />
                           )}
                           {provider.is_featured && (
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" title="Featured" />
+                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" aria-label="Featured" />
                           )}
                         </div>
                         <p className="text-sm text-slate-400">{provider.email}</p>

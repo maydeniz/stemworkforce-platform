@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ===========================================
 // State Workforce Development Agency Portal
 // Comprehensive platform for State DOL, Workforce Boards,
@@ -22,12 +21,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Building2, Users, BarChart3, FileText, CheckCircle, ArrowRight,
-  MapPin, DollarSign, Clock, Target, TrendingUp, Shield, Briefcase,
-  GraduationCap, Award, Globe, Zap, Search, Calendar, Phone,
-  Mail, ChevronRight, Play, Download, ExternalLink, Star,
-  Activity, PieChart, Layers, Database, RefreshCw, Settings,
-  UserCheck, BookOpen, Handshake, Factory, Truck, HardHat,
-  Stethoscope, Cpu, Wrench, Heart, AlertCircle, Info
+  DollarSign, Target, Shield, Briefcase,
+  GraduationCap, Globe, Search, Phone,
+  Mail, Play, Star,
+  Database, Handshake, Factory, Truck, HardHat,
+  Stethoscope, Cpu, Wrench, Heart,
 } from 'lucide-react';
 
 // ===========================================
@@ -472,7 +470,6 @@ const INTEGRATIONS = [
 // ===========================================
 const StateWorkforcePortalPage: React.FC = () => {
   const [activeCapability, setActiveCapability] = useState(0);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -498,10 +495,10 @@ const StateWorkforcePortalPage: React.FC = () => {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
-                  to="/education-partner-apply?type=state-workforce"
+                  to="/government-partner-onboarding"
                   className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
                 >
-                  Request Demo
+                  Get Started
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <a
@@ -531,7 +528,16 @@ const StateWorkforcePortalPage: React.FC = () => {
                 <span className="text-xs text-slate-400">Live Demo</span>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                {WIOA_INDICATORS.slice(0, 4).map((indicator, i) => (
+                {WIOA_INDICATORS.slice(0, 4).map((indicator, i) => {
+                  const getProgressWidth = () => {
+                    if (indicator.id === 'median_earnings') {
+                      const current = parseFloat(indicator.current.replace(/[$,]/g, ''));
+                      const target = parseFloat(indicator.target.replace(/[$,]/g, ''));
+                      return `${Math.min(100, (current / target) * 100).toFixed(0)}%`;
+                    }
+                    return indicator.current;
+                  };
+                  return (
                   <div key={i} className="bg-slate-800/50 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-slate-400">{indicator.name}</span>
@@ -544,11 +550,12 @@ const StateWorkforcePortalPage: React.FC = () => {
                     <div className="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
                       <div
                         className={`h-full ${swfColors[indicator.color]?.solid || 'bg-slate-500'} rounded-full`}
-                        style={{ width: indicator.current }}
+                        style={{ width: getProgressWidth() }}
                       />
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
               <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
                 <div className="flex items-center gap-2 text-emerald-400 text-sm">
@@ -845,7 +852,7 @@ const StateWorkforcePortalPage: React.FC = () => {
                   ))}
                 </ul>
                 <Link
-                  to="/education-partner-apply?type=state-workforce"
+                  to="/government-partner-onboarding?type=state-workforce"
                   className={`block text-center py-3 rounded-lg font-medium transition-colors ${
                     tier.highlighted
                       ? 'bg-blue-600 hover:bg-blue-500 text-white'
@@ -871,14 +878,14 @@ const StateWorkforcePortalPage: React.FC = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                to="/education-partner-apply?type=state-workforce"
+                to="/government-partner-onboarding"
                 className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
               >
-                Schedule a Demo
+                Get Started
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="mailto:workforce@stemworkforce.gov"
+                href="mailto:workforce@stemworkforce.net"
                 className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg font-medium transition-colors border border-slate-700"
               >
                 <Mail className="w-4 h-4" />
@@ -892,7 +899,7 @@ const StateWorkforcePortalPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-400">
                 <Mail className="w-4 h-4" />
-                workforce@stemworkforce.gov
+                workforce@stemworkforce.net
               </div>
             </div>
           </div>

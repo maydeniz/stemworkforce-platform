@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, CheckCircle2, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
@@ -11,39 +11,52 @@ import { formSwapVariants, formSwapTransition } from './AuthAnimations';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { signIn, isAuthenticated } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [showForgot, setShowForgot] = useState(false);
 
   // Inline email validation
   const [emailTouched, setEmailTouched] = useState(false);
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  // Redirect already-authenticated users
+  const returnTo = searchParams.get('returnTo') || '/dashboard';
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(returnTo, { replace: true });
+    }
+  }, [isAuthenticated, navigate, returnTo]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const result = await signIn(email.trim(), password);
+    try {
+      const result = await signIn(email.trim(), password);
 
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      let errorMessage = result.error || 'Login failed. Please try again.';
-      if (errorMessage.toLowerCase().includes('email not confirmed')) {
-        errorMessage = 'Please confirm your email before signing in. Check your inbox for a confirmation link.';
+      if (result.success) {
+        navigate(returnTo);
+      } else {
+        let errorMessage = result.error || 'Login failed. Please try again.';
+        if (errorMessage.toLowerCase().includes('email not confirmed')) {
+          errorMessage = 'Please confirm your email before signing in. Check your inbox for a confirmation link.';
+        } else if (errorMessage.toLowerCase().includes('invalid') || errorMessage.toLowerCase().includes('credentials')) {
+          errorMessage = 'Invalid email or password. Please try again.';
+        }
+        setError(errorMessage);
       }
-      setError(errorMessage);
+    } catch {
+      setError('Unable to connect. Please check your internet connection and try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleOAuthError = (msg: string) => {
@@ -58,7 +71,6 @@ const LoginForm: React.FC = () => {
           onBack={() => {
             setShowForgot(false);
             setError(null);
-            setMessage(null);
           }}
           initialEmail={email}
         />
@@ -82,20 +94,24 @@ const LoginForm: React.FC = () => {
           <p className="text-sm text-gray-400 mt-1">Sign in to your account</p>
         </div>
 
-        {/* Error/success messages */}
-        {error && (
-          <div className="mb-5 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-            <p className="text-red-400 text-sm" role="alert">{error}</p>
-          </div>
-        )}
-        {message && (
-          <div className="mb-5 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-            <p className="text-green-400 text-sm" role="status">{message}</p>
-          </div>
-        )}
+        {/* Error message with animation */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-5 overflow-hidden"
+            >
+              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <p className="text-red-400 text-sm" role="alert">{error}</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} aria-label="Sign in form" className="space-y-4">
+        <form onSubmit={handleSubmit} aria-label="Sign in form" className="space-y-4" id="login-form">
           {/* Email */}
           <Input
             label="Email address"
@@ -104,7 +120,9 @@ const LoginForm: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => setEmailTouched(true)}
             placeholder="you@example.com"
-            leftIcon={<Mail className="w-4 h-4" />}
+            autoComplete="email"
+            autoFocus
+            leftIcon={<Mail className="w-4 h-4" aria-hidden="true" />}
             rightIcon={
               emailTouched && email && isEmailValid ? (
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
@@ -122,14 +140,14 @@ const LoginForm: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            leftIcon={<Lock className="w-4 h-4" />}
+            autoComplete="current-password"
+            leftIcon={<Lock className="w-4 h-4" aria-hidden="true" />}
             rightIcon={
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -138,23 +156,13 @@ const LoginForm: React.FC = () => {
             disabled={loading}
           />
 
-          {/* Remember me + Forgot password */}
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
-              />
-              <span className="text-sm text-gray-400">Remember me</span>
-            </label>
+          {/* Forgot password */}
+          <div className="flex items-center justify-end">
             <button
               type="button"
               onClick={() => {
                 setShowForgot(true);
                 setError(null);
-                setMessage(null);
               }}
               className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
             >
@@ -163,9 +171,15 @@ const LoginForm: React.FC = () => {
           </div>
 
           {/* Submit */}
-          <Button type="submit" fullWidth size="lg" disabled={loading} className="mt-2">
-            {loading ? 'Signing in...' : 'Sign In'}
+          <Button type="submit" fullWidth size="lg" loading={loading} className="mt-2">
+            Sign In
           </Button>
+
+          {/* Trust signal (visible on all screens) */}
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <Shield className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" />
+            <span className="text-xs text-gray-500">Protected by 256-bit TLS encryption</span>
+          </div>
         </form>
 
         {/* Divider */}
@@ -188,6 +202,15 @@ const LoginForm: React.FC = () => {
             Sign up
           </Link>
         </p>
+
+        {/* Footer links */}
+        <div className="flex items-center justify-center gap-4 mt-4 text-xs text-gray-600">
+          <Link to="/privacy" className="hover:text-gray-400 transition-colors">Privacy</Link>
+          <span>·</span>
+          <Link to="/terms" className="hover:text-gray-400 transition-colors">Terms</Link>
+          <span>·</span>
+          <Link to="/help" className="hover:text-gray-400 transition-colors">Help</Link>
+        </div>
       </motion.div>
     </AnimatePresence>
   );

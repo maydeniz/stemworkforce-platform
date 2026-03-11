@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Shield,
   Building2,
@@ -217,6 +218,7 @@ const PATHWAY_PROGRAMS: PathwayProgram[] = [
 // ===========================================
 const GovernmentCareersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'agencies' | 'clearances' | 'pathways'>('overview');
+  const { info } = useNotifications();
 
   return (
     <div className="min-h-screen bg-gray-950 pt-20">
@@ -462,7 +464,10 @@ const GovernmentCareersPage: React.FC = () => {
                           <span className="text-gray-400">New Grad</span>
                         )}
                       </div>
-                      <button className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                      <button
+                        onClick={() => info('USAJobs integration is coming soon!')}
+                        className="text-indigo-400 hover:text-indigo-300 transition-colors"
+                      >
                         View Jobs →
                       </button>
                     </div>

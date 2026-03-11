@@ -11,10 +11,10 @@ import {
   Star,
   Zap,
   Crown,
-  ArrowRight,
-  Loader2
+  ArrowRight
 } from 'lucide-react';
 import type { PartnerTier } from '@/types/industryPartner';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // ===========================================
 // TYPES
@@ -110,41 +110,18 @@ const PRICING_TIERS = [
 // ===========================================
 
 const BillingTab: React.FC<BillingTabProps> = ({ partnerId: _partnerId, currentTier }) => {
-  const [upgrading, setUpgrading] = useState<string | null>(null);
   const [showUpdatePaymentModal, setShowUpdatePaymentModal] = useState(false);
-  const [billingNotification, setBillingNotification] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
+  const { info } = useNotifications();
 
   const currentPlan = PRICING_TIERS.find(t => t.id === currentTier) || PRICING_TIERS[0];
 
-  const handleUpgrade = async (tierId: PartnerTier) => {
+  const handleUpgrade = (tierId: PartnerTier) => {
     if (tierId === currentTier) return;
-
-    setUpgrading(tierId);
-
-    // Simulate API call
-    setTimeout(() => {
-      setBillingNotification({ type: 'success', message: `Upgrade to ${tierId} initiated! Redirecting to Stripe checkout...` });
-      setUpgrading(null);
-      setTimeout(() => setBillingNotification(null), 5000);
-    }, 1500);
+    info('Stripe payment integration coming soon. Contact sales@stemworkforce.net for plan changes.');
   };
 
   return (
     <div className="space-y-6">
-      {/* Notification Banner */}
-      {billingNotification && (
-        <div className={`p-4 rounded-lg text-sm flex items-center justify-between ${
-          billingNotification.type === 'success'
-            ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
-            : 'bg-blue-500/20 border border-blue-500/30 text-blue-400'
-        }`}>
-          <span>{billingNotification.message}</span>
-          <button onClick={() => setBillingNotification(null)} className="ml-4 hover:opacity-80">
-            <span className="text-lg">&times;</span>
-          </button>
-        </div>
-      )}
-
       {/* Header */}
       <div>
         <h2 className="text-xl font-bold text-white">Billing & Subscription</h2>
@@ -294,7 +271,7 @@ const BillingTab: React.FC<BillingTabProps> = ({ partnerId: _partnerId, currentT
 
                 <button
                   onClick={() => handleUpgrade(tier.id)}
-                  disabled={isCurrent || upgrading === tier.id}
+                  disabled={isCurrent}
                   className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
                     isCurrent
                       ? `${tier.popular ? 'bg-white/20 text-white' : 'bg-gray-800 text-gray-400'} cursor-default`
@@ -305,7 +282,6 @@ const BillingTab: React.FC<BillingTabProps> = ({ partnerId: _partnerId, currentT
                       : 'bg-emerald-600 text-white hover:bg-emerald-500'
                   }`}
                 >
-                  {upgrading === tier.id && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isCurrent ? 'Current Plan' :
                    isDowngrade ? 'Downgrade' :
                    tier.price === -1 ? 'Contact Sales' :
@@ -379,7 +355,7 @@ const BillingTab: React.FC<BillingTabProps> = ({ partnerId: _partnerId, currentT
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <button onClick={() => setShowUpdatePaymentModal(false)} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
-              <button onClick={() => setShowUpdatePaymentModal(false)} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">Update Card</button>
+              <button onClick={() => { info('Payment method updates coming soon. Contact billing support for assistance.'); setShowUpdatePaymentModal(false); }} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">Update Card</button>
             </div>
           </div>
         </div>

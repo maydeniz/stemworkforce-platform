@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Calendar,
   MapPin,
@@ -137,6 +138,7 @@ const EVENT_TYPES = [
 // COMPONENT
 // ===========================================
 const EventsPage: React.FC = () => {
+  const { info } = useNotifications();
   const [selectedType, setSelectedType] = useState<string>('all');
   const [showStudentOnly, setShowStudentOnly] = useState(false);
 
@@ -273,7 +275,7 @@ const EventsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <button className="w-full mt-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                  <button onClick={() => info('Event registration is coming soon! We\'re integrating with event platforms.')} className="w-full mt-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
                     <Ticket className="w-4 h-4" />
                     Register Now
                   </button>
@@ -346,7 +348,7 @@ const EventsPage: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <button className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                      <button onClick={() => info('Event registration is coming soon!')} className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
                         Register
                       </button>
                     </div>
@@ -378,10 +380,10 @@ const EventsPage: React.FC = () => {
                 for students. We can help you find funding to attend these events.
               </p>
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                <button className="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-medium transition-colors">
+                <button onClick={() => info('Travel grant finder is coming soon!')} className="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-medium transition-colors">
                   Find Travel Grants
                 </button>
-                <button className="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700">
+                <button onClick={() => info('Volunteer opportunity listings are coming soon!')} className="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700">
                   Volunteer Opportunities
                 </button>
               </div>
@@ -392,7 +394,7 @@ const EventsPage: React.FC = () => {
         {/* Add to Calendar */}
         <div className="mt-8 text-center">
           <p className="text-gray-400 mb-4">Never miss an application deadline</p>
-          <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center gap-2 mx-auto">
+          <button onClick={() => info('Calendar sync is coming soon!')} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center gap-2 mx-auto">
             <Calendar className="w-5 h-5" />
             Sync to Calendar
           </button>

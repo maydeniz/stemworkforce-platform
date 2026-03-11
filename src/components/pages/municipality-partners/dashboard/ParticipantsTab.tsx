@@ -20,6 +20,7 @@ import {
   Award
 } from 'lucide-react';
 import { getParticipants } from '@/services/municipalityPartnerApi';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { MunicipalityParticipant, MunicipalityPartnerTier, ParticipantStatus, DepartmentType } from '@/types/municipalityPartner';
 
 interface ParticipantsTabProps {
@@ -118,6 +119,31 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
   const [programTypeFilter, setProgramTypeFilter] = useState<string>('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('');
   const [selectedParticipant, setSelectedParticipant] = useState<MunicipalityParticipant | null>(null);
+  const [notification, setNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showNotification = (message: string) => {
+    setNotification({ message, visible: true });
+    setTimeout(() => setNotification({ message: '', visible: false }), 3000);
+  };
+
+  useEscapeKey(() => setSelectedParticipant(null), !!selectedParticipant);
+
+  const handleExport = () => {
+    const headers = ['First Name', 'Last Name', 'Email', 'Status', 'Program Type', 'Department', 'Veteran', 'Start Date'];
+    const rows = filteredParticipants.map(p => [
+      p.firstName, p.lastName, p.email, p.status, p.programType, p.department,
+      p.isVeteran ? 'Yes' : 'No', p.startDate
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.map(v => `"${v}"`).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'municipality-participants-export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification('Participant data exported successfully');
+  };
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -153,12 +179,23 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      {notification.visible && (
+        <div className="fixed top-6 right-6 z-[60] flex items-center gap-2 px-4 py-3 bg-teal-500/20 border border-teal-500/30 text-teal-400 rounded-lg shadow-lg">
+          <CheckCircle className="w-4 h-4" />
+          {notification.message}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">Program Participants</h2>
           <p className="text-gray-400 text-sm">Track interns, apprentices, and program outcomes</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
+        >
           <Download className="w-4 h-4" />
           Export Data
         </button>
@@ -378,7 +415,7 @@ export const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ partnerId, tie
               </div>
               <div className="p-6 border-t border-slate-800 flex justify-end gap-3">
                 <button onClick={() => setSelectedParticipant(null)} className="px-4 py-2 text-gray-400">Close</button>
-                <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Edit</button>
+                <button onClick={() => showNotification('Opening edit form...')} className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Edit</button>
               </div>
             </motion.div>
           </motion.div>

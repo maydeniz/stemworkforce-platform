@@ -19,6 +19,7 @@ import {
   CheckCircle,
   RefreshCw
 } from 'lucide-react';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 import type { MunicipalityPartnerTier } from '@/types/municipalityPartner';
 
 interface ReportsTabProps {
@@ -254,6 +255,14 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
+  const [notification, setNotification] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showNotification = (message: string) => {
+    setNotification({ message, visible: true });
+    setTimeout(() => setNotification({ message: '', visible: false }), 3000);
+  };
+
+  useEscapeKey(() => setShowGenerateModal(false), showGenerateModal);
 
   const tierOrder: MunicipalityPartnerTier[] = ['starter', 'professional', 'enterprise'];
   const currentTierIndex = tierOrder.indexOf(tier);
@@ -274,6 +283,14 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      {notification.visible && (
+        <div className="fixed top-6 right-6 z-[60] flex items-center gap-2 px-4 py-3 bg-teal-500/20 border border-teal-500/30 text-teal-400 rounded-lg shadow-lg">
+          <CheckCircle className="w-4 h-4" />
+          {notification.message}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">Reports & Analytics</h2>
@@ -503,7 +520,10 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
                       </div>
 
                       {report.status === 'ready' ? (
-                        <button className="flex items-center gap-1 px-3 py-1.5 bg-teal-500/20 text-teal-400 rounded-lg hover:bg-teal-500/30 transition-colors">
+                        <button
+                          onClick={() => showNotification(`Downloading ${report.templateName}...`)}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-teal-500/20 text-teal-400 rounded-lg hover:bg-teal-500/30 transition-colors"
+                        >
                           <Download className="w-4 h-4" />
                           Download
                         </button>
@@ -513,7 +533,10 @@ export const ReportsTab: React.FC<ReportsTabProps> = ({ partnerId: _partnerId, t
                           Generating...
                         </button>
                       ) : (
-                        <button className="flex items-center gap-1 px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg">
+                        <button
+                          onClick={() => showNotification('Retrying report generation...')}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg"
+                        >
                           Retry
                         </button>
                       )}

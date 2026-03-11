@@ -24,7 +24,7 @@ const CONTACT_TYPES = [
 
 export default function ContactPage() {
   const [searchParams] = useSearchParams();
-  const typeParam = searchParams.get('type') || 'general';
+  const typeParam = searchParams.get('type') || searchParams.get('subject') || 'general';
   const [contactType, setContactType] = useState(typeParam);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({

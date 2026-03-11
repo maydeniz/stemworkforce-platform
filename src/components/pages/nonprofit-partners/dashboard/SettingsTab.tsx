@@ -51,7 +51,7 @@ const TIER_INFO: Record<PartnerTier, { name: string; price: string; features: st
   },
   impact: {
     name: 'Impact',
-    price: '$299/month',
+    price: '$249/month',
     features: ['Unlimited programs', 'Grant reporting tools', 'Employer partnerships', 'Priority support']
   },
   coalition: {
@@ -464,7 +464,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                         <p className="text-sm text-gray-400">Impact Plan - Monthly</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-white">$299.00</p>
+                        <p className="text-white">$249.00</p>
                         <span className="text-xs text-emerald-400">Paid</span>
                       </div>
                     </div>
@@ -474,7 +474,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                         <p className="text-sm text-gray-400">Impact Plan - Monthly</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-white">$299.00</p>
+                        <p className="text-white">$249.00</p>
                         <span className="text-xs text-emerald-400">Paid</span>
                       </div>
                     </div>
@@ -588,7 +588,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ partnerId: _partnerId,
                 </p>
                 <button
                   onClick={() => {
-                    const key = `np_live_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
+                    const key = `np_live_${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`;
                     setGeneratedApiKey(key);
                     setShowApiKeyModal(true);
                   }}

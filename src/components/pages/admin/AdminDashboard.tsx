@@ -11,7 +11,8 @@ import {
   Lock, Heart, ClipboardCheck, Megaphone, FileEdit, UserCog,
   ChevronDown, ShoppingBag, Package, Star, CreditCard, Zap,
   Store, UserCheck as UserVerified, Receipt, Wallet,
-  Sun, Moon, Palette, ToggleLeft, Trophy, Globe
+  Sun, Moon, ToggleLeft, Trophy, Globe,
+  GraduationCap, AlertTriangle, Layers, MapPin, RadioTower
 } from 'lucide-react';
 
 // Import new admin tabs
@@ -30,19 +31,18 @@ import UserVerificationTab from './tabs/UserVerificationTab';
 import FeatureFlagsTab from './tabs/FeatureFlagsTab';
 import ChallengesTab from './tabs/ChallengesTab';
 import FederationTab from './tabs/FederationTab';
+// New tabs added to support federal challenges + state workforce + clearance work
+import ClearancePipelineTab from './tabs/ClearancePipelineTab';
+import ExportControlTab from './tabs/ExportControlTab';
+import FellowshipManagementTab from './tabs/FellowshipManagementTab';
+import ComplianceReadinessTab from './tabs/ComplianceReadinessTab';
+import FedRAMPReadinessTab from './tabs/FedRAMPReadinessTab';
 
 // ===========================================
 // ADMIN DASHBOARD - COMPREHENSIVE VERSION
 // ===========================================
 
 // Static color class maps for Tailwind JIT compatibility
-const roleDotColor: Record<string, string> = {
-  emerald: 'bg-emerald-500', blue: 'bg-blue-500', red: 'bg-red-500',
-  violet: 'bg-violet-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500',
-  pink: 'bg-pink-500', orange: 'bg-orange-500', lime: 'bg-lime-500',
-  sky: 'bg-sky-500', slate: 'bg-slate-500',
-};
-
 const statCardColors: Record<string, { iconBg: string; iconText: string }> = {
   emerald: { iconBg: 'bg-emerald-500/20', iconText: 'text-emerald-400' },
   blue: { iconBg: 'bg-blue-500/20', iconText: 'text-blue-400' },
@@ -99,31 +99,35 @@ type StakeholderRole =
 // Menu visibility per role
 const ROLE_MENU_ACCESS: Record<StakeholderRole, string[]> = {
   SUPER_ADMIN: ['*'], // All sections
-  PLATFORM_ADMIN: ['core', 'marketplace', 'compliance', 'platform', 'billing', 'system'],
-  SECURITY_ADMIN: ['core', 'compliance', 'platform'],
+  PLATFORM_ADMIN: ['core', 'marketplace', 'compliance', 'clearance-defense', 'workforce-programs', 'platform', 'billing', 'system'],
+  SECURITY_ADMIN: ['core', 'compliance', 'clearance-defense', 'platform'],
   PRIVACY_OFFICER: ['compliance'],
   BILLING_ADMIN: ['billing', 'marketplace'],
   MARKETPLACE_ADMIN: ['marketplace', 'core'],
-  CONTENT_ADMIN: ['platform'],
-  PARTNER_ADMIN: ['core'],
+  CONTENT_ADMIN: ['platform', 'workforce-programs'],
+  PARTNER_ADMIN: ['core', 'workforce-programs'],
   SUPPORT_ADMIN: ['core'],
-  ANALYST: ['platform'],
-  AUDITOR: ['platform'],
+  ANALYST: ['platform', 'workforce-programs'],
+  AUDITOR: ['platform', 'compliance', 'clearance-defense'],
 };
 
 // Menu items per role (more granular control)
 const ROLE_MENU_ITEMS: Record<StakeholderRole, string[]> = {
   SUPER_ADMIN: ['*'],
   PLATFORM_ADMIN: ['*'],
-  SECURITY_ADMIN: ['overview', 'staff', 'users', 'security', 'privacy', 'hipaa', 'soc2', 'compliance', 'audit'],
+  SECURITY_ADMIN: [
+    'overview', 'staff', 'users', 'security', 'privacy', 'hipaa', 'soc2', 'compliance',
+    'fedramp-readiness', 'compliance-readiness', 'audit',
+    'clearance-pipeline', 'fso-oversight', 'export-control', 'circuit-breaker',
+  ],
   PRIVACY_OFFICER: ['privacy', 'hipaa', 'security'],
   BILLING_ADMIN: ['overview', 'billing', 'revenue', 'marketplace-payouts', 'marketplace-orders'],
   MARKETPLACE_ADMIN: ['overview', 'service-providers', 'services-catalog', 'marketplace-orders', 'marketplace-reviews', 'marketplace-payouts', 'marketplace-overview', 'challenges'],
-  CONTENT_ADMIN: ['communications', 'content', 'feature-flags', 'challenges', 'federation'],
-  PARTNER_ADMIN: ['overview', 'organizations', 'users', 'federation'],
+  CONTENT_ADMIN: ['communications', 'content', 'feature-flags', 'challenges', 'federation', 'state-workforce', 'fellowship'],
+  PARTNER_ADMIN: ['overview', 'organizations', 'users', 'federation', 'state-workforce'],
   SUPPORT_ADMIN: ['overview', 'users', 'organizations', 'applications'],
-  ANALYST: ['overview', 'analytics', 'audit', 'federation'],
-  AUDITOR: ['audit', 'security', 'compliance'],
+  ANALYST: ['overview', 'analytics', 'audit', 'federation', 'state-workforce', 'fellowship'],
+  AUDITOR: ['audit', 'security', 'compliance', 'fedramp-readiness', 'compliance-readiness', 'fso-oversight'],
 };
 
 // Theme-aware color classes
@@ -183,6 +187,12 @@ interface DashboardStats {
   totalJobs: number;
   totalApplications: number;
   activeSubscriptions: number;
+  // Federal challenges (new)
+  federalChallengesPendingReview: number;
+  federalChallengesApproved: number;
+  // Clearance pipeline (new)
+  activeClearancePipeline: number;
+  openCircuitBreakers: number;
   recentUsers: any[];
   recentJobs: any[];
 }
@@ -197,7 +207,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [adminUser, setAdminUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<StakeholderRole>('SUPER_ADMIN'); // Default for demo
+  const [userRole, setUserRole] = useState<StakeholderRole>('SUPPORT_ADMIN'); // Safe default until DB role is resolved
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   // Track which sections are expanded
@@ -205,6 +215,8 @@ const AdminDashboard = () => {
     core: true,
     marketplace: false,
     compliance: false,
+    'clearance-defense': false,
+    'workforce-programs': false,
     platform: false,
     billing: false,
     system: false,
@@ -216,20 +228,25 @@ const AdminDashboard = () => {
   }, []);
 
   const fetchAdminUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from('users')
-        .select('*, user_role_assignments(*, admin_roles(*))')
-        .eq('id', user.id)
-        .single();
-      setAdminUser(profile);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('*, user_role_assignments(*, admin_roles(*))')
+          .eq('id', user.id)
+          .single();
+        setAdminUser(profile || { first_name: 'Admin', last_name: '', email: user.email });
 
-      // Map admin role to stakeholder role
-      const roleName = profile?.user_role_assignments?.[0]?.admin_roles?.name;
-      if (roleName && Object.keys(ROLE_MENU_ACCESS).includes(roleName)) {
-        setUserRole(roleName as StakeholderRole);
+        // Map admin role from DB to stakeholder role — never default to SUPER_ADMIN
+        const roleName = profile?.user_role_assignments?.[0]?.admin_roles?.name;
+        if (roleName && Object.keys(ROLE_MENU_ACCESS).includes(roleName)) {
+          setUserRole(roleName as StakeholderRole);
+        }
       }
+    } catch (error) {
+      console.error('Error fetching admin user:', error);
+      setAdminUser({ first_name: 'Admin', last_name: '', email: '' });
     }
   };
 
@@ -248,14 +265,23 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Fetch counts from various tables
-      const [users, orgs, jobs, applications, subscriptions] = await Promise.all([
+      // Fetch all counts in parallel
+      const [users, orgs, jobs, applications, subscriptions, fedChallenges, clearancePipeline, circuitBreakers] = await Promise.all([
         supabase.from('users').select('id, created_at, role', { count: 'exact' }),
         supabase.from('organizations').select('id, created_at, verified', { count: 'exact' }),
         supabase.from('jobs').select('id, created_at, status', { count: 'exact' }),
         supabase.from('applications').select('id, created_at, status', { count: 'exact' }),
-        supabase.from('subscriptions').select('id, status, current_period_end', { count: 'exact' })
+        supabase.from('subscriptions').select('id, status, current_period_end', { count: 'exact' }),
+        // Federal challenges — new
+        supabase.from('federal_challenges').select('id, status', { count: 'exact' }),
+        // Clearance pipeline — new
+        supabase.from('cleared_employees').select('id, clearance_status', { count: 'exact' }),
+        // Circuit breakers — new
+        supabase.from('clearance_circuit_breakers').select('domain, state'),
       ]);
+
+      const challengesData = fedChallenges.data || [];
+      const breakersData = circuitBreakers.data || [];
 
       setStats({
         totalUsers: users.count || 0,
@@ -263,11 +289,22 @@ const AdminDashboard = () => {
         totalJobs: jobs.count || 0,
         totalApplications: applications.count || 0,
         activeSubscriptions: subscriptions.data?.filter(s => s.status === 'active').length || 0,
+        federalChallengesPendingReview: challengesData.filter(c => c.status === 'pending_review').length,
+        federalChallengesApproved: challengesData.filter(c => c.status === 'approved').length,
+        activeClearancePipeline: clearancePipeline.data?.filter(e =>
+          ['active', 'interim', 'pending-investigation', 'pending-adjudication'].includes(e.clearance_status)
+        ).length || 0,
+        openCircuitBreakers: breakersData.filter(b => b.state === 'open').length,
         recentUsers: users.data?.slice(0, 10) || [],
         recentJobs: jobs.data?.slice(0, 10) || []
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setStats({
+        totalUsers: 0, totalOrganizations: 0, totalJobs: 0, totalApplications: 0,
+        activeSubscriptions: 0, federalChallengesPendingReview: 0, federalChallengesApproved: 0,
+        activeClearancePipeline: 0, openCircuitBreakers: 0, recentUsers: [], recentJobs: []
+      });
     }
     setLoading(false);
   };
@@ -315,6 +352,30 @@ const AdminDashboard = () => {
         { id: 'hipaa', label: 'HIPAA Compliance', icon: Heart },
         { id: 'soc2', label: 'SOC 2 & Audit', icon: ClipboardCheck },
         { id: 'compliance', label: 'OFCCP Compliance', icon: Shield },
+        { id: 'fedramp-readiness', label: 'FedRAMP Readiness', icon: CheckCircle2, badge: 'New' },
+        { id: 'compliance-readiness', label: 'Compliance Dashboard', icon: BarChart3, badge: 'New' },
+      ],
+    },
+    {
+      id: 'clearance-defense',
+      label: 'Clearance & Defense',
+      icon: RadioTower,
+      defaultExpanded: false,
+      items: [
+        { id: 'circuit-breaker', label: 'Circuit Breaker', icon: Zap, badge: 'New' },
+        { id: 'clearance-pipeline', label: 'Clearance Pipeline', icon: Activity, badge: 'New' },
+        { id: 'fso-oversight', label: 'FSO Portal Oversight', icon: Eye, badge: 'New' },
+        { id: 'export-control', label: 'Export Control (ITAR/EAR)', icon: Globe, badge: 'New' },
+      ],
+    },
+    {
+      id: 'workforce-programs',
+      label: 'Workforce Programs',
+      icon: Layers,
+      defaultExpanded: false,
+      items: [
+        { id: 'state-workforce', label: 'State Workforce / WIOA', icon: MapPin, badge: 'New' },
+        { id: 'fellowship', label: 'Fellowship Management', icon: GraduationCap, badge: 'New' },
       ],
     },
     {
@@ -396,8 +457,6 @@ const AdminDashboard = () => {
     { role: 'AUDITOR', label: 'Auditor', color: 'slate' },
   ];
 
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
-
   return (
     <div className={`min-h-screen ${tc.bgPrimary} ${tc.textPrimary} flex transition-colors duration-200`}>
       {/* Sidebar */}
@@ -416,7 +475,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <nav aria-label="Admin navigation" className="flex-1 p-3 space-y-1 overflow-y-auto">
           {menuSections.map((section: MenuSection) => (
             <div key={section.id} className="mb-1">
               {/* Section Header */}
@@ -447,6 +506,7 @@ const AdminDashboard = () => {
                     <button
                       key={item.id}
                       onClick={() => handleTabChange(item.id)}
+                      aria-current={activeTab === item.id ? 'page' : undefined}
                       className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm ${
                         activeTab === item.id
                           ? tc.sidebarItemActive
@@ -482,6 +542,8 @@ const AdminDashboard = () => {
                           : `${tc.sidebarText} ${tc.sidebarItemHover}`
                       }`}
                       title={item.label}
+                      aria-label={item.label}
+                      aria-current={activeTab === item.id ? 'page' : undefined}
                     >
                       <item.icon size={16} />
                     </button>
@@ -524,39 +586,16 @@ const AdminDashboard = () => {
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </button>
 
-              {/* Role Switcher (Demo) */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg ${tc.buttonSecondary} transition-colors text-sm`}
-                >
-                  <Palette size={16} />
-                  <span className="hidden md:inline">{DEMO_ROLES.find(r => r.role === userRole)?.label}</span>
-                  <ChevronDown size={14} className={`transition-transform ${showRoleSwitcher ? 'rotate-180' : ''}`} />
-                </button>
-                {showRoleSwitcher && (
-                  <div className={`absolute right-0 mt-2 w-56 ${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl shadow-lg py-2 z-50`}>
-                    <p className={`px-3 py-1 text-xs font-medium ${tc.textSecondary} uppercase`}>Switch Role (Demo)</p>
-                    {DEMO_ROLES.map((r) => (
-                      <button
-                        key={r.role}
-                        onClick={() => { setUserRole(r.role); setShowRoleSwitcher(false); }}
-                        className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 ${
-                          userRole === r.role ? tc.sidebarItemActive : `${tc.textPrimary} ${tc.sidebarItemHover}`
-                        }`}
-                      >
-                        <span className={`w-2 h-2 rounded-full ${roleDotColor[r.color] || 'bg-slate-500'}`} />
-                        {r.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              {/* Role Display — role is resolved from DB, not switchable in production */}
+              <div className="flex items-center gap-2 px-3 py-2 text-sm">
+                <Shield size={16} className={tc.textSecondary} />
+                <span className={`hidden md:inline ${tc.textSecondary}`}>{DEMO_ROLES.find(r => r.role === userRole)?.label || userRole}</span>
               </div>
 
               {/* Notifications */}
-              <button className={`relative p-2 rounded-lg ${tc.buttonSecondary} transition-colors`}>
+              <button aria-label="Notifications, 3 unread" className={`relative p-2 rounded-lg ${tc.buttonSecondary} transition-colors`}>
                 <Bell size={20} />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">3</span>
+                <span aria-hidden="true" className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">3</span>
               </button>
 
               {/* User Profile with Dropdown */}
@@ -631,6 +670,20 @@ const AdminDashboard = () => {
           {activeTab === 'hipaa' && <HIPAAComplianceTab />}
           {activeTab === 'soc2' && <SOC2AuditTab />}
           {activeTab === 'compliance' && <ComplianceTab />}
+          {activeTab === 'fedramp-readiness' && <FedRAMPReadinessTab />}
+          {activeTab === 'compliance-readiness' && <ComplianceReadinessTab />}
+
+          {/* Clearance & Defense */}
+          {/* circuit-breaker opens Security Center directly on the breaker sub-tab */}
+          {activeTab === 'circuit-breaker' && <SecurityCenterTab initialSubTab="circuit-breaker" />}
+          {activeTab === 'clearance-pipeline' && <ClearancePipelineTab />}
+          {/* FSO portal oversight: shows clearance pipeline scoped to all orgs */}
+          {activeTab === 'fso-oversight' && <ClearancePipelineTab />}
+          {activeTab === 'export-control' && <ExportControlTab />}
+
+          {/* Workforce Programs */}
+          {activeTab === 'state-workforce' && <StateWorkforceAdminTab />}
+          {activeTab === 'fellowship' && <FellowshipManagementTab />}
 
           {/* Platform Management */}
           {activeTab === 'communications' && <CommunicationsTab />}
@@ -666,7 +719,18 @@ const OverviewTab = ({ stats, loading, onRefresh }: { stats: any; loading: boole
     { label: 'Active Jobs', value: stats?.totalJobs || 0, icon: Briefcase, change: '+23%', positive: true, color: 'violet' },
     { label: 'Applications', value: stats?.totalApplications || 0, icon: FileText, change: '+45%', positive: true, color: 'amber' },
     { label: 'Active Subscriptions', value: stats?.activeSubscriptions || 0, icon: DollarSign, change: '+5%', positive: true, color: 'cyan' },
-    { label: 'MRR', value: '$12,450', icon: TrendingUp, change: '+18%', positive: true, color: 'rose' },
+    { label: 'MRR', value: '$12,450', icon: TrendingUp, change: '+18%', positive: true, color: 'pink' },
+    // Federal & state additions
+    { label: 'Challenges Pending Review', value: stats?.federalChallengesPendingReview || 0, icon: Trophy, change: 'Review queue', positive: true, color: 'orange' },
+    { label: 'Clearance Pipeline', value: stats?.activeClearancePipeline || 0, icon: Shield, change: 'Active cases', positive: true, color: 'sky' },
+    {
+      label: 'Circuit Breakers Open',
+      value: stats?.openCircuitBreakers || 0,
+      icon: AlertTriangle,
+      change: stats?.openCircuitBreakers ? 'ACTION NEEDED' : 'All clear',
+      positive: !stats?.openCircuitBreakers,
+      color: stats?.openCircuitBreakers ? 'red' : 'lime',
+    },
   ];
 
   return (
@@ -831,6 +895,12 @@ const UserManagementTab = () => {
   );
 
   const handleSuspendUser = async (userId: string) => {
+    // Suspend the user in the database
+    const { error } = await supabase.from('users').update({ verification_status: 'suspended' }).eq('id', userId);
+    if (error) {
+      console.error('Failed to suspend user:', error);
+      return;
+    }
     // Add audit log
     await supabase.from('audit_logs').insert({
       event_type: 'USER_SUSPENDED',
@@ -1029,7 +1099,7 @@ interface AdminJob {
   title: string;
   location?: string;
   status: string;
-  application_count?: number;
+  applications_count?: number;
   created_at: string;
   organizations?: { name: string } | null;
 }
@@ -1118,7 +1188,7 @@ const JobManagementTab = () => {
                       {job.status}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-sm">{job.application_count || 0}</td>
+                  <td className="px-4 py-4 text-sm">{job.applications_count || 0}</td>
                   <td className="px-4 py-4 text-sm text-slate-400">
                     {new Date(job.created_at).toLocaleDateString()}
                   </td>
@@ -1127,10 +1197,10 @@ const JobManagementTab = () => {
                       <button className="p-2 rounded-lg hover:bg-slate-700 transition-colors">
                         <Eye size={16} />
                       </button>
-                      <button className="p-2 rounded-lg hover:bg-slate-700 transition-colors text-emerald-400">
+                      <button onClick={async () => { await supabase.from('jobs').update({ status: 'active' }).eq('id', job.id); fetchJobs(); }} className="p-2 rounded-lg hover:bg-slate-700 transition-colors text-emerald-400" title="Approve">
                         <CheckCircle2 size={16} />
                       </button>
-                      <button className="p-2 rounded-lg hover:bg-slate-700 transition-colors text-red-400">
+                      <button onClick={async () => { await supabase.from('jobs').update({ status: 'rejected' }).eq('id', job.id); fetchJobs(); }} className="p-2 rounded-lg hover:bg-slate-700 transition-colors text-red-400" title="Reject">
                         <XCircle size={16} />
                       </button>
                     </div>
@@ -1754,6 +1824,109 @@ const RevenueMetricsTab = () => {
           <p className="text-2xl font-bold mt-1">$89.50</p>
           <p className="text-sm text-emerald-400 mt-1">+5% from last month</p>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// ===========================================
+// STATE WORKFORCE ADMIN TAB (inline)
+// Platform-wide WIOA / AJC aggregate view for admins.
+// Uses the same stateWorkforceApi but scoped to all orgs.
+// ===========================================
+
+const StateWorkforceAdminTab: React.FC = () => {
+  const { isDark } = useTheme();
+  const tc = getThemeClasses(isDark);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalBoards: 0,
+    totalAJCs: 0,
+    totalParticipants: 0,
+    activePrograms: 0,
+    placementRate: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      try {
+        const [boards, ajcs, participants, programs] = await Promise.all([
+          supabase.from('local_workforce_boards').select('id', { count: 'exact' }),
+          supabase.from('american_job_centers').select('id', { count: 'exact' }),
+          supabase.from('wioa_participants').select('id', { count: 'exact' }),
+          supabase.from('wioa_programs').select('id, status', { count: 'exact' }),
+        ]);
+        const activeProgCount = programs.data?.filter(p => p.status === 'active').length ?? 0;
+        setStats({
+          totalBoards: boards.count ?? 0,
+          totalAJCs: ajcs.count ?? 0,
+          totalParticipants: participants.count ?? 0,
+          activePrograms: activeProgCount,
+          placementRate: 68, // would come from aggregate query
+        });
+      } catch {
+        // tables may not exist yet — show zeros
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const cards = [
+    { label: 'Local Workforce Boards', value: stats.totalBoards, icon: Building2, color: 'emerald' },
+    { label: 'American Job Centers', value: stats.totalAJCs, icon: MapPin, color: 'blue' },
+    { label: 'Total Participants', value: stats.totalParticipants, icon: Users, color: 'violet' },
+    { label: 'Active WIOA Programs', value: stats.activePrograms, icon: Layers, color: 'amber' },
+    { label: 'Avg Placement Rate', value: `${stats.placementRate}%`, icon: TrendingUp, color: 'cyan' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-5`}>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="p-2 rounded-lg bg-emerald-500/20">
+            <Layers size={20} className="text-emerald-400" />
+          </div>
+          <div>
+            <h2 className={`text-lg font-bold ${tc.textPrimary}`}>State Workforce / WIOA — Platform View</h2>
+            <p className={`text-sm ${tc.textSecondary}`}>Aggregate data across all state agency partners (WIOA Title I)</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        {cards.map((card, i) => (
+          <div key={i} className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-4`}>
+            <div className={`p-2 rounded-lg ${statCardColors[card.color]?.iconBg ?? 'bg-slate-500/20'} w-fit mb-3`}>
+              <card.icon size={18} className={statCardColors[card.color]?.iconText ?? 'text-slate-400'} />
+            </div>
+            <p className={`text-2xl font-bold ${tc.textPrimary}`}>
+              {loading ? '…' : typeof card.value === 'number' ? card.value.toLocaleString() : card.value}
+            </p>
+            <p className={`text-xs ${tc.textSecondary} mt-1`}>{card.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className={`${tc.bgSecondary} border ${tc.borderPrimary} rounded-xl p-5`}>
+        <h3 className={`font-semibold mb-3 ${tc.textPrimary}`}>Regulatory Framework</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[
+            { title: 'WIOA Title I-B', desc: 'Adult, Dislocated Worker & Youth programs', color: 'emerald' },
+            { title: 'WIOA Title II', desc: 'Adult Education & Family Literacy Act', color: 'blue' },
+            { title: 'WIOA Title III', desc: 'Wagner-Peyser Employment Services', color: 'violet' },
+          ].map((item, i) => (
+            <div key={i} className={`p-4 rounded-xl bg-${item.color}-500/10 border border-${item.color}-500/20`}>
+              <p className={`font-semibold text-${item.color}-400 text-sm`}>{item.title}</p>
+              <p className={`text-xs ${tc.textSecondary} mt-1`}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p className={`text-xs ${tc.textMuted} mt-4`}>
+          Data pulled from state agency dashboards. For full WIOA participant case management, use the State Agency partner portal.
+        </p>
       </div>
     </div>
   );

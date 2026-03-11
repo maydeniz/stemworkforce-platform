@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   Award,
   Search,
@@ -153,6 +154,7 @@ const DEADLINE_CALENDAR = [
 // COMPONENT
 // ===========================================
 const FellowshipFinderPage: React.FC = () => {
+  const { info, success } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     citizenship: 'all',
@@ -330,7 +332,7 @@ const FellowshipFinderPage: React.FC = () => {
                     ))}
                   </div>
 
-                  <button className="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button onClick={() => info('Detailed fellowship profiles are coming soon!')} className="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-medium transition-colors">
                     View Details
                   </button>
                 </div>
@@ -405,10 +407,10 @@ const FellowshipFinderPage: React.FC = () => {
                   </div>
 
                   <div className="flex lg:flex-col gap-3">
-                    <button className="flex-1 lg:flex-none px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <button onClick={() => info('Direct application links are coming soon! For now, search for "' + fellowship.name + '" on the organization\'s website.')} className="flex-1 lg:flex-none px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
                       Apply <ExternalLink className="w-4 h-4" />
                     </button>
-                    <button className="flex-1 lg:flex-none px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700">
+                    <button onClick={() => success('Fellowship saved! (Save functionality coming soon)')} className="flex-1 lg:flex-none px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700">
                       Save
                     </button>
                   </div>

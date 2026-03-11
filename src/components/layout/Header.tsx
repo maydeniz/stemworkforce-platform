@@ -25,6 +25,7 @@ const TALENT_MENU = {
       items: [
         { label: 'Browse Jobs', path: '/jobs', icon: '💼', description: 'Full-time positions in emerging fields' },
         { label: 'Solve a Challenge', path: '/challenges/solve', icon: '🏆', description: 'Win prizes, get hired by top companies' },
+        { label: 'Federal & DOD Challenges', path: '/challenges/federal', icon: '🛡️', description: 'High-stakes DOD/government challenges' },
         { label: 'Internships', path: '/jobs?type=internship', icon: '🎓', description: 'Gain experience at top organizations' },
         { label: 'Research Positions', path: '/jobs?type=research', icon: '🔬', description: 'Academic and lab opportunities' },
         { label: 'Workforce Map', path: '/map', icon: '🗺️', description: 'Explore opportunities by location' },
@@ -64,6 +65,7 @@ const EMPLOYERS_MENU = {
         { label: 'Post a Challenge', path: '/challenges/post', icon: '🏆', description: 'Crowdsource innovation, recruit winners' },
         { label: 'Post Internships', path: '/dashboard?action=post-internship', icon: '🎓', description: 'Build your talent pipeline' },
         { label: 'Browse Candidates', path: '/talent-search', icon: '🔍', description: 'Search our talent database' },
+        { label: 'Cleared Employer Hub', path: '/employers/cleared', icon: '🔐', description: 'FSO portal, NISPOM compliance, clearance pipeline' },
       ]
     },
     {
@@ -116,8 +118,8 @@ const PARTNERS_MENU = {
       items: [
         { label: 'DOE, DOD, NASA, NSF', path: '/partners/government', icon: '🏛️', description: 'Connect programs to workforce needs' },
         { label: 'CHIPS Act Programs', path: '/partners/government?type=chips-act', icon: '💎', description: 'Access semiconductor talent pipeline' },
-        { label: 'State Workforce Boards', path: '/partners/government?type=state', icon: '🗺️', description: 'Regional workforce dev tools' },
-        { label: 'Economic Development', path: '/partners/government?type=economic-dev', icon: '📈', description: 'Data-driven talent attraction' },
+        { label: 'State Workforce Boards', path: '/partners/state-workforce', icon: '🗺️', description: 'WIOA programs, AJC network, workforce data' },
+        { label: 'State Economic Development', path: '/partners/state-workforce', icon: '📈', description: 'Data-driven talent attraction for states' },
       ]
     },
     {
@@ -171,7 +173,7 @@ const SERVICE_PROVIDERS_MENU = {
         { label: 'Become a Provider', path: '/become-a-provider', icon: '🚀', description: 'Apply to join our expert network' },
         { label: 'Provider Resources', path: '/provider-resources', icon: '📋', description: 'Tools, templates & guides' },
         { label: 'Browse Projects', path: '/projects', icon: '📂', description: 'Find active opportunities' },
-        { label: 'Provider Dashboard', path: '/provider', icon: '📊', description: 'Manage your practice' },
+        { label: 'Provider Dashboard', path: '/provider/dashboard', icon: '📊', description: 'Manage your practice' },
       ]
     }
   ],
@@ -345,6 +347,7 @@ const NAV_ITEMS = [
   { id: 'highschool', label: 'High School', menu: HIGH_SCHOOL_MENU, type: 'mega' },
   { id: 'college', label: 'College', menu: COLLEGE_MENU, type: 'mega' },
   { id: 'events', label: 'Events', menu: EVENTS_MENU, type: 'mega', link: '/events' },
+  { id: 'pricing', label: 'Pricing', type: 'link', link: '/pricing', menu: { title: 'Pricing', sections: [] } },
   { id: 'news', label: 'News & Insights', type: 'link', link: '/blog', menu: { title: 'News & Insights', sections: [] } },
   { id: 'about', label: 'About', type: 'link', link: '/about', menu: { title: 'About', sections: [] } },
 ];

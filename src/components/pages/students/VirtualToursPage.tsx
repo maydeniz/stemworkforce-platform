@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface VirtualTour {
@@ -424,6 +425,7 @@ const TourExperience: React.FC<{
   onBack: () => void;
 }> = ({ tour, activeArea, isSaved, onSelectArea, onToggleSave, onBack }) => {
   const [activeTab, setActiveTab] = useState<'tour' | 'narrators' | 'questions'>('tour');
+  const { info, success } = useNotifications();
 
   return (
     <div className="space-y-8">
@@ -459,7 +461,13 @@ const TourExperience: React.FC<{
         <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-pink-500/10" />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="w-20 h-20 rounded-full bg-rose-500/20 flex items-center justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-rose-500 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => info('Interactive virtual tours coming soon! Explore campus photos and student narratives below.')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); info('Interactive virtual tours coming soon! Explore campus photos and student narratives below.'); } }}
+              className="w-16 h-16 rounded-full bg-rose-500 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+            >
               <span className="text-white text-3xl ml-1">▶</span>
             </div>
           </div>
@@ -570,7 +578,10 @@ const TourExperience: React.FC<{
                   </p>
                   <p className="text-sm text-rose-400 mt-2">{narrator.perspective}</p>
                 </div>
-                <button className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-all">
+                <button
+                  onClick={() => info(`${narrator.name}'s full story coming soon! Read their quote above for now.`)}
+                  className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-all"
+                >
                   Hear Their Story
                 </button>
               </div>
@@ -596,7 +607,10 @@ const TourExperience: React.FC<{
               </div>
             ))}
           </div>
-          <button className="w-full py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all">
+          <button
+            onClick={() => info('Checklist download coming soon! Review the questions above before your campus visit.')}
+            className="w-full py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all"
+          >
             📋 Download Questions as Checklist
           </button>
         </div>
@@ -604,13 +618,22 @@ const TourExperience: React.FC<{
 
       {/* Footer Actions */}
       <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-white/5">
-        <button className="px-6 py-3 bg-rose-500 hover:bg-rose-400 text-white font-semibold rounded-xl transition-all">
+        <button
+          onClick={() => success('School saved to your list!')}
+          className="px-6 py-3 bg-rose-500 hover:bg-rose-400 text-white font-semibold rounded-xl transition-all"
+        >
           Add to My List
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('Live virtual visit scheduling coming soon! Check the school\'s admissions page for current virtual events.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Schedule Live Virtual Visit
         </button>
-        <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all">
+        <button
+          onClick={() => info('Student connections coming soon! Visit the school\'s admissions page to find student ambassador programs.')}
+          className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-all"
+        >
           Connect with Current Students
         </button>
       </div>

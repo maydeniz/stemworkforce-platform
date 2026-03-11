@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import ExpertQASection from '@/components/shared/ExpertQASection';
 import {
   Briefcase,
@@ -196,6 +197,7 @@ const QUICK_STATS = [
 // MAIN COMPONENT
 // ===========================================
 const CareerLaunchHubPage: React.FC = () => {
+  const { info, success } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [showClearanceOnly, setShowClearanceOnly] = useState(false);
@@ -404,10 +406,10 @@ const CareerLaunchHubPage: React.FC = () => {
                       </div>
 
                       <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                        <button className="text-sm text-gray-400 hover:text-white transition-colors">
+                        <button onClick={() => success('Job saved! (Save functionality coming soon)')} className="text-sm text-gray-400 hover:text-white transition-colors">
                           Save for later
                         </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors">
+                        <button onClick={() => info('Direct application links are coming soon! Search for this role on the company website.')} className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors">
                           Apply Now
                           <ExternalLink className="w-4 h-4" />
                         </button>

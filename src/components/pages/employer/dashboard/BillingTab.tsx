@@ -37,7 +37,7 @@ const BillingTab: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-xl font-bold text-white">Enterprise Plan</h3>
+              <h3 className="text-xl font-bold text-white">Mission Control</h3>
               <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">ACTIVE</span>
             </div>
             <p className="text-gray-400 text-sm">Unlimited job postings, full analytics, priority support</p>
@@ -150,7 +150,7 @@ const BillingTab: React.FC = () => {
               </div>
               <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
                 <span className="text-gray-400 text-sm">Plan</span>
-                <span className="text-white text-sm font-medium">Enterprise Plan</span>
+                <span className="text-white text-sm font-medium">Mission Control</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
                 <span className="text-gray-400 text-sm">Payment Method</span>
@@ -175,13 +175,13 @@ const BillingTab: React.FC = () => {
               <button onClick={() => setShowUpgradeModal(false)} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
 
-            <p className="text-gray-400 text-sm mb-6">You are currently on the Enterprise Plan. Contact your account manager for plan changes or upgrades.</p>
+            <p className="text-gray-400 text-sm mb-6">You are currently on the Mission Control. Contact your account manager for plan changes or upgrades.</p>
 
             <div className="space-y-3 mb-6">
               <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-medium">Enterprise Plan</div>
+                    <div className="text-white font-medium">Mission Control</div>
                     <div className="text-gray-400 text-xs mt-0.5">Current plan</div>
                   </div>
                   <div className="text-emerald-400 text-sm font-medium">$2,499/mo</div>
@@ -190,7 +190,7 @@ const BillingTab: React.FC = () => {
               <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-800 hover:border-purple-500/30 transition-colors cursor-pointer" onClick={() => { setShowUpgradeModal(false); triggerToast('Account manager notified about upgrade interest!'); }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-medium flex items-center gap-2">Enterprise+ <span className="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">UPGRADE</span></div>
+                    <div className="text-white font-medium flex items-center gap-2">Mission Control+ <span className="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">UPGRADE</span></div>
                     <div className="text-gray-400 text-xs mt-0.5">Unlimited everything, dedicated infra, SLA guarantee</div>
                   </div>
                   <div className="text-purple-400 text-sm font-medium">Custom</div>

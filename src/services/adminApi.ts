@@ -984,7 +984,7 @@ export const adminPrivacyApi = {
     const offset = (page - 1) * limit;
 
     const { data, error, count } = await supabase
-      .from('ccpa_opt_out_records')
+      .from('ccpa_consumer_rights')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -1131,7 +1131,7 @@ export const adminContentApi = {
   // Get announcements
   async getAnnouncements(activeOnly: boolean = false): Promise<Announcement[]> {
     let query = supabase
-      .from('announcements')
+      .from('platform_announcements')
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -1150,7 +1150,7 @@ export const adminContentApi = {
     const { data: { user } } = await supabase.auth.getUser();
 
     const { data, error } = await supabase
-      .from('announcements')
+      .from('platform_announcements')
       .insert({ ...announcement, created_by: user?.id })
       .select()
       .single();
@@ -1171,7 +1171,7 @@ export const adminContentApi = {
   // Update announcement
   async updateAnnouncement(id: string, updates: Partial<Announcement>): Promise<Announcement> {
     const { data, error } = await supabase
-      .from('announcements')
+      .from('platform_announcements')
       .update(updates)
       .eq('id', id)
       .select()
@@ -1184,7 +1184,7 @@ export const adminContentApi = {
   // Delete announcement
   async deleteAnnouncement(id: string): Promise<void> {
     const { error } = await supabase
-      .from('announcements')
+      .from('platform_announcements')
       .delete()
       .eq('id', id);
 
@@ -1200,7 +1200,7 @@ export const adminStaffApi = {
   // Get all staff
   async list(): Promise<StaffMember[]> {
     const { data, error } = await supabase
-      .from('admin_staff')
+      .from('user_role_assignments')
       .select('*, users(email, full_name)')
       .order('created_at', { ascending: false });
 
@@ -1217,7 +1217,7 @@ export const adminStaffApi = {
     const { data: { user } } = await supabase.auth.getUser();
 
     const { error } = await supabase
-      .from('admin_staff_invitations')
+      .from('staff_invitations')
       .insert({
         email,
         role,
@@ -1240,7 +1240,7 @@ export const adminStaffApi = {
   // Update staff permissions
   async updatePermissions(id: string, permissions: string[]): Promise<void> {
     const { error } = await supabase
-      .from('admin_staff')
+      .from('user_role_assignments')
       .update({ permissions })
       .eq('id', id);
 
@@ -1258,7 +1258,7 @@ export const adminStaffApi = {
   // Update staff role
   async updateRole(id: string, role: string): Promise<void> {
     const { error } = await supabase
-      .from('admin_staff')
+      .from('user_role_assignments')
       .update({ role })
       .eq('id', id);
 
@@ -1277,7 +1277,7 @@ export const adminStaffApi = {
   // Deactivate staff
   async deactivate(id: string): Promise<void> {
     const { error } = await supabase
-      .from('admin_staff')
+      .from('user_role_assignments')
       .update({ is_active: false })
       .eq('id', id);
 
@@ -1361,6 +1361,7 @@ export const adminAuditApi = {
       .from('audit_logs')
       .insert({
         ...entry,
+        event_category: entry.event_type,
         actor_id: user?.id,
         actor_email: user?.email,
       });

@@ -164,7 +164,7 @@ const NetworkNode: React.FC<{
       aria-label={`Select ${stakeholder.label}`} role="option" aria-selected={isActive} tabIndex={0}>
       <div className="absolute inset-0 rounded-full" style={{ transform: `scale(${isActive ? 2.2 : 1.8})`, backgroundColor: `${stakeholder.color}${isActive ? '12' : '04'}`, border: `1px solid ${stakeholder.color}${isActive ? '30' : '00'}`, transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1)', animation: isActive ? 'nodeBreath 3s ease-in-out infinite' : 'none' }} />
       {ripple && <div className="absolute inset-0 rounded-full pointer-events-none" style={{ backgroundColor: `${stakeholder.color}20`, animation: 'nodeRipple 0.6s cubic-bezier(0,0,0.2,1) forwards' }} />}
-      <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer" style={{
+      <div className="relative w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer" style={{
         backgroundColor: isActive ? `${stakeholder.color}25` : isConnected ? `${stakeholder.color}12` : 'rgba(255,255,255,0.03)',
         border: `1.5px solid ${isActive ? stakeholder.color : isConnected ? `${stakeholder.color}50` : 'rgba(255,255,255,0.08)'}`,
         boxShadow: isActive ? `0 0 30px ${stakeholder.color}20, inset 0 0 20px ${stakeholder.color}10` : isConnected ? `0 0 15px ${stakeholder.color}08` : 'none',
@@ -172,8 +172,9 @@ const NetworkNode: React.FC<{
       }}>
         <span className="font-mono text-[10px] md:text-xs font-bold tracking-wider select-none" style={{ color: isActive || isConnected ? stakeholder.color : 'rgba(255,255,255,0.3)', transition: 'color 0.4s ease' }}>{stakeholder.shortLabel}</span>
       </div>
-      <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap" style={{ opacity: isActive ? 1 : 0.7, transform: `translateY(${isActive ? 0 : 4}px)`, transition: 'opacity 0.3s ease, transform 0.3s ease' }}>
-        <span className="text-[10px] md:text-xs font-medium" style={{ color: isActive ? stakeholder.color : 'rgba(255,255,255,0.6)' }}>{stakeholder.label}</span>
+      <div className="absolute top-full mt-1 md:mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap" style={{ opacity: isActive ? 1 : 0.7, transform: `translateY(${isActive ? 0 : 4}px)`, transition: 'opacity 0.3s ease, transform 0.3s ease' }}>
+        <span className="hidden sm:inline text-[10px] md:text-xs font-medium" style={{ color: isActive ? stakeholder.color : 'rgba(255,255,255,0.6)' }}>{stakeholder.label}</span>
+        <span className="sm:hidden text-[8px] font-medium" style={{ color: isActive ? stakeholder.color : 'rgba(255,255,255,0.5)' }}>{stakeholder.shortLabel}</span>
       </div>
     </button>
   );
@@ -284,6 +285,14 @@ const HomePage: React.FC = () => {
     { ...STAKEHOLDERS[3], x: 12, y: 50 }, { ...STAKEHOLDERS[4], x: 35, y: 45 }, { ...STAKEHOLDERS[5], x: 65, y: 45 },
     { ...STAKEHOLDERS[6], x: 88, y: 50 }, { ...STAKEHOLDERS[7], x: 22, y: 78 }, { ...STAKEHOLDERS[8], x: 50, y: 82 }, { ...STAKEHOLDERS[9], x: 78, y: 78 },
   ], []);
+  // Mobile: tighter circular layout for small screens
+  const mobileNodePositions = useMemo(() => {
+    const cx = 50, cy = 50, r = 38;
+    return STAKEHOLDERS.map((s, i) => {
+      const angle = (i / STAKEHOLDERS.length) * Math.PI * 2 - Math.PI / 2;
+      return { ...s, x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r };
+    });
+  }, []);
 
   // Auto-cycle with 8s manual override grace
   const [autoCycleIndex, setAutoCycleIndex] = useState(0);
@@ -446,29 +455,31 @@ const HomePage: React.FC = () => {
           <RevealSection><div className="text-center mb-8 md:mb-12">
             <div className="inline-flex items-center gap-2 mb-6"><div className="w-8 h-px bg-blue-500/40" /><span className="text-[11px] font-semibold text-blue-400/70 uppercase tracking-[0.2em]">The Network</span><div className="w-8 h-px bg-blue-500/40" /></div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.05]">Ten Roles.{' '}<span className="gradient-text">One Network.</span></h2>
-            <p className="text-gray-400 max-w-xl mx-auto text-base">Select a node to see how each stakeholder connects.{!activeNode && <span className="block mt-2 text-xs text-gray-600 italic">Auto-cycling. Click any node to explore.</span>}</p>
+            <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base"><span className="hidden sm:inline">Select</span><span className="sm:hidden">Tap</span> a node to see how each stakeholder connects.{!activeNode && <span className="block mt-2 text-xs text-gray-600 italic">Auto-cycling. <span className="hidden sm:inline">Click</span><span className="sm:hidden">Tap</span> any node to explore.</span>}</p>
           </div></RevealSection>
+          {/* Desktop network */}
           <div className="hidden lg:block" role="listbox" aria-label="Stakeholder network" onKeyDown={handleNetworkKeyDown}>
             <div className="relative mx-auto" style={{ maxWidth: '900px', aspectRatio: '16/10' }}>
               <ConnectionLines activeId={activeNode || STAKEHOLDERS[autoCycleIndex]?.id} nodePositions={nodePositions} isVisible={networkReveal.isVisible} />
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"><div className="w-20 h-20 rounded-full border border-white/[0.04] flex items-center justify-center" style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)' }}><span className="text-[9px] font-bold text-gray-600 tracking-widest uppercase">STEM</span></div></div>
               {nodePositions.map((n, i) => { const aid = activeNode || STAKEHOLDERS[autoCycleIndex]?.id; const ac = STAKEHOLDERS.find(s => s.id === aid); return <NetworkNode key={n.id} stakeholder={n} x={n.x} y={n.y} isActive={aid === n.id} isConnected={ac?.connections.includes(n.id) || false} onClick={() => handleNodeClick(n.id)} index={i} isVisible={networkReveal.isVisible} />; })}
             </div>
-            <div className="mt-8 max-w-2xl mx-auto">{(() => { const d = activeStakeholder || STAKEHOLDERS[autoCycleIndex]; if (!d) return null; return (
-              <div className="p-7 rounded-2xl border bg-white/[0.02] text-center" style={{ borderColor: `${d.color}15`, transition: 'border-color 0.5s ease' }} key={d.id}>
-                <div className="inline-flex items-center gap-2 mb-4"><span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ color: d.color, backgroundColor: `${d.color}10` }}>{d.connections.length} connections</span></div>
-                <h3 className="text-lg font-semibold text-white mb-2">{d.label}</h3><p className="text-sm text-gray-400 mb-5 leading-relaxed">{d.description}</p>
-                <Button variant="outline" size="sm" className="group/btn" onClick={() => navigate(d.link)}><span>Get Started</span><svg className="w-3.5 h-3.5 ml-1 transition-transform duration-200 group-hover/btn:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg></Button>
-              </div>); })()}</div>
           </div>
-          <div className="lg:hidden space-y-3 mt-8">{STAKEHOLDERS.map((s) => { const act = activeNode === s.id; return (<div key={s.id}>
-            <button onClick={() => handleNodeClick(s.id)} className="w-full text-left px-5 py-4 rounded-xl border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2" style={{ backgroundColor: act ? `${s.color}08` : 'rgba(255,255,255,0.015)', borderColor: act ? `${s.color}25` : 'rgba(255,255,255,0.05)' }} aria-expanded={act}>
-              <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${s.color}12` }}><span className="font-mono text-[10px] font-bold" style={{ color: s.color }}>{s.shortLabel}</span></div>
-              <div className="flex-1 min-w-0"><div className="text-sm font-semibold text-white">{s.label}</div>{act && <div className="text-[10px] mt-0.5" style={{ color: `${s.color}80` }}>{s.connections.length} connections</div>}</div>
-              <svg className="w-4 h-4 text-gray-600 transition-transform duration-300 flex-shrink-0" style={{ transform: act ? 'rotate(180deg)' : 'rotate(0)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg></div>
-            </button>
-            {act && <div className="px-5 py-4 mt-1 rounded-xl bg-white/[0.02] border border-white/[0.04]" style={{ animation: 'fadeInUp 0.3s cubic-bezier(0.16,1,0.3,1) forwards' }}><p className="text-sm text-gray-400 mb-4 leading-relaxed">{s.description}</p><Link to={s.link}><span className="text-xs font-medium hover:opacity-80 transition-opacity inline-flex items-center gap-1" style={{ color: s.color }}>Get Started <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg></span></Link></div>}
-          </div>); })}</div>
+          {/* Mobile/tablet network — circular layout */}
+          <div className="lg:hidden" role="listbox" aria-label="Stakeholder network" onKeyDown={handleNetworkKeyDown}>
+            <div className="relative mx-auto" style={{ maxWidth: '400px', aspectRatio: '1/1' }}>
+              <ConnectionLines activeId={activeNode || STAKEHOLDERS[autoCycleIndex]?.id} nodePositions={mobileNodePositions} isVisible={networkReveal.isVisible} />
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"><div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/[0.04] flex items-center justify-center" style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)' }}><span className="text-[8px] sm:text-[9px] font-bold text-gray-600 tracking-widest uppercase">STEM</span></div></div>
+              {mobileNodePositions.map((n, i) => { const aid = activeNode || STAKEHOLDERS[autoCycleIndex]?.id; const ac = STAKEHOLDERS.find(s => s.id === aid); return <NetworkNode key={n.id} stakeholder={n} x={n.x} y={n.y} isActive={aid === n.id} isConnected={ac?.connections.includes(n.id) || false} onClick={() => handleNodeClick(n.id)} index={i} isVisible={networkReveal.isVisible} />; })}
+            </div>
+          </div>
+          {/* Shared detail card */}
+          <div className="mt-6 md:mt-8 max-w-2xl mx-auto">{(() => { const d = activeStakeholder || STAKEHOLDERS[autoCycleIndex]; if (!d) return null; return (
+            <div className="p-5 md:p-7 rounded-2xl border bg-white/[0.02] text-center" style={{ borderColor: `${d.color}15`, transition: 'border-color 0.5s ease' }} key={d.id}>
+              <div className="inline-flex items-center gap-2 mb-3 md:mb-4"><span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ color: d.color, backgroundColor: `${d.color}10` }}>{d.connections.length} connections</span></div>
+              <h3 className="text-base md:text-lg font-semibold text-white mb-2">{d.label}</h3><p className="text-xs md:text-sm text-gray-400 mb-4 md:mb-5 leading-relaxed">{d.description}</p>
+              <Button variant="outline" size="sm" className="group/btn" onClick={() => navigate(d.link)}><span>Get Started</span><svg className="w-3.5 h-3.5 ml-1 transition-transform duration-200 group-hover/btn:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg></Button>
+            </div>); })()}</div>
         </div>
       </section>
 

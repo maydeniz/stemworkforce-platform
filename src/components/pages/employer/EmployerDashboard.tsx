@@ -28,10 +28,13 @@ import {
   MapPin,
   Building2,
   Zap,
+  Lock,
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import { FeatureGate } from '@/components/common/FeatureGate';
+import { useBilling } from '@/contexts/BillingContext';
 
 // Import Tab Components
 import JobPostingsTab from './dashboard/JobPostingsTab';
@@ -39,6 +42,7 @@ import TalentPipelineTab from './dashboard/TalentPipelineTab';
 import CampusRecruitingTab from './dashboard/CampusRecruitingTab';
 import AnalyticsTab from './dashboard/AnalyticsTab';
 import ClearancePipelineTab from './dashboard/ClearancePipelineTab';
+import FSOPortalTab from './dashboard/FSOPortalTab';
 import EventsTab from './dashboard/EventsTab';
 import BillingTab from './dashboard/BillingTab';
 import SettingsTab from './dashboard/SettingsTab';
@@ -47,7 +51,7 @@ import SettingsTab from './dashboard/SettingsTab';
 // TYPES
 // ===========================================
 
-type TabKey = 'overview' | 'jobs' | 'pipeline' | 'campus' | 'analytics' | 'clearance' | 'events' | 'billing' | 'settings';
+type TabKey = 'overview' | 'jobs' | 'pipeline' | 'campus' | 'analytics' | 'clearance' | 'fso-portal' | 'events' | 'billing' | 'settings';
 
 interface TabConfig {
   key: TabKey;
@@ -62,6 +66,7 @@ const TABS: TabConfig[] = [
   { key: 'campus', label: 'Campus Recruiting', icon: GraduationCap },
   { key: 'analytics', label: 'Analytics', icon: BarChart3 },
   { key: 'clearance', label: 'Clearance Pipeline', icon: Shield },
+  { key: 'fso-portal', label: 'FSO Portal', icon: Lock },
   { key: 'events', label: 'Events', icon: Calendar },
   { key: 'billing', label: 'Billing', icon: CreditCard },
   { key: 'settings', label: 'Settings', icon: Settings },
@@ -424,6 +429,7 @@ const EmployerDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [showPostJobModal, setShowPostJobModal] = useState(false);
   const navigate = useNavigate();
+  const { canAccessFeature } = useBilling();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -444,6 +450,16 @@ const EmployerDashboard: React.FC = () => {
         return <AnalyticsTab />;
       case 'clearance':
         return <ClearancePipelineTab />;
+      case 'fso-portal':
+        return (
+          <FeatureGate
+            feature="FSO Portal"
+            isUnlocked={canAccessFeature('fsoPortalBasic')}
+            requiredTier="Professional"
+          >
+            <FSOPortalTab />
+          </FeatureGate>
+        );
       case 'events':
         return <EventsTab />;
       case 'billing':
@@ -457,8 +473,8 @@ const EmployerDashboard: React.FC = () => {
 
   return (
     <div className="h-screen flex overflow-hidden bg-gray-950">
-      {/* Sidebar */}
-      <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
+      {/* Sidebar — hidden on mobile, shown on md+ */}
+      <div className="hidden md:flex w-64 bg-gray-900 border-r border-gray-800 flex-col">
         {/* Company Header */}
         <div className="p-5 border-b border-gray-800">
           <div className="flex items-center gap-3">
@@ -467,7 +483,7 @@ const EmployerDashboard: React.FC = () => {
             </div>
             <div>
               <div className="text-white font-semibold text-sm">Nexus Technologies</div>
-              <div className="text-gray-400 text-xs">Enterprise Plan</div>
+              <div className="text-gray-400 text-xs">Mission Control</div>
             </div>
           </div>
         </div>
@@ -528,9 +544,14 @@ const EmployerDashboard: React.FC = () => {
 
       {/* Post Job Modal */}
       {showPostJobModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowPostJobModal(false)}>
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h3 className="text-xl font-bold text-white mb-6">Post New Job</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowPostJobModal(false)} onKeyDown={(e) => { if (e.key === 'Escape') setShowPostJobModal(false); }}>
+          <div role="dialog" aria-modal="true" aria-label="Post New Job" className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">Post New Job</h3>
+              <button onClick={() => setShowPostJobModal(false)} className="text-gray-400 hover:text-white transition-colors" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
             <div className="space-y-4">
               <div>
                 <label className="text-sm text-gray-400 mb-1 block">Job Title</label>
@@ -597,7 +618,7 @@ const EmployerDashboard: React.FC = () => {
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <button onClick={() => setShowPostJobModal(false)} className="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
-              <button onClick={() => setShowPostJobModal(false)} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors">Publish Job</button>
+              <button onClick={() => { setShowPostJobModal(false); /* TODO: Wire to supabase.from('jobs').insert() when Stripe billing is live */ }} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors">Publish Job</button>
             </div>
           </div>
         </div>

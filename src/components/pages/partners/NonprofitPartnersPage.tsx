@@ -179,7 +179,7 @@ const PARTNERSHIP_TIERS = [
   },
   {
     name: 'Impact',
-    price: '$299/mo',
+    price: '$249/mo',
     description: 'Full outcome tracking & reporting',
     features: [
       'Unlimited program listings',

@@ -1395,11 +1395,11 @@ const EducationPartnersOnboardingPage: React.FC = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="mailto:partners@stemworkforce.com"
+              href="mailto:partners@stemworkforce.net"
               className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors"
             >
               <Mail className="w-4 h-4" />
-              partners@stemworkforce.com
+              partners@stemworkforce.net
             </a>
             <a
               href="tel:+18005551234"

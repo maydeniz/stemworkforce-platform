@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
-  ClipboardCheck, Users, FileText, AlertTriangle, CheckCircle,
-  XCircle, Eye, RefreshCw, Search, Clock, Building, Shield, Settings
+  ClipboardCheck, Users, AlertTriangle, CheckCircle,
+  XCircle, Eye, RefreshCw, Clock, Building, Settings
 } from 'lucide-react';
 
 // =====================================================

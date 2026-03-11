@@ -310,7 +310,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                 onClick={() => window.location.href = '/education-partner-apply?type=nonprofit&plan=impact'}
                 className="px-4 py-2 bg-pink-600 hover:bg-pink-500 text-white rounded-lg font-medium transition-colors"
               >
-                Upgrade to Impact - $299/mo
+                Upgrade to Impact - $249/mo
               </button>
             </div>
           </div>

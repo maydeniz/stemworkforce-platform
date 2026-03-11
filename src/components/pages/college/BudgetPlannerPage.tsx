@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 import {
   PiggyBank,
   CreditCard,
@@ -145,6 +146,7 @@ const FIRST_PAYCHECK_CHECKLIST = [
 // COMPONENT
 // ===========================================
 const BudgetPlannerPage: React.FC = () => {
+  const { info } = useNotifications();
   const [salary, setSalary] = useState<number>(100000);
   const [taxRate, setTaxRate] = useState<number>(30);
   const [milestones, setMilestones] = useState<FinancialMilestone[]>(MILESTONES);
@@ -181,11 +183,17 @@ const BudgetPlannerPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-lime-600 hover:bg-lime-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
+                <button
+                  onClick={() => info('Budget creation wizard is coming soon!')}
+                  className="px-6 py-3 bg-lime-600 hover:bg-lime-500 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+                >
                   <Calculator className="w-5 h-5" />
                   Create My Budget
                 </button>
-                <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700">
+                <button
+                  onClick={() => info('Goal setting feature is coming soon!')}
+                  className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors border border-gray-700"
+                >
                   <Target className="w-5 h-5" />
                   Set Goals
                 </button>

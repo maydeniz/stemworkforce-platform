@@ -310,7 +310,7 @@ While we implement robust security measures, no system is 100% secure. We cannot
 
 8.7 How to Exercise Your Rights:
 • Account Settings: Use the privacy controls in your dashboard
-• Email: privacy@stemworkforce.org
+• Email: privacy@stemworkforce.net
 • Online Form: stemworkforce.org/privacy-request
 • Response Time: Within 45 days (may extend to 90 days for complex requests)
 
@@ -444,7 +444,7 @@ If we learn that we have collected personal information from a child under 13 wi
 • Notify the parent/guardian if possible
 • Take steps to prevent future collection
 
-If you believe we have collected information from a child under 13, please contact us immediately at privacy@stemworkforce.org.`
+If you believe we have collected information from a child under 13, please contact us immediately at privacy@stemworkforce.net.`
   },
   {
     id: 'california',
@@ -485,7 +485,7 @@ We DO NOT share your personal information for cross-context behavioral advertisi
 
 13.5 How to Exercise Rights:
 • Online: stemworkforce.org/privacy-request
-• Email: privacy@stemworkforce.org
+• Email: privacy@stemworkforce.net
 • Toll-Free: 1-800-783-6967
 
 13.6 Authorized Agents:
@@ -511,7 +511,7 @@ STEMWorkforce, Inc. is the data controller for personal data collected through t
 
 14.2 EU Representative:
 For GDPR inquiries, contact our EU representative at:
-Email: gdpr@stemworkforce.org
+Email: gdpr@stemworkforce.net
 
 14.3 Your GDPR Rights:
 • Right of Access (Article 15): Obtain a copy of your personal data
@@ -535,7 +535,7 @@ See Section 11 for information about international data transfers and safeguards
 You have the right to lodge a complaint with your local data protection authority if you believe your rights have been violated.
 
 14.8 How to Exercise Rights:
-• Email: gdpr@stemworkforce.org
+• Email: gdpr@stemworkforce.net
 • Response Time: Within 30 days (may extend to 60 days for complex requests)`
   },
   {
@@ -543,16 +543,16 @@ You have the right to lodge a complaint with your local data protection authorit
     title: '15. Other State Privacy Laws',
     icon: Building,
     content: `15.1 Virginia (VCDPA):
-Virginia residents have rights similar to CCPA, including access, correction, deletion, portability, and opt-out rights. Contact: privacy@stemworkforce.org
+Virginia residents have rights similar to CCPA, including access, correction, deletion, portability, and opt-out rights. Contact: privacy@stemworkforce.net
 
 15.2 Colorado (CPA):
-Colorado residents may access, correct, delete, and port their data, and opt out of targeted advertising, profiling, and sales. Contact: privacy@stemworkforce.org
+Colorado residents may access, correct, delete, and port their data, and opt out of targeted advertising, profiling, and sales. Contact: privacy@stemworkforce.net
 
 15.3 Connecticut (CTDPA):
-Connecticut residents have rights to access, correct, delete, and port data, plus opt-out rights. Contact: privacy@stemworkforce.org
+Connecticut residents have rights to access, correct, delete, and port data, plus opt-out rights. Contact: privacy@stemworkforce.net
 
 15.4 Utah (UCPA):
-Utah residents may access, delete, and port their data, and opt out of sales and targeted advertising. Contact: privacy@stemworkforce.org
+Utah residents may access, delete, and port their data, and opt out of sales and targeted advertising. Contact: privacy@stemworkforce.net
 
 15.5 Other States:
 We monitor and comply with emerging state privacy laws including those in:
@@ -563,7 +563,7 @@ As new laws take effect, we update our practices accordingly.
 
 15.6 Exercising Rights:
 Residents of any U.S. state may contact us to exercise applicable privacy rights:
-• Email: privacy@stemworkforce.org
+• Email: privacy@stemworkforce.net
 • Online: stemworkforce.org/privacy-request`
   },
   {
@@ -637,17 +637,17 @@ We encourage you to review this Privacy Policy periodically. The current version
     content: `If you have questions, concerns, or requests regarding this Privacy Policy or our data practices:
 
 Privacy Officer / Data Protection Officer:
-Email: privacy@stemworkforce.org
+Email: privacy@stemworkforce.net
 
 GDPR / EU Inquiries:
-Email: gdpr@stemworkforce.org
+Email: gdpr@stemworkforce.net
 
 CCPA / California Inquiries:
-Email: ccpa@stemworkforce.org
+Email: ccpa@stemworkforce.net
 Toll-Free: 1-800-XXX-XXXX
 
 General Support:
-Email: support@stemworkforce.org
+Email: support@stemworkforce.net
 
 Mailing Address:
 STEMWorkforce, Inc.
@@ -819,20 +819,20 @@ export default function PrivacyPolicyPage() {
             <div className="grid md:grid-cols-3 gap-6 text-sm">
               <div>
                 <p className="text-slate-400 mb-1">General Privacy</p>
-                <a href="mailto:privacy@stemworkforce.org" className="text-emerald-400 hover:text-emerald-300">
-                  privacy@stemworkforce.org
+                <a href="mailto:privacy@stemworkforce.net" className="text-emerald-400 hover:text-emerald-300">
+                  privacy@stemworkforce.net
                 </a>
               </div>
               <div>
                 <p className="text-slate-400 mb-1">California (CCPA)</p>
-                <a href="mailto:ccpa@stemworkforce.org" className="text-emerald-400 hover:text-emerald-300">
-                  ccpa@stemworkforce.org
+                <a href="mailto:ccpa@stemworkforce.net" className="text-emerald-400 hover:text-emerald-300">
+                  ccpa@stemworkforce.net
                 </a>
               </div>
               <div>
                 <p className="text-slate-400 mb-1">EU/UK (GDPR)</p>
-                <a href="mailto:gdpr@stemworkforce.org" className="text-emerald-400 hover:text-emerald-300">
-                  gdpr@stemworkforce.org
+                <a href="mailto:gdpr@stemworkforce.net" className="text-emerald-400 hover:text-emerald-300">
+                  gdpr@stemworkforce.net
                 </a>
               </div>
             </div>

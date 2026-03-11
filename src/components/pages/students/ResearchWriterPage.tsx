@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Types
 interface ResearchProject {
@@ -841,6 +842,7 @@ const PolishStep: React.FC<{
   project: ResearchProject;
   onUpdate: (project: ResearchProject) => void;
 }> = ({ project }) => {
+  const { info } = useNotifications();
   return (
     <div className="space-y-8">
       <div>
@@ -875,14 +877,20 @@ const PolishStep: React.FC<{
 
       {/* Export Options */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <button className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-left hover:bg-violet-500/20 transition-all">
+        <button
+          onClick={() => info('PDF export coming soon! For now, you can copy your research paper text and paste it into a document.')}
+          className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-left hover:bg-violet-500/20 transition-all"
+        >
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">📄</span>
             <h4 className="font-medium text-white">Download PDF</h4>
           </div>
           <p className="text-sm text-gray-400">Export all formats in a single document</p>
         </button>
-        <button className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-left hover:bg-violet-500/20 transition-all">
+        <button
+          onClick={() => info('Counselor sharing coming soon! You can copy your paper and share it directly.')}
+          className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-left hover:bg-violet-500/20 transition-all"
+        >
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">📧</span>
             <h4 className="font-medium text-white">Share with Counselor</h4>

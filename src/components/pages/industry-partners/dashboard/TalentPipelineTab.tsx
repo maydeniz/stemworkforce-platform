@@ -25,6 +25,7 @@ import {
   updateCandidateStage,
   addCandidateNote
 } from '@/services/industryPartnerApi';
+import { useNotifications } from '@/contexts/NotificationContext';
 import type { Candidate, CandidateStage, CandidateSource, PartnerTier } from '@/types/industryPartner';
 import WorkforceMapWidget from '@/components/shared/WorkforceMapWidget';
 
@@ -131,6 +132,7 @@ const SAMPLE_CANDIDATES: Candidate[] = [
 // ===========================================
 
 const TalentPipelineTab: React.FC<TalentPipelineTabProps> = ({ partnerId, tier: _tier }) => {
+  const { info } = useNotifications();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -348,7 +350,7 @@ const TalentPipelineTab: React.FC<TalentPipelineTabProps> = ({ partnerId, tier: 
         <div className="lg:col-span-1">
           <WorkforceMapWidget
             variant="mini"
-            onStateSelect={(state) => console.log('Filter by state:', state.abbreviation)}
+            onStateSelect={(state) => info(`Filtering talent pipeline by ${state.name || state.abbreviation} coming soon.`)}
           />
         </div>
       </div>

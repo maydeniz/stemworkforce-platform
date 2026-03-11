@@ -1,9 +1,11 @@
 // ===========================================
 // Partner Billing Service
-// Placeholder Stripe integration for partner subscriptions
+// Stripe integration for education-partner subscriptions.
+// Pricing data is imported from the unified config in @/config/pricing.
 // ===========================================
 
 import { supabase } from '@/lib/supabase';
+import { getPersonaTiers, type PricingTier as UnifiedPricingTier } from '@/config/pricing';
 
 // ===========================================
 // TYPES
@@ -12,7 +14,7 @@ import { supabase } from '@/lib/supabase';
 export interface PricingTier {
   id: string;
   name: string;
-  stripePriceId: string; // Placeholder - will be real Stripe price IDs
+  stripePriceId: string;
   price: number;
   interval: 'month' | 'year';
   description: string;
@@ -82,106 +84,52 @@ export interface Invoice {
 }
 
 // ===========================================
-// PRICING TIERS CONFIGURATION
+// PRICING TIERS (derived from unified config)
 // ===========================================
 
-export const PRICING_TIERS: PricingTier[] = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    stripePriceId: 'price_starter_placeholder', // TODO: Replace with real Stripe price ID
-    price: 0,
+/**
+ * Convert a unified PricingTier to the education-partner-specific shape
+ * expected by consumers of this service.
+ */
+function toLocalTier(t: UnifiedPricingTier): PricingTier {
+  // Build a human-readable feature list from the boolean feature flags
+  const featureLabels: string[] = Object.entries(t.features)
+    .filter(([, enabled]) => enabled)
+    .map(([key]) =>
+      key
+        // camelCase -> space-separated words, capitalise first letter
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (c) => c.toUpperCase())
+    );
+
+  return {
+    id: t.tierKey,
+    name: t.name,
+    stripePriceId: t.stripe_price_id_monthly ?? '',
+    price: t.price_monthly,
     interval: 'month',
-    description: 'Get your programs listed',
-    features: [
-      'List up to 5 programs',
-      'Basic program analytics',
-      'Employer network directory access',
-      'Request work-based learning partnerships',
-      'Email support'
-    ],
+    description: t.description,
+    features: featureLabels,
     limits: {
-      maxPrograms: 5,
-      maxStudentProfiles: 500,
-      maxEmployerConnections: 10,
-      maxEventsPerYear: 0,
-      canAccessEmployerNetwork: true,
-      canTrackOutcomes: false,
-      canHostEvents: false,
-      hasAdvancedAnalytics: false,
-      hasApiAccess: false,
-      hasDedicatedSupport: false,
-      hasWhiteLabeling: false,
-      hasDedicatedManager: false
+      maxPrograms: t.limits.maxPrograms ?? 0,
+      maxStudentProfiles: t.limits.maxStudentProfiles ?? 0,
+      maxEmployerConnections: t.limits.maxEmployerConnections ?? 0,
+      maxEventsPerYear: t.limits.maxEventsPerYear ?? 0,
+      canAccessEmployerNetwork: t.features.employerNetworkAccess ?? t.features.basicProfile ?? false,
+      canTrackOutcomes: t.features.studentOutcomeTracking ?? false,
+      canHostEvents: t.features.coHostEvents ?? false,
+      hasAdvancedAnalytics: t.features.advancedAnalytics ?? false,
+      hasApiAccess: t.features.apiAccess ?? false,
+      hasDedicatedSupport: t.features.prioritySupport ?? false,
+      hasWhiteLabeling: t.features.whiteLabel ?? false,
+      hasDedicatedManager: t.features.dedicatedManager ?? false,
     },
-    popular: false
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    stripePriceId: 'price_growth_monthly_placeholder', // TODO: Replace with real Stripe price ID
-    price: 499,
-    interval: 'month',
-    description: 'Build industry partnerships',
-    features: [
-      'Unlimited program listings',
-      'Outcome tracking dashboard',
-      'Employer matching & introductions',
-      'Host virtual career fairs (2/year)',
-      'Skills gap analysis reports',
-      'Work-based learning matching',
-      'Quarterly industry briefings'
-    ],
-    limits: {
-      maxPrograms: -1, // unlimited
-      maxStudentProfiles: 5000,
-      maxEmployerConnections: 50,
-      maxEventsPerYear: 2,
-      canAccessEmployerNetwork: true,
-      canTrackOutcomes: true,
-      canHostEvents: true,
-      hasAdvancedAnalytics: true,
-      hasApiAccess: false,
-      hasDedicatedSupport: false,
-      hasWhiteLabeling: false,
-      hasDedicatedManager: false
-    },
-    highlighted: true,
-    popular: true
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    stripePriceId: 'price_enterprise_placeholder', // TODO: Replace with real Stripe price ID
-    price: -1, // Custom pricing
-    interval: 'month',
-    description: 'Full institutional partnership',
-    features: [
-      'Everything in Growth',
-      'Dedicated partnership manager',
-      'Unlimited career event hosting',
-      'Accreditation report automation',
-      'API integrations (SIS, LMS)',
-      'Curriculum advisory board matching',
-      'Sponsored research connections'
-    ],
-    limits: {
-      maxPrograms: -1,
-      maxStudentProfiles: -1, // unlimited
-      maxEmployerConnections: -1, // unlimited
-      maxEventsPerYear: -1, // unlimited
-      canAccessEmployerNetwork: true,
-      canTrackOutcomes: true,
-      canHostEvents: true,
-      hasAdvancedAnalytics: true,
-      hasApiAccess: true,
-      hasDedicatedSupport: true,
-      hasWhiteLabeling: true,
-      hasDedicatedManager: true
-    },
-    popular: false
-  }
-];
+    highlighted: t.highlighted,
+    popular: t.highlighted,
+  };
+}
+
+export const PRICING_TIERS: PricingTier[] = getPersonaTiers('education_partner').map(toLocalTier);
 
 // ===========================================
 // BILLING SERVICE FUNCTIONS

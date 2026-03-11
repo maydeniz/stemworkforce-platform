@@ -177,11 +177,23 @@ export const STATES = [
 // Clearance levels
 export const CLEARANCE_LEVELS = [
   { id: 'none', name: 'No Clearance Required', color: '#6b7280' },
-  { id: 'public-trust', name: 'Public Trust', color: '#3b82f6' },
-  { id: 'secret', name: 'Secret', color: '#f59e0b' },
-  { id: 'top-secret', name: 'Top Secret', color: '#ef4444' },
-  { id: 'top-secret-sci', name: 'TS/SCI', color: '#7c3aed' },
+  { id: 'public-trust', name: 'Public Trust', color: '#10B981' },
+  { id: 'secret', name: 'Secret', color: '#3B82F6' },
+  { id: 'top-secret', name: 'Top Secret', color: '#8B5CF6' },
+  { id: 'top-secret-sci', name: 'TS/SCI', color: '#EC4899' },
+  { id: 'doe-l', name: 'DOE L Clearance', color: '#F59E0B' },
+  { id: 'doe-q', name: 'DOE Q Clearance', color: '#EF4444' },
+  { id: 'doe-q-sci', name: 'DOE Q/SCI', color: '#DC2626' },
 ] as const;
+
+// Clearance Readiness Navigation
+export const CLEARANCE_READINESS_ROUTES = {
+  assessment: '/clearance-readiness',
+  intelligence: '/clearance-intelligence',
+  guide: '/clearance-guide',
+  nispom: '/nispom-compliance',
+  services: '/services/clearance',
+} as const;
 
 // Healthcare Compliance Levels
 export const HEALTHCARE_COMPLIANCE_LEVELS = [
@@ -299,6 +311,7 @@ export const NAV_ITEMS = [
 export const FOOTER_LINKS = {
   platform: [
     { label: 'About Us', path: '/about' },
+    { label: 'Pricing', path: '/pricing' },
     { label: 'Careers', path: '/careers' },
     { label: 'Press', path: '/press' },
     { label: 'Contact', path: '/contact' },
