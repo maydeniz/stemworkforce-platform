@@ -125,7 +125,6 @@ const SecurityCenterTab: React.FC<SecurityCenterTabProps> = ({ initialSubTab = '
     setBreakerMessage({ type: result.success ? 'success' : 'error', text: result.message });
     refreshBreakerStatuses();
     setBreakerLoading(null);
-    setResetNotes('');
   };
 
   const handleTripAllCritical = async () => {
