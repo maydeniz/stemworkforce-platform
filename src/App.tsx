@@ -94,6 +94,8 @@ const AdminDashboard = lazy(() => import('@/components/pages/admin/AdminDashboar
 const BillingDashboard = lazy(() => import('@/components/pages/billing/BillingDashboard'));
 const AdvertisingDashboard = lazy(() => import('@/components/pages/advertising/AdvertisingDashboard'));
 const AdvertiserDashboard = lazy(() => import('@/components/pages/advertising/AdvertiserDashboard'));
+const ExperienceLedgerPage = lazy(() => import('@/components/pages/portfolio/ExperienceLedgerPage'));
+const TalentDiscoveryPage = lazy(() => import('@/components/pages/employer/TalentDiscoveryPage'));
 const MarketplaceDashboard = lazy(() => import('@/components/pages/marketplace/MarketplaceDashboard'));
 
 // Workforce Services pages - lazy loaded
@@ -1715,6 +1717,27 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <Suspense fallback={<PageLoader />}>
               <AdvertiserDashboard />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+      {/* ── Phase 1: Verified Experience Ledger ── */}
+      <Route
+        path="/portfolio"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <ExperienceLedgerPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/talent-discovery"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <TalentDiscoveryPage />
             </Suspense>
           </ProtectedRoute>
         }
