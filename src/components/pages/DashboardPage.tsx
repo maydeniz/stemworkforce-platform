@@ -4,7 +4,7 @@
 // ===========================================
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { UsageMeter, FeatureGate, UpgradePrompt } from '@/components/common';
@@ -3610,6 +3610,7 @@ if (import.meta.env.DEV) console.log('Program submitted:', data);
 // PARTNER/EMPLOYER DASHBOARD
 // ============================================
 const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> = ({ user, onSignOut }) => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
   const [showPostModal, setShowPostModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -3629,6 +3630,16 @@ const PartnerDashboard: React.FC<{ user: UserProfile; onSignOut: () => void }> =
   // Job postings state - will be populated from database
   const [jobPostings, setJobPostings] = useState<unknown[]>([]);
   const [, setLoadingJobs] = useState(true);
+
+  // Handle ?action= query params from header links (e.g. "Post a Job", "Post Internship")
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const action = params.get('action');
+    if (action === 'post-job' || action === 'post-internship') {
+      setActiveTab('postings');
+      setShowPostModal(true);
+    }
+  }, [location.search]);
 
   // Fetch jobs from database on component mount
   useEffect(() => {
